@@ -37,6 +37,12 @@ Manage DNS records with natural language - the AI understands your Dynadot accou
 
 ![Cursor Example](images/domain-mcp-example-cursor.png)
 
+### Domain Search with Pricing
+
+Search for available domains and get pricing information instantly:
+
+![Domain Search with Pricing](images/domain-mcp-search-pricing.png)
+
 ## Common Use Cases
 
 ### For AI-Powered Domain Management

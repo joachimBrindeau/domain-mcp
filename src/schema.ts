@@ -240,15 +240,22 @@ export const compositeTools: CompositeTool[] = [
         command: 'search',
         description: 'Check domain availability (with optional pricing)',
         params: z.object({
-          domains: p.domains,
+          domain: z.string().optional().describe('Single domain name (e.g., example.com)'),
+          domains: z.array(z.string()).optional().describe('List of domain names'),
           showPrice: z.boolean().optional().describe('Include pricing'),
           currency: p.currency.optional(),
         }),
         transform: (_, input) => {
           const params: ApiParams = {};
-          const domains = input.domains as string[] | undefined;
-          if (!domains?.length) throw new Error('domains array is required for search action');
-          domains.forEach((d, i) => {
+          // Accept both domain (singular) and domains (plural)
+          let domainList: string[] = [];
+          if (input.domain) {
+            domainList = [input.domain as string];
+          } else if (input.domains) {
+            domainList = input.domains as string[];
+          }
+          if (!domainList.length) throw new Error('Either domain or domains parameter is required for search action');
+          domainList.forEach((d, i) => {
             params[`domain${i}`] = d;
           });
           if (input.showPrice) params.show_price = '1';

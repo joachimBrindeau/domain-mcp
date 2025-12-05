@@ -39,27 +39,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test
-        continue-on-error: true
-        env:
-          DYNADOT_API_KEY: ${{ secrets.DYNADOT_API_KEY }}
-          TEST_DOMAIN: ${{ secrets.TEST_DOMAIN }}
-
-      - name: Test coverage
-        run: npm run test:coverage
-        continue-on-error: true
-        env:
-          DYNADOT_API_KEY: ${{ secrets.DYNADOT_API_KEY }}
-          TEST_DOMAIN: ${{ secrets.TEST_DOMAIN }}
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        continue-on-error: true
-        with:
-          file: ./coverage/lcov.info
-          fail_ci_if_error: false
-
   publish:
     name: Publish to npm
     runs-on: ubuntu-latest

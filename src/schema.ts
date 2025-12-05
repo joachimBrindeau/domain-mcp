@@ -254,7 +254,8 @@ export const compositeTools: CompositeTool[] = [
           } else if (input.domains) {
             domainList = input.domains as string[];
           }
-          if (!domainList.length) throw new Error('Either domain or domains parameter is required for search action');
+          if (!domainList.length)
+            throw new Error('Either domain or domains parameter is required for search action');
           domainList.forEach((d, i) => {
             params[`domain${i}`] = d;
           });

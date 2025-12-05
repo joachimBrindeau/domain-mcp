@@ -1,0 +1,41 @@
+# Source files (publish only dist/)
+src/
+test/
+scripts/
+
+# Development files
+*.test.ts
+*.spec.ts
+vitest.config.ts
+tsconfig.json
+eslint.config.js
+
+# Environment
+.env
+.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# Logs
+*.log
+
+# Development docs (keep README, LICENSE, CHANGELOG, and user guides)
+PROJECT_STATUS.md
+SANDBOX_LIMITATIONS.md
+TESTING_GUIDE.md
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Images
+images/

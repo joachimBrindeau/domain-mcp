@@ -1,0 +1,97 @@
+{
+  "name": "domain-mcp",
+  "version": "1.0.0",
+  "description": "Domain MCP server for AI-powered Dynadot management - Natural language domain operations through Claude, Cursor, and other MCP clients. 106 API commands for domains, DNS, transfers, contacts, and aftermarket.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joachimBrindeau/domain-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joachimBrindeau/domain-mcp/issues"
+  },
+  "homepage": "https://github.com/joachimBrindeau/domain-mcp#readme",
+  "author": {
+    "name": "Dynadot MCP Contributors"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:all-tools": "./scripts/test-tools.sh",
+    "test:all-tools:write": "./scripts/test-tools.sh --write",
+    "test:generate": "tsx scripts/test-with-claude-code.ts",
+    "test:generate:write": "tsx scripts/test-with-claude-code.ts --write",
+    "lint": "eslint src test --ext .ts",
+    "lint:fix": "eslint src test --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"examples/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"examples/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "domain-mcp",
+    "mcp-domain",
+    "dynadot",
+    "domain",
+    "domains",
+    "domain-management",
+    "domain-registration",
+    "dns",
+    "dns-management",
+    "nameserver",
+    "whois",
+    "domain-transfer",
+    "domain-parking",
+    "domain-forwarding",
+    "api-client",
+    "registrar",
+    "aftermarket",
+    "domain-auction",
+    "ai-domain",
+    "claude-mcp-server",
+    "natural-language-domains",
+    "typescript",
+    "claude",
+    "cursor",
+    "ai",
+    "automation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "ky": "^1.14.0",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.71.1",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
+    "@vitest/coverage-v8": "^4.0.15",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.1",
+    "prettier": "^3.7.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  }
+}

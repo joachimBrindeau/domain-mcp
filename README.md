@@ -1,0 +1,469 @@
+# Dynadot MCP Server - Domain Management for AI Assistants
+
+[![npm version](https://img.shields.io/npm/v/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/MCP-Compatible-blue)](https://modelcontextprotocol.io/)
+[![CI](https://github.com/yourusername/domain-mcp/workflows/CI/badge.svg)](https://github.com/yourusername/domain-mcp/actions)
+[![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
+A Domain MCP server that brings natural language domain management to Claude, Cursor, and other AI assistants. Manage Dynadot domains, DNS, contacts, and transfers through conversational commands powered by the Model Context Protocol (MCP).
+
+**🚀 AI-powered domain operations - Just ask: "List my domains", "Register example.com", or "Set up DNS"**
+
+> "List my domains" · "Register example.com" · "Set up DNS for mysite.com" · "Enable WHOIS privacy"
+
+## Features
+
+- **🤖 Natural Language Domain Management**: Use AI assistants like Claude and Cursor to manage domains conversationally - no API knowledge needed
+- **📦 Complete Domain MCP Server**: 106 Dynadot API actions across 10 composite MCP tools for domains, DNS, transfers, and more
+- **⚡ Production-Ready AI Integration**: Built for Claude Code, Cursor, Claude Desktop, and any MCP-compatible client
+- **🔒 Type-Safe & Reliable**: TypeScript, Zod validation, comprehensive test suite with 100% tool coverage
+- **✅ MCP Protocol Compliant**: Full Model Context Protocol specification compliance with real CRUD operation tests
+
+## Examples in Action
+
+### Claude Code
+
+Check domain availability and get intelligent suggestions:
+
+![Claude Code Example](images/domain-mcp-example-claude.png)
+
+### Cursor
+
+Manage DNS records with natural language - the AI understands your Dynadot account structure:
+
+![Cursor Example](images/domain-mcp-example-cursor.png)
+
+## Common Use Cases
+
+### For AI-Powered Domain Management
+
+Use this Domain MCP server to manage your Dynadot domains through natural language with AI assistants:
+
+**Domain Operations**
+- "Check if example.com is available and show me similar domains"
+- "Register example.com and enable WHOIS privacy"
+- "Show me all domains expiring in the next 30 days"
+
+**DNS Management**
+- "Set up DNS for mysite.com with A record pointing to my server"
+- "Add www subdomain and configure MX records for email"
+- "Update DNS to point to Cloudflare nameservers"
+
+**Bulk Operations**
+- "Enable auto-renewal for all my .com domains"
+- "Lock all domains to prevent unauthorized transfers"
+- "Search pricing for .com, .net, .io, and .ai domains"
+
+**Advanced Automation**
+- "Create a contact and use it to register multiple domains"
+- "Transfer example.com from another registrar with auth code"
+- "Set up domain forwarding from old-site.com to new-site.com"
+
+**Why Use an MCP Domain Server?**
+
+Traditional domain management requires:
+- Memorizing API documentation
+- Writing custom scripts
+- Manual navigation through control panels
+
+With this Domain MCP integration:
+- ✅ **Natural language**: Just describe what you want
+- ✅ **AI assistance**: Claude/Cursor understand domain concepts
+- ✅ **Context aware**: AI remembers your account structure
+- ✅ **Faster workflow**: No context switching to web UI
+
+## Installation & Setup
+
+```bash
+npm install
+```
+
+## Configuration
+
+Create a `.env` file or set environment variables:
+
+```bash
+# Required
+DYNADOT_API_KEY=your_api_key_here
+
+# Optional
+DYNADOT_SANDBOX=false  # Set to true for sandbox testing
+
+# Testing variables (optional)
+TEST_DOMAIN=your-domain.com
+DYNADOT_TARGET_USERNAME=target-username
+TEST_CONTACT_ID=1234567
+TEST_FOLDER_ID=-1
+```
+
+Get your API key from [Dynadot API Settings](https://www.dynadot.com/account/domain/setting/api.html).
+
+**📖 Documentation**:
+- [ENVIRONMENT.md](./ENVIRONMENT.md) - Complete environment variable reference
+- [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md) - Known sandbox API limitations
+
+**⚠️ Note**: The Dynadot sandbox does not support all API commands. Some write operations like `create_contact` will fail in sandbox mode. See [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md) for workarounds.
+
+## Quick Start: Connect Your AI Assistant to Dynadot
+
+### 1. Install and Build
+
+```bash
+git clone https://github.com/yourusername/domain-mcp.git
+cd domain-mcp
+npm install
+npm run build
+```
+
+### 2. Get Your Dynadot API Key
+
+Get your API key from [Dynadot API Settings](https://www.dynadot.com/account/domain/setting/api.html).
+
+### 3. Configure Your MCP Client
+
+Choose your client and add the configuration:
+
+#### Claude Code
+
+Edit `~/.claude/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "dynadot": {
+      "command": "node",
+      "args": ["/absolute/path/to/domain-mcp/dist/index.js"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here",
+        "DYNADOT_SANDBOX": "true"
+      }
+    }
+  }
+}
+```
+
+#### Cursor
+
+Edit `~/.cursor/mcp.json` (macOS/Linux) or `%APPDATA%\Cursor\mcp.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "dynadot": {
+      "description": "Dynadot domain management - register, renew, DNS, contacts, transfers",
+      "type": "stdio",
+      "command": "node",
+      "args": ["/absolute/path/to/domain-mcp/dist/index.js"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here",
+        "DYNADOT_SANDBOX": "true"
+      }
+    }
+  }
+}
+```
+
+**Note**: Restart Cursor after editing the config file.
+
+#### Claude Desktop
+
+Edit the config file:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "dynadot": {
+      "command": "node",
+      "args": ["/absolute/path/to/domain-mcp/dist/index.js"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here",
+        "DYNADOT_SANDBOX": "true"
+      }
+    }
+  }
+}
+```
+
+**📚 For detailed setup instructions, troubleshooting, and examples, see [MCP_CLIENT_SETUP.md](MCP_CLIENT_SETUP.md)**
+
+### 4. Restart Your Client
+
+Restart Claude Code, Cursor, or Claude Desktop to load the MCP server.
+
+### 5. Start Using It!
+
+Ask your AI assistant:
+- "List my Dynadot domains"
+- "Search for available domains: example.com, example.net"
+- "Set DNS records for mydomain.com"
+- "Create a contact for domain registration"
+
+## Usage
+
+### As MCP Server
+
+Once configured, you have access to 10 powerful tools
+```
+
+### Programmatic Usage
+
+```typescript
+import { getClient } from './src/client.js';
+
+const client = getClient();
+
+// Search domains
+const result = await client.execute('search', {
+  domains: ['example.com', 'example.net'],
+  showPrice: true,
+  currency: 'USD'
+});
+
+// Get domain info
+const info = await client.execute('domain_info', {
+  domain: 'example.com'
+});
+
+// Manage DNS
+await client.execute('set_dns2', {
+  domain: 'example.com',
+  mainRecords: [
+    { type: 'A', value: '192.0.2.1', ttl: 3600 }
+  ]
+});
+```
+
+## MCP Tools for Domain Management
+
+This Domain MCP server provides 10 comprehensive tools for AI-powered domain operations:
+
+### 1. dynadot_domain - Core Domain Operations
+List, search, register, renew, delete, info, lock, and pricing operations for your domains.
+
+**Common AI commands**: "List my domains", "Search for example.com", "Register domain", "Check .com pricing"
+
+### 2. dynadot_domain_settings - Domain Configuration
+Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS.
+
+**Common AI commands**: "Enable WHOIS privacy", "Set nameservers", "Configure domain forwarding", "Enable auto-renewal"
+
+### 3. dynadot_dns - DNS Management
+DNS management: get/set DNS records, DNSSEC configuration.
+
+**Common AI commands**: "Show DNS records", "Add A record", "Configure MX records", "Enable DNSSEC"
+
+### 4. dynadot_nameserver - Nameserver Management
+Manage registered nameservers (glue records): register, update IP, delete, list.
+
+**Common AI commands**: "Register nameserver", "Update nameserver IP", "List my nameservers"
+
+### 5. dynadot_transfer - Domain Transfers
+Domain transfers: initiate, check status, manage auth codes, push requests.
+
+**Common AI commands**: "Transfer domain to Dynadot", "Get auth code", "Check transfer status", "Push domain to another account"
+
+### 6. dynadot_contact - WHOIS Contact Management
+WHOIS contact management: create, edit, delete, list, regional settings.
+
+**Common AI commands**: "Create new contact", "List contacts", "Update contact info", "Delete contact"
+
+### 7. dynadot_folder - Folder Management
+Folder management: create, delete, list, configure folder-level settings.
+
+**Common AI commands**: "Create domain folder", "List folders", "Move domain to folder", "Configure folder settings"
+
+### 8. dynadot_account - Account Settings
+Account info, balance, and default settings for new domains.
+
+**Common AI commands**: "Check account balance", "Show account info", "Set default nameservers", "Configure default WHOIS"
+
+### 9. dynadot_aftermarket - Aftermarket Operations
+Aftermarket: auctions, backorders, expired domains, marketplace listings.
+
+**Common AI commands**: "List domain auctions", "Place bid on auction", "Backorder expired domain", "List my marketplace domains"
+
+### 10. dynadot_order - Order Management
+Orders, coupons, processing status, reseller operations.
+
+**Common AI commands**: "Check order status", "List available coupons", "View order history"
+
+## Development
+
+### Build
+
+```bash
+npm run build
+```
+
+### Run Tests
+
+```bash
+# All tests
+npm test
+
+# E2E tests (validates all 106 API endpoints)
+TEST_DOMAIN=your-domain.com npm test -- test/e2e.test.ts
+
+# Functional tests (real CRUD operations)
+TEST_DOMAIN=your-domain.com npm test -- test/functional.test.ts
+
+# Watch mode
+npm run test:watch
+```
+
+### Development Mode
+
+```bash
+npm run dev
+```
+
+## Testing
+
+### E2E Tests
+Validates that all 106 API actions are properly mapped and return valid responses.
+
+### Functional Tests
+Tests real CRUD operations:
+- Folder CRUD (create, list, rename, delete, verify)
+- Contact CRUD (create, list, get, edit, delete, verify)
+- Domain Note (set, verify, clear)
+- Domain Lock/Unlock
+- Renewal Options
+
+**Test Coverage**: 26/26 functional tests passing
+
+## API Quirks & Known Issues
+
+### edit_contact
+Dynadot API requires ALL contact fields to be provided when editing, not just the fields you want to change. Partial updates will fail with "missing email" or similar errors.
+
+**Solution**: Always provide complete contact data:
+```typescript
+await client.execute('edit_contact', {
+  contact_id: '12345',
+  name: 'Updated Name',
+  email: 'email@example.com',
+  phonecc: '1',
+  phonenum: '5551234567',
+  address1: '123 Street',
+  city: 'City',
+  state: 'CA',
+  zip: '94102',
+  country: 'US'
+});
+```
+
+### lock_domain unlock
+The `lock_domain` unlock command may return a misleading error "this domain has been locked already" when attempting to unlock. This appears to be either:
+- Domain protection preventing API unlock
+- A bug in the Dynadot API error messaging
+
+Unlocking domains may need to be done through the Dynadot control panel.
+
+## Architecture
+
+```
+src/
+├── index.ts       # MCP server entry point
+├── client.ts      # Dynadot API client
+├── schema.ts      # Tool and action definitions (10 tools, 106 actions)
+└── register.ts    # Tool registration with MCP server
+
+test/
+├── e2e.test.ts         # Endpoint validation tests
+└── functional.test.ts  # Real CRUD operation tests
+```
+
+## Dependencies
+
+- `@modelcontextprotocol/sdk` - MCP protocol implementation
+- `ky` - HTTP client for API requests
+- `zod` - Schema validation
+- `vitest` - Testing framework
+- `typescript` - Type safety
+
+## Documentation
+
+### 📚 Guides
+- **[Quick Start Guide](#quick-start)** - Get up and running in 5 minutes
+- **[MCP Client Setup](MCP_CLIENT_SETUP.md)** - Detailed setup for Claude Code, Cursor, Claude Desktop
+- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Local, Docker, remote, and serverless deployment options
+- **[Environment Variables](ENVIRONMENT.md)** - Complete guide to all environment variables
+- **[Testing Guide](TESTING_GUIDE.md)** - Automated testing with Claude Haiku
+- **[Quick Reference](QUICK_REFERENCE.md)** - Common commands and usage patterns
+- **[Examples](examples/)** - Code examples for common operations
+
+### 🔧 Development
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute, API quirks, testing
+- **[Changelog](CHANGELOG.md)** - Version history and updates
+- **[Project Status](PROJECT_STATUS.md)** - Implementation status and roadmap
+
+### 🏗️ Project
+- **[License](LICENSE)** - MIT License
+
+## License
+
+MIT
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+## Frequently Asked Questions
+
+### What is an MCP server for domains?
+
+A Domain MCP server is a Model Context Protocol server that enables AI assistants like Claude and Cursor to manage domains through natural language. Instead of using a web interface or writing API code, you simply ask your AI assistant to perform domain operations.
+
+### How is this different from using the Dynadot website?
+
+The Domain MCP server brings domain management into your AI assistant's context:
+- **Natural language**: "Register example.com" vs clicking through multiple pages
+- **AI understanding**: The assistant knows your account structure and suggests related actions
+- **Workflow integration**: Manage domains while coding, writing, or working without leaving your editor
+- **Automation ready**: Chain multiple domain operations in one conversation
+
+### Which AI assistants work with this Domain MCP server?
+
+This MCP server works with any MCP-compatible AI assistant:
+- **Claude Code** - Anthropic's official CLI
+- **Cursor** - AI-powered code editor
+- **Claude Desktop** - Anthropic's desktop app
+- Any other client supporting the Model Context Protocol
+
+### Do I need to know the Dynadot API?
+
+No! That's the power of the Domain MCP approach. Your AI assistant handles the API complexity. Just describe what you want in natural language.
+
+### Is this safe to use with production domains?
+
+Yes, with proper precautions:
+- **Sandbox mode**: Test with `DYNADOT_SANDBOX=true` first
+- **Review actions**: The AI shows you what it will do before executing
+- **API limits**: Dynadot's API rate limits prevent runaway operations
+- **Audit trail**: All operations are logged in your Dynadot account
+
+### How much does it cost?
+
+The Domain MCP server itself is **free and open source** (MIT license). You only pay for Dynadot domain services and your AI assistant subscription.
+
+## Support
+
+For Dynadot API documentation, visit:
+- [API Commands](https://www.dynadot.com/domain/api-commands)
+- [API Help](https://www.dynadot.com/community/help/api)
+
+For MCP protocol documentation:
+- [Model Context Protocol](https://modelcontextprotocol.io/)

@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Debug
+debug.ts
+*.debug.ts
+*.debug.js
+
+# Temporary
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Security
+*.key
+*.pem
+*.pfx
+*.p12

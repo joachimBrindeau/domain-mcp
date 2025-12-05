@@ -1,0 +1,149 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: When I try to..., I expect..., but instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Configure MCP server with...
+        2. Ask Claude to...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: The domain should be registered successfully
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: Got error "API key required" even though key is set
+    validations:
+      required: true
+
+  - type: dropdown
+    id: client
+    attributes:
+      label: MCP Client
+      description: Which MCP client are you using?
+      options:
+        - Claude Code
+        - Cursor
+        - Claude Desktop
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Are you using sandbox or production?
+      options:
+        - Sandbox (DYNADOT_SANDBOX=true)
+        - Production (DYNADOT_SANDBOX=false)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version of domain-mcp are you using?
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Output of `node --version`
+      placeholder: "v18.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: Your operating system
+      placeholder: "macOS 14.0, Windows 11, Ubuntu 22.04"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Relevant error messages or logs
+      render: shell
+      placeholder: |
+        Error: API key required: provide via config.apiKey or DYNADOT_API_KEY env var
+        at DynadotClient.constructor (client.ts:67:13)
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Your MCP configuration (remove sensitive data like API keys)
+      render: json
+      placeholder: |
+        {
+          "mcpServers": {
+            "dynadot": {
+              "command": "node",
+              "args": ["/path/to/domain-mcp/dist/index.js"],
+              "env": {
+                "DYNADOT_API_KEY": "***REDACTED***",
+                "DYNADOT_SANDBOX": "true"
+              }
+            }
+          }
+        }
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+      placeholder: This started happening after I upgraded to Node 20...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have removed sensitive information (API keys, domain names)
+          required: true
+        - label: I am using a supported Node.js version (18.0.0 or higher)
+          required: true

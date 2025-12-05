@@ -6,7 +6,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-blue)](https://modelcontextprotocol.io/)
-[![CI](https://github.com/yourusername/domain-mcp/workflows/CI/badge.svg)](https://github.com/yourusername/domain-mcp/actions)
+[![CI](https://github.com/joachimBrindeau/domain-mcp/workflows/CI/badge.svg)](https://github.com/joachimBrindeau/domain-mcp/actions)
 [![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 A Domain MCP server that brings natural language domain management to Claude, Cursor, and other AI assistants. Manage Dynadot domains, DNS, contacts, and transfers through conversational commands powered by the Model Context Protocol (MCP).

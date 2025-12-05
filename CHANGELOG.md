@@ -7,25 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Retry logic with exponential backoff for failed API requests
-- Configurable client options (timeout, max retries, retry delay)
-- Comprehensive test coverage (106 e2e tests, 26 functional tests)
-- JSDoc documentation for all public APIs
-- GitHub Actions CI/CD pipeline
-- Code quality tooling (ESLint, Prettier, TypeScript strict mode)
-- Contribution guidelines (CONTRIBUTING.md)
-- MIT License
-- Comprehensive README with usage examples
-
-### Changed
-- API client now accepts optional configuration for retry behavior
-- Singleton getClient() now supports optional configuration parameter
+## [1.0.1] - 2025-12-05
 
 ### Fixed
-- Contact editing now provides all required fields
-- Domain lock/unlock tests handle API limitations correctly
-- TypeScript strict mode compliance throughout codebase
+- Domain search action now accepts both `domain` (singular) and `domains` (array) parameters
+- Resolves error "domains array is required for search action" when AI uses natural language
+
+### Added
+- Domain search with pricing screenshot to documentation
+- Visual example showing domain availability and pricing lookup
+
+### Improved
+- Better UX for single domain searches
+- Clearer documentation of pricing features
 
 ## [1.0.0] - 2024-12-05
 

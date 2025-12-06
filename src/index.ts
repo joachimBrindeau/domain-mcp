@@ -4,8 +4,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { registerAllTools } from './register.js';
 
 const server = new McpServer({
-  name: 'dynadot',
-  version: '1.0.0',
+  name: 'domain-mcp',
+  version: '1.0.2',
 });
 
 registerAllTools(server);

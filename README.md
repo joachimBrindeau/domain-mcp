@@ -82,79 +82,159 @@ With this Domain MCP integration:
 - ✅ **Context aware**: AI remembers your account structure
 - ✅ **Faster workflow**: No context switching to web UI
 
-## Installation & Setup
+## Quick Installation
 
-```bash
-npm install
-```
+### Method 1: NPX (Recommended) ⚡
 
-## Configuration
+**No installation needed!** NPX runs the package directly from npm.
 
-Create a `.env` file or set environment variables:
+**Step 1:** Get your [Dynadot API Key](https://www.dynadot.com/account/domain/setting/api.html)
 
-```bash
-# Required
-DYNADOT_API_KEY=your_api_key_here
+**Step 2:** Add to your MCP client config:
 
-# Optional
-DYNADOT_SANDBOX=false  # Set to true for sandbox testing
-
-# Testing variables (optional)
-TEST_DOMAIN=your-domain.com
-DYNADOT_TARGET_USERNAME=target-username
-TEST_CONTACT_ID=1234567
-TEST_FOLDER_ID=-1
-```
-
-Get your API key from [Dynadot API Settings](https://www.dynadot.com/account/domain/setting/api.html).
-
-**📖 Documentation**:
-- [ENVIRONMENT.md](./ENVIRONMENT.md) - Complete environment variable reference
-- [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md) - Known sandbox API limitations
-
-**⚠️ Note**: The Dynadot sandbox does not support all API commands. Some write operations like `create_contact` will fail in sandbox mode. See [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md) for workarounds.
-
-## Quick Start: Connect Your AI Assistant to Dynadot
-
-### 1. Install and Build
-
-```bash
-git clone https://github.com/yourusername/domain-mcp.git
-cd domain-mcp
-npm install
-npm run build
-```
-
-### 2. Get Your Dynadot API Key
-
-Get your API key from [Dynadot API Settings](https://www.dynadot.com/account/domain/setting/api.html).
-
-### 3. Configure Your MCP Client
-
-Choose your client and add the configuration:
-
-#### Claude Code
+<details>
+<summary><b>Claude Code</b> - Click to expand</summary>
 
 Edit `~/.claude/mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "dynadot": {
-      "command": "node",
-      "args": ["/absolute/path/to/domain-mcp/dist/index.js"],
+    "domain-mcp": {
+      "command": "npx",
+      "args": ["-y", "domain-mcp"],
       "env": {
-        "DYNADOT_API_KEY": "your-api-key-here",
-        "DYNADOT_SANDBOX": "true"
+        "DYNADOT_API_KEY": "your-api-key-here"
       }
     }
   }
 }
 ```
 
-#### Cursor
+Or use the CLI:
+```bash
+claude mcp add domain-mcp
+```
+
+</details>
+
+<details>
+<summary><b>Cursor</b> - Click to expand</summary>
 
 Edit `~/.cursor/mcp.json` (macOS/Linux) or `%APPDATA%\Cursor\mcp.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "domain-mcp": {
+      "command": "npx",
+      "args": ["-y", "domain-mcp"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+Restart Cursor after editing.
+
+</details>
+
+<details>
+<summary><b>Claude Desktop</b> - Click to expand</summary>
+
+Edit the config file:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "domain-mcp": {
+      "command": "npx",
+      "args": ["-y", "domain-mcp"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop after editing.
+
+</details>
+
+**Step 3:** Restart your AI assistant and start using domain commands!
+
+### Method 2: Global Install
+
+Install globally with npm:
+
+```bash
+npm install -g domain-mcp
+```
+
+Then use `domain-mcp` instead of `npx -y domain-mcp` in your config:
+
+```json
+{
+  "mcpServers": {
+    "domain-mcp": {
+      "command": "domain-mcp",
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+### Method 3: Local Development
+
+For contributing or customization:
+
+```bash
+git clone https://github.com/joachimBrindeau/domain-mcp.git
+cd domain-mcp
+npm install
+npm run build
+```
+
+Then configure with absolute path:
+
+```json
+{
+  "mcpServers": {
+    "domain-mcp": {
+      "command": "node",
+      "args": ["/absolute/path/to/domain-mcp/dist/index.js"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+## Configuration Options
+
+### Required
+- `DYNADOT_API_KEY` - Your Dynadot API key ([Get it here](https://www.dynadot.com/account/domain/setting/api.html))
+
+### Optional
+- `DYNADOT_SANDBOX` - Set to `"true"` for sandbox testing (default: `"false"`)
+
+**📖 Full Documentation**:
+- [MCP_CLIENT_SETUP.md](./MCP_CLIENT_SETUP.md) - Detailed setup guide with troubleshooting
+- [ENVIRONMENT.md](./ENVIRONMENT.md) - Complete environment variable reference
+- [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md) - Known sandbox API limitations
+
+## Alternative Clients
+
+The same NPX method works with any MCP-compatible client:
 
 ```json
 {
@@ -467,9 +547,18 @@ The Domain MCP server itself is **free and open source** (MIT license). You only
 
 ## Support
 
-For Dynadot API documentation, visit:
-- [API Commands](https://www.dynadot.com/domain/api-commands)
-- [API Help](https://www.dynadot.com/community/help/api)
+### Getting Help with Domain MCP
 
-For MCP protocol documentation:
-- [Model Context Protocol](https://modelcontextprotocol.io/)
+- **Issues & Questions**: [GitHub Issues](https://github.com/joachimBrindeau/domain-mcp/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/joachimBrindeau/domain-mcp/discussions)
+- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### Documentation Resources
+
+**Dynadot API**:
+- [API Commands](https://www.dynadot.com/domain/api-commands) - Complete API reference
+- [API Help](https://www.dynadot.com/community/help/api) - Community support
+
+**Model Context Protocol**:
+- [MCP Specification](https://modelcontextprotocol.io/) - Official MCP documentation
+- [MCP Servers](https://github.com/modelcontextprotocol/servers) - Example MCP implementations

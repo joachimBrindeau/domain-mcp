@@ -42,5 +42,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic parameter validation and transformation
 - Error handling with detailed error messages
 
-[Unreleased]: https://github.com/yourusername/domain-mcp/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/yourusername/domain-mcp/releases/tag/v1.0.0
+[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/joachimBrindeau/domain-mcp/releases/tag/v1.0.0

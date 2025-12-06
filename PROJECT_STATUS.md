@@ -175,9 +175,9 @@ Looking to contribute? These are good starting points:
 
 ## Support
 
-- **Bug Reports**: [GitHub Issues](https://github.com/yourusername/domain-mcp/issues)
-- **Feature Requests**: [GitHub Issues](https://github.com/yourusername/domain-mcp/issues)
-- **Questions**: [GitHub Discussions](https://github.com/yourusername/domain-mcp/discussions)
+- **Bug Reports**: [GitHub Issues](https://github.com/joachimBrindeau/domain-mcp/issues)
+- **Feature Requests**: [GitHub Issues](https://github.com/joachimBrindeau/domain-mcp/issues)
+- **Questions**: [GitHub Discussions](https://github.com/joachimBrindeau/domain-mcp/discussions)
 
 ## Roadmap
 

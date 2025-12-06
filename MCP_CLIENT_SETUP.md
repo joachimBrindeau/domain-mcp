@@ -43,7 +43,7 @@ Complete guide to integrating the Dynadot Domain MCP server with your AI assista
 
 2. **Build the MCP server:**
    ```bash
-   git clone https://github.com/yourusername/domain-mcp.git
+   git clone https://github.com/joachimBrindeau/domain-mcp.git
    cd domain-mcp
    npm install
    npm run build
@@ -365,7 +365,7 @@ You can pass retry configuration via environment variables (requires code modifi
 
 - **Documentation**: See [README.md](README.md) for full API reference
 - **Examples**: Check [examples/](examples/) directory
-- **Issues**: Report bugs at https://github.com/yourusername/domain-mcp/issues
+- **Issues**: Report bugs at https://github.com/joachimBrindeau/domain-mcp/issues
 - **API Quirks**: See [CONTRIBUTING.md](CONTRIBUTING.md) for known limitations
 
 ## Next Steps

@@ -1,6 +1,6 @@
-# Dynadot MCP Examples
+# Domain MCP Server Examples
 
-This directory contains practical examples demonstrating how to use the Dynadot MCP server.
+This directory contains practical examples demonstrating how to use the Dynadot Domain MCP server for AI-powered domain management.
 
 ## Prerequisites
 

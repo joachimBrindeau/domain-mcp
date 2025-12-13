@@ -63,7 +63,7 @@ The following operations may have limitations in sandbox mode (to be verified):
 - Payment operations
 - Auction bidding
 
-Always check the [official Dynadot API documentation](https://www.dynadot.com/domain/api-commands) for the latest sandbox limitations.
+Always check the [official Dynadot API documentation](https://www.dynadot.com/domain/api-commands?s9F6L9F7U8Q9U8Z8v) for the latest sandbox limitations.
 
 ## Testing Strategy
 

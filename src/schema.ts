@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { ApiParams } from './client.js';
+import { DYNADOT_URLS } from './constants.js';
 
 // Composite tool definition
 export interface CompositeTool {
@@ -225,7 +226,7 @@ export const compositeTools: CompositeTool[] = [
   {
     name: 'dynadot_domain',
     description:
-      'Core domain operations: list, search, register, renew, delete, info, lock, pricing',
+      `Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: ${DYNADOT_URLS.domainSearch}`,
     actions: {
       list: {
         command: 'list_domain',
@@ -238,7 +239,7 @@ export const compositeTools: CompositeTool[] = [
       },
       search: {
         command: 'search',
-        description: 'Check domain availability (with optional pricing)',
+        description: `Check domain availability (with optional pricing). Search manually: ${DYNADOT_URLS.domainSearch}`,
         params: z.object({
           domain: z.string().optional().describe('Single domain name (e.g., example.com)'),
           domains: z.array(z.string()).optional().describe('List of domain names'),
@@ -266,7 +267,7 @@ export const compositeTools: CompositeTool[] = [
       },
       register: {
         command: 'register',
-        description: 'Register a new domain',
+        description: `Register a new domain. View pricing: ${DYNADOT_URLS.pricing}`,
         params: z.object({
           domain: p.domain,
           duration: p.duration,
@@ -275,7 +276,7 @@ export const compositeTools: CompositeTool[] = [
       },
       bulk_register: {
         command: 'bulk_register',
-        description: 'Register multiple domains at once',
+        description: `Register multiple domains at once. View pricing: ${DYNADOT_URLS.pricing}`,
         params: z.object({
           domains: p.domains,
           duration: p.duration,
@@ -874,7 +875,7 @@ export const compositeTools: CompositeTool[] = [
   // 8. ACCOUNT - Account management & defaults
   {
     name: 'dynadot_account',
-    description: 'Account info, balance, and default settings for new domains',
+    description: `Account info, balance, and default settings for new domains. Manage API keys: ${DYNADOT_URLS.apiKey}`,
     actions: {
       info: {
         command: 'account_info',
@@ -964,7 +965,7 @@ export const compositeTools: CompositeTool[] = [
   // 9. AFTERMARKET - Auctions, backorders, marketplace
   {
     name: 'dynadot_aftermarket',
-    description: 'Aftermarket: auctions, backorders, expired domains, marketplace listings',
+    description: `Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: ${DYNADOT_URLS.home}`,
     actions: {
       // Backorders
       backorder_add: {

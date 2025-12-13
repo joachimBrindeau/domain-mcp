@@ -11,7 +11,7 @@ This document lists all environment variables used by the Dynadot MCP server and
 **Format**: 40-character alphanumeric string
 **Example**: `your-40-character-api-key-here`
 
-Get your API key from: https://www.dynadot.com/account/domain/setting/api.html
+Get your API key from: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v
 
 ## Optional Variables
 

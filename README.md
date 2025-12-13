@@ -88,7 +88,7 @@ With this Domain MCP integration:
 
 **No installation needed!** NPX runs the package directly from npm.
 
-**Step 1:** Get your [Dynadot API Key](https://www.dynadot.com/account/domain/setting/api.html)
+**Step 1:** Get your [Dynadot API Key](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v)
 
 **Step 2:** Add to your MCP client config:
 
@@ -222,7 +222,7 @@ Then configure with absolute path:
 ## Configuration Options
 
 ### Required
-- `DYNADOT_API_KEY` - Your Dynadot API key ([Get it here](https://www.dynadot.com/account/domain/setting/api.html))
+- `DYNADOT_API_KEY` - Your Dynadot API key ([Get it here](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v))
 
 ### Optional
 - `DYNADOT_SANDBOX` - Set to `"true"` for sandbox testing (default: `"false"`)
@@ -497,8 +497,8 @@ The Domain MCP server itself is **free and open source** (MIT license). You only
 ### Documentation Resources
 
 **Dynadot API**:
-- [API Commands](https://www.dynadot.com/domain/api-commands) - Complete API reference
-- [API Help](https://www.dynadot.com/community/help/api) - Community support
+- [API Commands](https://www.dynadot.com/domain/api-commands?s9F6L9F7U8Q9U8Z8v) - Complete API reference
+- [API Help](https://www.dynadot.com/community/help/api?s9F6L9F7U8Q9U8Z8v) - Community support
 
 **Model Context Protocol**:
 - [MCP Specification](https://modelcontextprotocol.io/) - Official MCP documentation

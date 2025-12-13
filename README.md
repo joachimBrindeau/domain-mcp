@@ -84,11 +84,17 @@ With this Domain MCP integration:
 
 ## Quick Installation
 
+### Prerequisites
+
+You'll need a **Dynadot account** and an **API key** to use this MCP server.
+
+[![Get Your API Key](https://img.shields.io/badge/Get%20API%20Key-Dynadot-0066CC?logo=key&logoColor=white)](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v)
+
 ### Method 1: NPX (Recommended) ⚡
 
 **No installation needed!** NPX runs the package directly from npm.
 
-**Step 1:** Get your [Dynadot API Key](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v)
+**Step 1:** Get your API key from [Dynadot Account Settings](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v)
 
 **Step 2:** Add to your MCP client config:
 

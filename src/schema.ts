@@ -225,8 +225,7 @@ export const compositeTools: CompositeTool[] = [
   // 1. DOMAIN - Core domain operations
   {
     name: 'dynadot_domain',
-    description:
-      `Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: ${DYNADOT_URLS.domainSearch}`,
+    description: `Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: ${DYNADOT_URLS.domainSearch}`,
     actions: {
       list: {
         command: 'list_domain',

@@ -16,10 +16,10 @@ export const EXAMPLE_CONFIG = {
       command: 'npx',
       args: ['-y', 'domain-mcp'],
       env: {
-        DYNADOT_API_KEY: 'your-api-key-here'
-      }
-    }
-  }
+        DYNADOT_API_KEY: 'your-api-key-here',
+      },
+    },
+  },
 } as const;
 
 /**

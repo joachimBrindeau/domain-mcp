@@ -9,9 +9,7 @@ import { GITHUB_URL, EXAMPLE_CONFIG } from './constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const packageJson = JSON.parse(
-  readFileSync(join(__dirname, '../package.json'), 'utf-8')
-);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
 function showHelp(): never {
   console.log(`domain-mcp v${packageJson.version}`);

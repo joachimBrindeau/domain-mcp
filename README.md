@@ -15,6 +15,28 @@ A Domain MCP server that brings natural language domain management to Claude, Cu
 
 > "List my domains" · "Register example.com" · "Set up DNS for mysite.com" · "Enable WHOIS privacy"
 
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Examples in Action](#examples-in-action)
+- [Common Use Cases](#common-use-cases)
+- [Quick Installation](#quick-installation)
+- [Configuration Options](#configuration-options)
+- [Usage](#usage)
+- [MCP Tools](#mcp-tools-for-domain-management)
+- [Development](#development)
+- [Testing](#testing)
+- [API Quirks & Known Issues](#api-quirks--known-issues)
+- [Architecture](#architecture)
+- [Documentation](#documentation)
+- [FAQ](#frequently-asked-questions)
+- [Support](#support)
+- [License](#license)
+
+---
+
 ## Features
 
 - **🤖 Natural Language Domain Management**: Use AI assistants like Claude and Cursor to manage domains conversationally - no API knowledge needed
@@ -234,9 +256,9 @@ Then configure with absolute path:
 - `DYNADOT_SANDBOX` - Set to `"true"` for sandbox testing (default: `"false"`)
 
 **📖 Full Documentation**:
-- [MCP_CLIENT_SETUP.md](./MCP_CLIENT_SETUP.md) - Detailed setup guide with troubleshooting
-- [ENVIRONMENT.md](./ENVIRONMENT.md) - Complete environment variable reference
-- [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md) - Known sandbox API limitations
+- [Setup Guide](./docs/setup.md) - Detailed setup with troubleshooting
+- [Environment Variables](./docs/environment.md) - Complete environment variable reference
+- [Sandbox Limitations](./docs/sandbox.md) - Known sandbox API limitations
 
 ## Usage
 
@@ -425,18 +447,18 @@ test/
 ## Documentation
 
 ### 📚 Guides
-- **[Quick Start Guide](#quick-start)** - Get up and running in 5 minutes
-- **[MCP Client Setup](MCP_CLIENT_SETUP.md)** - Detailed setup for Claude Code, Cursor, Claude Desktop
-- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Local, Docker, remote, and serverless deployment options
-- **[Environment Variables](ENVIRONMENT.md)** - Complete guide to all environment variables
-- **[Testing Guide](TESTING_GUIDE.md)** - Automated testing with Claude Haiku
-- **[Quick Reference](QUICK_REFERENCE.md)** - Common commands and usage patterns
+- **[Quick Start](#quick-installation)** - Get up and running in 5 minutes
+- **[Setup Guide](docs/setup.md)** - Detailed setup for Claude Code, Cursor, Claude Desktop
+- **[Deployment](docs/deployment.md)** - Local, Docker, remote, and serverless options
+- **[Environment](docs/environment.md)** - Complete environment variable reference
+- **[Testing](docs/testing.md)** - Automated testing with Claude Haiku
+- **[Reference](docs/reference.md)** - Common commands and usage patterns
 - **[Examples](examples/)** - Code examples for common operations
 
 ### 🔧 Development
-- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute, API quirks, testing
+- **[Contributing](CONTRIBUTING.md)** - How to contribute, API quirks, testing
 - **[Changelog](CHANGELOG.md)** - Version history and updates
-- **[Project Status](PROJECT_STATUS.md)** - Implementation status and roadmap
+- **[Roadmap](docs/roadmap.md)** - Implementation status and roadmap
 
 ### 🏗️ Project
 - **[License](LICENSE)** - MIT License

@@ -363,10 +363,10 @@ You can pass retry configuration via environment variables (requires code modifi
 
 ## Getting Help
 
-- **Documentation**: See [README.md](README.md) for full API reference
-- **Examples**: Check [examples/](examples/) directory
+- **Documentation**: See [README.md](../README.md) for full API reference
+- **Examples**: Check [examples/](../examples/) directory
 - **Issues**: Report bugs at https://github.com/joachimBrindeau/domain-mcp/issues
-- **API Quirks**: See [CONTRIBUTING.md](CONTRIBUTING.md) for known limitations
+- **API Quirks**: See [CONTRIBUTING.md](../CONTRIBUTING.md) for known limitations
 
 ## Next Steps
 
@@ -374,5 +374,5 @@ Once configured:
 1. Start with simple queries like "list my domains"
 2. Try searching for domains
 3. Experiment with DNS management in sandbox mode
-4. Read the [examples](examples/) for more advanced usage
-5. Check out [API Quirks](CONTRIBUTING.md#api-quirks-to-know) before editing contacts or unlocking domains
+4. Read the [examples](../examples/) for more advanced usage
+5. Check out [API Quirks](../CONTRIBUTING.md#api-quirks-to-know) before editing contacts or unlocking domains

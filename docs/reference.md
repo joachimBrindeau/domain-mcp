@@ -186,8 +186,8 @@ The AI remembers the conversation:
 
 ## Additional Resources
 
-- **Full Setup Guide**: [MCP_CLIENT_SETUP.md](MCP_CLIENT_SETUP.md)
-- **Usage Examples**: [examples/](examples/)
-- **API Documentation**: [README.md](README.md)
-- **Known Limitations**: [CONTRIBUTING.md](CONTRIBUTING.md#api-quirks-to-know)
-- **Project Status**: [PROJECT_STATUS.md](PROJECT_STATUS.md)
+- **Full Setup Guide**: [setup.md](setup.md)
+- **Usage Examples**: [examples/](../examples/)
+- **API Documentation**: [README.md](../README.md)
+- **Known Limitations**: [CONTRIBUTING.md](../CONTRIBUTING.md#api-quirks-to-know)
+- **Roadmap**: [roadmap.md](roadmap.md)

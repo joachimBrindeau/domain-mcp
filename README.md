@@ -13,7 +13,6 @@ A Domain MCP server that brings natural language domain management to Claude, Cu
 
 **🚀 AI-powered domain operations - Just ask: "List my domains", "Register example.com", or "Set up DNS"**
 
-> "List my domains" · "Register example.com" · "Set up DNS for mysite.com" · "Enable WHOIS privacy"
 
 ---
 

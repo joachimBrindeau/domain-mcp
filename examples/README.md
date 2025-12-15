@@ -1,6 +1,6 @@
 # Domain MCP Server Examples
 
-This directory contains practical examples demonstrating how to use the Dynadot Domain MCP server for AI-powered domain management.
+This directory contains practical examples demonstrating how to use the Domain MCP server for AI-powered domain management.
 
 ## Prerequisites
 
@@ -197,4 +197,4 @@ console.log('Domain locked:', isLocked);
 
 ## License
 
-These examples are part of the Dynadot MCP project and are licensed under the MIT License.
+These examples are part of the Domain MCP project and are licensed under the MIT License.

@@ -1,4 +1,4 @@
-# Dynadot MCP Server - Domain Management for AI Assistants
+# Domain MCP - Domain Management for AI Assistants
 
 [![npm version](https://img.shields.io/npm/v/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)

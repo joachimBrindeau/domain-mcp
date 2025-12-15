@@ -1,6 +1,6 @@
 # Domain MCP Server Deployment Guide
 
-Deploy the Dynadot Domain MCP server for AI-powered domain management across local, Docker, remote, and serverless environments.
+Deploy the Domain MCP server for AI-powered domain management across local, Docker, remote, and serverless environments.
 
 ## Deployment Options Overview
 
@@ -295,7 +295,7 @@ wrangler publish
 
 ### ✅ What's Already Set Up
 
-Your Dynadot MCP server is **production-ready** for:
+Your Domain MCP server is **production-ready** for:
 
 1. **Local deployment** (stdio) - Documented in MCP_CLIENT_SETUP.md
 2. **npm package** - Ready to publish and use via `npx`

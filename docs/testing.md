@@ -126,7 +126,7 @@ scripts/
 ```bash
 $ npm run test:all-tools
 
-🧪 Dynadot MCP Tool Tester
+🧪 Domain MCP Tool Tester
 ========================================
 
 🔍 Discovering test cases from schema...

@@ -1,6 +1,6 @@
 # Domain MCP Quick Reference - Common Commands
 
-Quick reference for AI-powered domain operations using the Dynadot Domain MCP server with Claude, Cursor, or Claude Desktop.
+Quick reference for AI-powered domain operations using the Domain MCP server with Claude, Cursor, or Claude Desktop.
 
 ## Common Commands to Ask Your AI
 

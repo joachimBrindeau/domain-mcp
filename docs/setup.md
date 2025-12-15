@@ -1,6 +1,6 @@
 # Domain MCP Server Setup Guide - Claude, Cursor, Claude Desktop
 
-Complete guide to integrating the Dynadot Domain MCP server with your AI assistant for natural language domain management.
+Complete guide to integrating the Domain MCP server with your AI assistant for natural language domain management.
 
 ## How It Works
 
@@ -15,7 +15,7 @@ Complete guide to integrating the Dynadot Domain MCP server with your AI assista
          │
          ▼
 ┌─────────────────────────┐
-│  Dynadot MCP Server     │  Converts to:
+│  Domain MCP     │  Converts to:
 │  (This Project)         │  dynadot_domain tool
 └────────┬────────────────┘  action: list
          │
@@ -63,7 +63,7 @@ mkdir -p ~/.claude
 code ~/.claude/mcp.json  # or use your preferred editor
 ```
 
-### 2. Add Dynadot MCP Server
+### 2. Add Domain MCP
 
 ```json
 {
@@ -117,7 +117,7 @@ Cursor's MCP configuration is typically at:
 - **macOS/Linux**: `~/.cursor/mcp.json`
 - **Windows**: `%APPDATA%\Cursor\mcp.json`
 
-### 2. Add Dynadot MCP Server
+### 2. Add Domain MCP
 
 ```json
 {
@@ -158,7 +158,7 @@ Claude Desktop uses the same MCP configuration format.
 - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 - **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
-### 2. Add Dynadot MCP Server
+### 2. Add Domain MCP
 
 ```json
 {

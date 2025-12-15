@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2024-12-05
 
 ### Added
-- Initial release of Dynadot MCP server
+- Initial release of Domain MCP server
 - 10 composite tools covering 106 Dynadot API commands:
   - `dynadot_domain`: Core domain operations (list, search, register, renew, delete, info, lock, pricing)
   - `dynadot_domain_settings`: Domain configuration (nameservers, privacy, renewal, forwarding, parking, WHOIS)

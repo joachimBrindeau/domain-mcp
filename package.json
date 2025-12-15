@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/joachimBrindeau/domain-mcp#readme",
   "author": {
-    "name": "Dynadot MCP Contributors"
+    "name": "Joachim Brindeau"
   },
   "scripts": {
     "start": "tsx src/index.ts",

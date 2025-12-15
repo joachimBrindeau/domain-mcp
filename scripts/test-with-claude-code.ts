@@ -2,7 +2,7 @@
 /**
  * Claude Code MCP Tool Tester
  *
- * Tests all 106 Dynadot MCP tools using Claude Code directly.
+ * Tests all 106 Domain MCP tools using Claude Code directly.
  * No external API calls - uses your Claude Code subscription.
  */
 
@@ -179,7 +179,7 @@ class ClaudeCodeToolTester {
     console.log('='.repeat(80));
     console.log('\nCopy and paste this into Claude Code to run tests:\n');
     console.log('```typescript');
-    console.log('// Test all Dynadot MCP tools');
+    console.log('// Test all Domain MCP tools');
     console.log('// Copy each batch and run separately\n');
 
     batches.forEach((batch, idx) => {
@@ -413,12 +413,12 @@ console.log(\`❌ Failed: \${summary.failed}/\${summary.total}\`);
     let script = `#!/bin/bash
 #
 # MCP Tool Test Script
-# Run all ${toTest.length} Dynadot MCP tests
+# Run all ${toTest.length} Domain MCP tests
 #
 
 set -e
 
-echo "🧪 Testing ${toTest.length} Dynadot MCP Tools"
+echo "🧪 Testing ${toTest.length} Domain MCP Tools"
 echo "==============================================="
 echo ""
 

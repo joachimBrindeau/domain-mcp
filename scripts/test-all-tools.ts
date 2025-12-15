@@ -379,7 +379,7 @@ Be concise. Only report the status for each test.`;
 
 // Main execution
 async function main() {
-  console.log('🧪 Dynadot MCP Tool Tester');
+  console.log('🧪 Domain MCP Tool Tester');
   console.log('='.repeat(80));
 
   const tester = new DynadotToolTester();

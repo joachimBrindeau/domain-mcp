@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Dynadot MCP Tool Tester - Shell Runner
+# Domain MCP Tool Tester - Shell Runner
 # Automatically tests all 106 API actions using Claude Haiku
 #
 
@@ -13,7 +13,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🧪 Dynadot MCP Tool Tester${NC}"
+echo -e "${BLUE}🧪 Domain MCP Tool Tester${NC}"
 echo "================================================================================"
 
 # Check for required environment variables

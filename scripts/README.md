@@ -1,4 +1,4 @@
-# Dynadot MCP Tool Tester
+# Domain MCP Tool Tester
 
 Automatically test all 106 Dynadot API actions using Claude Haiku in batches.
 
@@ -79,7 +79,7 @@ Or directly:
 ## Sample Output
 
 ```
-🧪 Dynadot MCP Tool Tester
+🧪 Domain MCP Tool Tester
 ================================================================================
 
 🔍 Discovering test cases from schema...

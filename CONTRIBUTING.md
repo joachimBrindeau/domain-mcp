@@ -1,8 +1,8 @@
-# Contributing to the Dynadot Domain MCP Server
+# Contributing to Domain MCP
 
 Help improve AI-powered domain management for the MCP ecosystem.
 
-Thank you for your interest in contributing to the Dynadot Domain MCP Server! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Domain MCP! This document provides guidelines and instructions for contributing.
 
 ## Development Setup
 

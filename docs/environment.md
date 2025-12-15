@@ -1,6 +1,6 @@
 # Environment Variables
 
-This document lists all environment variables used by the Dynadot MCP server and testing tools.
+This document lists all environment variables used by the Domain MCP server and testing tools.
 
 ## Required Variables
 

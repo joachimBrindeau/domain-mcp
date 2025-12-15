@@ -264,7 +264,6 @@ Then configure with absolute path:
 ### As MCP Server
 
 Once configured, you have access to 10 powerful tools
-```
 
 ### Programmatic Usage
 
@@ -359,14 +358,17 @@ npm run build
 ### Run Tests
 
 ```bash
-# All tests
+# Default test run (integration tests are skipped unless explicitly enabled)
 npm test
 
+# Integration tests (requires network access + Dynadot credentials)
+RUN_INTEGRATION_TESTS=true DYNADOT_API_KEY=your-api-key TEST_DOMAIN=your-domain.com npm test
+
 # E2E tests (validates all 106 API endpoints)
-TEST_DOMAIN=your-domain.com npm test -- test/e2e.test.ts
+RUN_INTEGRATION_TESTS=true TEST_DOMAIN=your-domain.com npm test -- test/e2e.test.ts
 
 # Functional tests (real CRUD operations)
-TEST_DOMAIN=your-domain.com npm test -- test/functional.test.ts
+RUN_INTEGRATION_TESTS=true TEST_DOMAIN=your-domain.com npm test -- test/functional.test.ts
 
 # Watch mode
 npm run test:watch

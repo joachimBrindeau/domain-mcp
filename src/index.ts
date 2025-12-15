@@ -11,28 +11,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
+function writeStdoutLine(line: string): void {
+  process.stdout.write(`${line}\n`);
+}
+
+function writeStderrLine(line: string): void {
+  process.stderr.write(`${line}\n`);
+}
+
 function showHelp(): never {
-  console.log(`domain-mcp v${packageJson.version}`);
-  console.log('');
-  console.log('A Domain MCP server for AI-powered Dynadot domain management.');
-  console.log('');
-  console.log('This is not a CLI tool - it runs as an MCP server via stdin/stdout.');
-  console.log('');
-  console.log('Setup instructions:');
-  console.log(`  ${GITHUB_URL}#quick-installation`);
-  console.log('');
-  console.log('Example configuration:');
-  console.log(JSON.stringify(EXAMPLE_CONFIG, null, 2));
+  writeStdoutLine(`domain-mcp v${packageJson.version}`);
+  writeStdoutLine('');
+  writeStdoutLine('A Domain MCP server for AI-powered Dynadot domain management.');
+  writeStdoutLine('');
+  writeStdoutLine('This is not a CLI tool - it runs as an MCP server via stdin/stdout.');
+  writeStdoutLine('');
+  writeStdoutLine('Setup instructions:');
+  writeStdoutLine(`  ${GITHUB_URL}#quick-installation`);
+  writeStdoutLine('');
+  writeStdoutLine('Example configuration:');
+  writeStdoutLine(JSON.stringify(EXAMPLE_CONFIG, null, 2));
   process.exit(0);
 }
 
 function showUsageAndExit(): never {
-  console.error('domain-mcp is an MCP server, not a CLI tool.');
-  console.error('');
-  console.error('Run with --help for usage information.');
-  console.error('');
-  console.error('Quick start:');
-  console.error(`  ${GITHUB_URL}#quick-installation`);
+  writeStderrLine('domain-mcp is an MCP server, not a CLI tool.');
+  writeStderrLine('');
+  writeStderrLine('Run with --help for usage information.');
+  writeStderrLine('');
+  writeStderrLine('Quick start:');
+  writeStderrLine(`  ${GITHUB_URL}#quick-installation`);
   process.exit(1);
 }
 
@@ -42,7 +50,7 @@ if (args.includes('--help') || args.includes('-h')) {
 }
 
 if (args.includes('--version') || args.includes('-v')) {
-  console.log(packageJson.version);
+  writeStdoutLine(packageJson.version);
   process.exit(0);
 }
 

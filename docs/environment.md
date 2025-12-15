@@ -25,7 +25,7 @@ Get your API key from: https://www.dynadot.com/account/domain/setting/api.html?s
 
 **Recommendation**: Set to `true` when testing read-only operations. Some write operations (like `create_contact`) are not supported in sandbox mode.
 
-**⚠️ Sandbox Limitations**: The Dynadot sandbox does not support all API commands. Specifically, `create_contact` fails in sandbox mode. For complete details, see [SANDBOX_LIMITATIONS.md](./SANDBOX_LIMITATIONS.md).
+**⚠️ Sandbox Limitations**: The Dynadot sandbox does not support all API commands. Specifically, `create_contact` fails in sandbox mode. For complete details, see [sandbox.md](./sandbox.md).
 
 ### TEST_DOMAIN
 

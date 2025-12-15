@@ -3,21 +3,25 @@ import { getClient } from '../src/client.js';
 
 const TEST_DOMAIN = process.env.TEST_DOMAIN;
 const client = getClient();
+const isIntegrationEnabled = process.env.RUN_INTEGRATION_TESTS === 'true';
+const describeIntegration = describe.runIf(isIntegrationEnabled);
 
-beforeAll(() => {
-  if (!TEST_DOMAIN) {
-    throw new Error('TEST_DOMAIN environment variable is required');
-  }
-  if (!process.env.DYNADOT_API_KEY) {
-    throw new Error('DYNADOT_API_KEY environment variable is required');
-  }
+describeIntegration('Integration test prerequisites', () => {
+  beforeAll(() => {
+    if (!TEST_DOMAIN) {
+      throw new Error('TEST_DOMAIN environment variable is required');
+    }
+    if (!process.env.DYNADOT_API_KEY) {
+      throw new Error('DYNADOT_API_KEY environment variable is required');
+    }
+  });
 });
 
 // =============================================================================
 // FUNCTIONAL TESTS - Actually verify operations work end-to-end
 // =============================================================================
 
-describe('Functional: Folder CRUD', () => {
+describeIntegration('Functional: Folder CRUD', () => {
   const testFolderName = `test-folder-${Date.now()}`;
   let createdFolderId: string | null = null;
 
@@ -86,7 +90,7 @@ describe('Functional: Folder CRUD', () => {
   });
 });
 
-describe('Functional: Contact CRUD', () => {
+describeIntegration('Functional: Contact CRUD', () => {
   const testContactName = `Test Contact ${Date.now()}`;
   let createdContactId: string | null = null;
 
@@ -198,7 +202,7 @@ describe('Functional: Contact CRUD', () => {
   });
 });
 
-describe('Functional: Domain Note', () => {
+describeIntegration('Functional: Domain Note', () => {
   const testNote = `Functional test note ${Date.now()}`;
 
   it('1. should set a note on the domain', async () => {
@@ -245,7 +249,7 @@ describe('Functional: Domain Note', () => {
 // Note: Dynadot API has a confusing error message for lock_domain unlock:
 // When trying to unlock, it returns "this domain has been locked already" (wrong message)
 // This appears to be domain protection or an API bug - unlock may not work via API
-describe('Functional: Domain Lock/Unlock', () => {
+describeIntegration('Functional: Domain Lock/Unlock', () => {
   let initialLockState: string | null = null;
 
   it('1. should get current lock state', async () => {
@@ -302,7 +306,7 @@ describe('Functional: Domain Lock/Unlock', () => {
   });
 });
 
-describe('Functional: Renewal Option', () => {
+describeIntegration('Functional: Renewal Option', () => {
   let initialRenewOption: string | null = null;
 
   it('1. should get current renewal option', async () => {

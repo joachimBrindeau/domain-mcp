@@ -3,6 +3,8 @@ import { getClient } from '../src/client.js';
 
 const TEST_DOMAIN = process.env.TEST_DOMAIN;
 const client = getClient();
+const isIntegrationEnabled = process.env.RUN_INTEGRATION_TESTS === 'true';
+const describeIntegration = describe.runIf(isIntegrationEnabled);
 
 // Helper to extract status from nested response
 // Dynadot API has multiple response formats:
@@ -38,19 +40,21 @@ function hasValidResponse(result: Record<string, unknown>): boolean {
   return false;
 }
 
-beforeAll(() => {
-  if (!TEST_DOMAIN) {
-    throw new Error('TEST_DOMAIN environment variable is required (e.g., example.com)');
-  }
-  if (!process.env.DYNADOT_API_KEY) {
-    throw new Error('DYNADOT_API_KEY environment variable is required');
-  }
+describeIntegration('Integration test prerequisites', () => {
+  beforeAll(() => {
+    if (!TEST_DOMAIN) {
+      throw new Error('TEST_DOMAIN environment variable is required (e.g., example.com)');
+    }
+    if (!process.env.DYNADOT_API_KEY) {
+      throw new Error('DYNADOT_API_KEY environment variable is required');
+    }
+  });
 });
 
 // =============================================================================
 // TOOL 1: dynadot_domain (11 actions)
 // =============================================================================
-describe('dynadot_domain', () => {
+describeIntegration('dynadot_domain', () => {
   describe('read operations', () => {
     it('list - should list all domains', async () => {
       const result = await client.execute('list_domain');
@@ -137,7 +141,7 @@ describe('dynadot_domain', () => {
 // =============================================================================
 // TOOL 2: dynadot_domain_settings (13 actions)
 // =============================================================================
-describe('dynadot_domain_settings', () => {
+describeIntegration('dynadot_domain_settings', () => {
   describe('read operations', () => {
     it('get_ns - should get nameservers', async () => {
       const result = await client.execute('get_ns', { domain: TEST_DOMAIN });
@@ -245,7 +249,7 @@ describe('dynadot_domain_settings', () => {
 // =============================================================================
 // TOOL 3: dynadot_dns (5 actions)
 // =============================================================================
-describe('dynadot_dns', () => {
+describeIntegration('dynadot_dns', () => {
   describe('read operations', () => {
     it('get - should get DNS records', async () => {
       const result = await client.execute('get_dns', { domain: TEST_DOMAIN });
@@ -289,7 +293,7 @@ describe('dynadot_dns', () => {
 // =============================================================================
 // TOOL 4: dynadot_nameserver (6 actions)
 // =============================================================================
-describe('dynadot_nameserver', () => {
+describeIntegration('dynadot_nameserver', () => {
   describe('read operations', () => {
     it('list - should list registered nameservers', async () => {
       const result = await client.execute('server_list');
@@ -334,7 +338,7 @@ describe('dynadot_nameserver', () => {
 // =============================================================================
 // TOOL 5: dynadot_transfer (8 actions)
 // =============================================================================
-describe('dynadot_transfer', () => {
+describeIntegration('dynadot_transfer', () => {
   describe('read operations', () => {
     it('status - should get transfer status', async () => {
       const result = await client.execute('get_transfer_status', { domain: TEST_DOMAIN });
@@ -392,7 +396,7 @@ describe('dynadot_transfer', () => {
 // =============================================================================
 // TOOL 6: dynadot_contact (11 actions)
 // =============================================================================
-describe('dynadot_contact', () => {
+describeIntegration('dynadot_contact', () => {
   describe('read operations', () => {
     it('list - should list all contacts', async () => {
       const result = await client.execute('contact_list');
@@ -475,7 +479,7 @@ describe('dynadot_contact', () => {
 // =============================================================================
 // TOOL 7: dynadot_folder (15 actions)
 // =============================================================================
-describe('dynadot_folder', () => {
+describeIntegration('dynadot_folder', () => {
   describe('read operations', () => {
     it('list - should list all folders', async () => {
       const result = await client.execute('folder_list');
@@ -592,7 +596,7 @@ describe('dynadot_folder', () => {
 // =============================================================================
 // TOOL 8: dynadot_account (13 actions)
 // =============================================================================
-describe('dynadot_account', () => {
+describeIntegration('dynadot_account', () => {
   describe('read operations', () => {
     it('info - should get account info', async () => {
       const result = await client.execute('account_info');
@@ -682,7 +686,7 @@ describe('dynadot_account', () => {
 // =============================================================================
 // TOOL 9: dynadot_aftermarket (20 actions)
 // =============================================================================
-describe('dynadot_aftermarket', () => {
+describeIntegration('dynadot_aftermarket', () => {
   describe('backorders', () => {
     it('backorder_list - should list backorder requests', async () => {
       const result = await client.execute('backorder_request_list');
@@ -838,7 +842,7 @@ describe('dynadot_aftermarket', () => {
 // =============================================================================
 // TOOL 10: dynadot_order (5 actions)
 // =============================================================================
-describe('dynadot_order', () => {
+describeIntegration('dynadot_order', () => {
   describe('read operations', () => {
     it('list - should list recent orders', async () => {
       const today = new Date();

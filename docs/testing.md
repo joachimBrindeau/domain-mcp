@@ -16,7 +16,7 @@ npm run test:all-tools:write
 
 1. **Set Environment Variables**:
 
-   Create a `.env` file in the project root (see [ENVIRONMENT.md](./ENVIRONMENT.md) for details):
+   Create a `.env` file in the project root (see [environment.md](./environment.md) for details):
 
    ```bash
    # Required
@@ -292,7 +292,7 @@ TEST_FOLDER_ID=-1
 EOF
 ```
 
-See [ENVIRONMENT.md](./ENVIRONMENT.md) for detailed documentation on all environment variables.
+See [environment.md](./environment.md) for detailed documentation on all environment variables.
 
 ### Build Errors
 

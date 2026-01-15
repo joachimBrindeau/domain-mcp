@@ -50,19 +50,19 @@ A Domain MCP server that brings natural language domain management to Claude, Cu
 
 Check domain availability and get intelligent suggestions:
 
-![Claude Code Example](images/domain-mcp-example-claude.png)
+![Claude Code Example](docs/images/domain-mcp-example-claude.png)
 
 ### Cursor
 
 Manage DNS records with natural language - the AI understands your Dynadot account structure:
 
-![Cursor Example](images/domain-mcp-example-cursor.png)
+![Cursor Example](docs/images/domain-mcp-example-cursor.png)
 
 ### Domain Search with Pricing
 
 Search for available domains and get pricing information instantly:
 
-![Domain Search with Pricing](images/domain-mcp-search-pricing.png)
+![Domain Search with Pricing](docs/images/domain-mcp-search-pricing.png)
 
 ## Common Use Cases
 

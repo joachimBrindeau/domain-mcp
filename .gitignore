@@ -21,6 +21,9 @@ logs/
 coverage/
 .nyc_output/
 
+# MCP config (contains API keys)
+.mcp.json
+
 # IDE
 .vscode/
 .idea/

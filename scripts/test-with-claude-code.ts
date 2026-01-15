@@ -6,7 +6,7 @@
  * No external API calls - uses your Claude Code subscription.
  */
 
-import { compositeTools } from '../src/schema.js';
+import { compositeTools } from '../src/schemas/index.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 

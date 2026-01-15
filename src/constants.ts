@@ -3,8 +3,8 @@
  * Extract these constants to make it easy to extend to other registrars in the future
  */
 
-export const DYNADOT_DOMAIN = 'https://www.dynadot.com';
-export const REFERRAL_PARAM = 's9F6L9F7U8Q9U8Z8v';
+const DYNADOT_DOMAIN = 'https://www.dynadot.com';
+const REFERRAL_PARAM = 's9F6L9F7U8Q9U8Z8v';
 
 // GitHub repository URL
 export const GITHUB_URL = 'https://github.com/joachimBrindeau/domain-mcp';
@@ -23,11 +23,11 @@ export const EXAMPLE_CONFIG = {
 } as const;
 
 /**
- * Build a Dynadot URL with referral tracking
+ * Build a Dynadot URL with referral tracking (internal helper)
  * @param path - The path to append to the domain (with or without leading slash)
  * @returns Full URL with referral parameter
  */
-export function buildDynadotUrl(path: string = ''): string {
+function buildDynadotUrl(path: string = ''): string {
   // Validate input
   if (path.startsWith('http://') || path.startsWith('https://')) {
     throw new Error('buildDynadotUrl expects a path, not an absolute URL');

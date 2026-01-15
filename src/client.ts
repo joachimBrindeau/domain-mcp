@@ -12,7 +12,7 @@ export type ApiParams = Record<string, string | number | boolean | undefined>;
  * Error responses include an Error field with the error message.
  * Additional fields vary by command.
  */
-export interface ApiResponse {
+interface ApiResponse {
   /** Response status: 'success' or 'error' */
   Status: string;
   /** Error message (only present when Status is 'error') */

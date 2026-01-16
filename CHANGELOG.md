@@ -89,8 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic parameter validation and transformation
 - Error handling with detailed error messages
 
-[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.3...HEAD
-[1.0.3]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.2...v1.0.3
+[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.2...HEAD
 [1.0.2]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/joachimBrindeau/domain-mcp/releases/tag/v1.0.0

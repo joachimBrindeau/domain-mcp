@@ -715,14 +715,14 @@ describeIntegration('dynadot_aftermarket', () => {
     });
 
     it('backorder_add - should validate add backorder params', async () => {
-      const result = await prodClient.execute('add_backorder_request', {
+      const result = await sandboxClient.execute('add_backorder_request', {
         domain: 'test-backorder.com',
       });
       expect(hasValidResponse(result)).toBe(true);
     });
 
     it('backorder_delete - should validate delete backorder params', async () => {
-      const result = await prodClient.execute('delete_backorder_request', {
+      const result = await sandboxClient.execute('delete_backorder_request', {
         domain: 'test-backorder.com',
       });
       expect(hasValidResponse(result)).toBe(true);
@@ -753,7 +753,7 @@ describeIntegration('dynadot_aftermarket', () => {
     it('auction_bid - should validate place bid params', async () => {
       // This command may return non-standard response for invalid auction IDs
       try {
-        const result = await prodClient.execute('place_auction_bid', {
+        const result = await sandboxClient.execute('place_auction_bid', {
           auction_id: '12345',
           bid_amount: '100',
           currency: 'USD',
@@ -791,7 +791,7 @@ describeIntegration('dynadot_aftermarket', () => {
     });
 
     it('backorder_auction_bid - should validate backorder auction bid params', async () => {
-      const result = await prodClient.execute('place_backorder_auction_bid', {
+      const result = await sandboxClient.execute('place_backorder_auction_bid', {
         auction_id: '12345',
         bid_amount: '100',
       });
@@ -806,7 +806,7 @@ describeIntegration('dynadot_aftermarket', () => {
     });
 
     it('expired_buy - should validate expired buy params', async () => {
-      const result = await prodClient.execute('buy_expired_closeout_domain', {
+      const result = await sandboxClient.execute('buy_expired_closeout_domain', {
         domain: 'test-expired.com',
         currency: 'USD',
       });
@@ -826,7 +826,7 @@ describeIntegration('dynadot_aftermarket', () => {
     });
 
     it('buy_now - should validate buy now params', async () => {
-      const result = await prodClient.execute('buy_it_now', {
+      const result = await sandboxClient.execute('buy_it_now', {
         domain: 'test-listing.com',
         currency: 'USD',
       });
@@ -834,7 +834,7 @@ describeIntegration('dynadot_aftermarket', () => {
     });
 
     it('set_for_sale - should validate set for sale params', async () => {
-      const result = await prodClient.execute('set_for_sale', {
+      const result = await sandboxClient.execute('set_for_sale', {
         domain: TEST_DOMAIN,
         price: '1000',
         currency: 'USD',
@@ -845,7 +845,7 @@ describeIntegration('dynadot_aftermarket', () => {
 
   describe('marketplace confirmations', () => {
     it('afternic_confirm - should validate Afternic confirm params', async () => {
-      const result = await prodClient.execute('set_afternic_confirm_action', {
+      const result = await sandboxClient.execute('set_afternic_confirm_action', {
         domain: TEST_DOMAIN,
         action: 'decline',
       });
@@ -853,7 +853,7 @@ describeIntegration('dynadot_aftermarket', () => {
     });
 
     it('sedo_confirm - should validate Sedo confirm params', async () => {
-      const result = await prodClient.execute('set_sedo_confirm_action', {
+      const result = await sandboxClient.execute('set_sedo_confirm_action', {
         domain: TEST_DOMAIN,
         action: 'decline',
       });

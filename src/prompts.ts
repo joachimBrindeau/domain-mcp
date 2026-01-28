@@ -56,6 +56,29 @@ export function registerAllPrompts(server: McpServer): void {
     }),
   );
 
+  // Domain brainstorming workflow prompt
+  server.prompt(
+    'domain-brainstorm',
+    'Find available domains for a product or tool',
+    { description: z.string().describe('Product or tool description to brainstorm domains for') },
+    async (args) => ({
+      messages: [
+        {
+          role: 'user',
+          content: {
+            type: 'text',
+            text: `Find available domains for: ${args.description}
+
+1. Extract 5-8 keywords from the description (core words, action verbs, abbreviations)
+2. Call generate_domain_ideas with those keywords
+3. The tool automatically checks availability and returns only available domains with prices
+4. Present the best options grouped by brandability`,
+          },
+        },
+      ],
+    }),
+  );
+
   // Bulk renewal prompt
   server.prompt('bulk-renewal', 'Review and manage domain renewals', async () => ({
     messages: [

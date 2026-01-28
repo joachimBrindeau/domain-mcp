@@ -1,6 +1,6 @@
 {
   "name": "domain-mcp",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Domain MCP - AI-powered domain management for Dynadot API. Natural language domain operations via Claude, Cursor, and MCP clients. 106 commands: domain registration, DNS, transfers, WHOIS contacts, aftermarket.",
   "type": "module",
   "main": "dist/index.js",

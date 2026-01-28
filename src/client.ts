@@ -64,17 +64,12 @@ class DynadotClient {
   constructor(config: ClientConfig = {}) {
     const sandbox = config.sandbox ?? process.env.DYNADOT_SANDBOX === 'true';
 
-    // Use sandbox key if in sandbox mode and available, otherwise use main API key
+    // Use sandbox key if in sandbox mode and available, otherwise fall back to main API key
+    const sandboxKey = process.env.DYNADOT_SANDBOX_KEY;
     const apiKey =
-      config.apiKey ??
-      (sandbox ? process.env.DYNADOT_SANDBOX_KEY : null) ??
-      process.env.DYNADOT_API_KEY;
+      config.apiKey || (sandbox && sandboxKey ? sandboxKey : null) || process.env.DYNADOT_API_KEY;
     if (!apiKey) {
-      throw new Error(
-        sandbox
-          ? 'Sandbox API key required: provide via config.apiKey, DYNADOT_SANDBOX_KEY, or DYNADOT_API_KEY env var'
-          : 'API key required: provide via config.apiKey or DYNADOT_API_KEY env var',
-      );
+      throw new Error('API key required: provide via config.apiKey or DYNADOT_API_KEY env var');
     }
 
     this.apiKey = apiKey;

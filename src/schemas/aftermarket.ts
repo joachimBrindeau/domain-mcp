@@ -115,6 +115,16 @@ export const aftermarketTool: CompositeTool = {
       description: 'List domain for sale',
       params: z.object({ domain: p.domain, price: p.amount, currency: p.currency.optional() }),
     },
+    remove_from_sale: {
+      command: 'remove_domain_sale_setting',
+      description: 'Remove domain from marketplace/auction (delist from sale)',
+      params: z.object({
+        domain: p.domain,
+      }),
+      transform: (_action, input) => ({
+        domain: input.domain as string,
+      }),
+    },
     // Marketplace confirmations
     afternic_confirm: {
       command: 'set_afternic_confirm_action',

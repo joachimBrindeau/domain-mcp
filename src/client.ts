@@ -47,7 +47,7 @@ export interface ClientConfig {
  * const response = await client.execute('domain_info', { domain: 'example.com' });
  * ```
  */
-class DynadotClient {
+export class DynadotClient {
   private client: KyInstance;
   private apiKey: string;
   private maxRetries: number;

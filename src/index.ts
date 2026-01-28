@@ -1,11 +1,12 @@
 #!/usr/bin/env node
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { EXAMPLE_CONFIG, GITHUB_URL } from './constants.js';
 import { registerAllTools } from './register.js';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { GITHUB_URL, EXAMPLE_CONFIG } from './constants.js';
+import { registerAllResources } from './resources.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -66,6 +67,7 @@ const server = new McpServer({
 });
 
 registerAllTools(server);
+registerAllResources(server);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

@@ -1,6 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { getClient } from '../client.js';
+import { normalizeResponse } from '../normalize.js';
 
 const inputSchema = {
   domain: z.string().describe('Domain to check (e.g., example.com)'),
@@ -30,16 +31,12 @@ export function registerCheckDomainTool(server: McpServer): void {
       }
 
       const response = await client.execute('search', params);
+      const normalized = normalizeResponse('search', response) as {
+        success: boolean;
+        results?: Array<{ domain: string; available: boolean; price?: string }>;
+      };
 
-      // Parse response - Dynadot returns SearchResponse with search results
-      const searchResults = response.SearchResponse as
-        | { SearchResults?: Array<{ Domain?: string; Available?: string; Price?: string }> }
-        | undefined;
-      const results = searchResults?.SearchResults ?? [];
-      const result = results[0];
-
-      const available = result?.Available === 'yes';
-      const price = result?.Price;
+      const result = normalized.results?.[0];
 
       return {
         content: [
@@ -47,9 +44,10 @@ export function registerCheckDomainTool(server: McpServer): void {
             type: 'text',
             text: JSON.stringify(
               {
+                success: normalized.success,
                 domain,
-                available,
-                ...(showPrice && price ? { price } : {}),
+                available: result?.available ?? false,
+                ...(showPrice && result?.price ? { price: result.price } : {}),
               },
               null,
               2,

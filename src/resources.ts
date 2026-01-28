@@ -1,5 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { getClient } from './client.js';
+import { normalizeResponse } from './normalize.js';
 
 export function registerAllResources(server: McpServer): void {
   // Account information resource
@@ -13,12 +14,13 @@ export function registerAllResources(server: McpServer): void {
     async () => {
       const client = getClient();
       const result = await client.execute('account_info');
+      const normalized = normalizeResponse('account_info', result);
       return {
         contents: [
           {
             uri: 'account://info',
             mimeType: 'application/json',
-            text: JSON.stringify(result, null, 2),
+            text: JSON.stringify(normalized, null, 2),
           },
         ],
       };
@@ -36,12 +38,13 @@ export function registerAllResources(server: McpServer): void {
     async () => {
       const client = getClient();
       const result = await client.execute('list_domain');
+      const normalized = normalizeResponse('list_domain', result);
       return {
         contents: [
           {
             uri: 'domains://list',
             mimeType: 'application/json',
-            text: JSON.stringify(result, null, 2),
+            text: JSON.stringify(normalized, null, 2),
           },
         ],
       };
@@ -59,12 +62,13 @@ export function registerAllResources(server: McpServer): void {
     async () => {
       const client = getClient();
       const result = await client.execute('contact_list');
+      const normalized = normalizeResponse('contact_list', result);
       return {
         contents: [
           {
             uri: 'contacts://list',
             mimeType: 'application/json',
-            text: JSON.stringify(result, null, 2),
+            text: JSON.stringify(normalized, null, 2),
           },
         ],
       };
@@ -82,12 +86,13 @@ export function registerAllResources(server: McpServer): void {
     async () => {
       const client = getClient();
       const result = await client.execute('folder_list');
+      const normalized = normalizeResponse('folder_list', result);
       return {
         contents: [
           {
             uri: 'folders://list',
             mimeType: 'application/json',
-            text: JSON.stringify(result, null, 2),
+            text: JSON.stringify(normalized, null, 2),
           },
         ],
       };

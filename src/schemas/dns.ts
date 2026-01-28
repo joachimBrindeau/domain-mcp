@@ -49,5 +49,17 @@ export const dnsTool: CompositeTool = {
       description: 'Remove DNSSEC',
       params: z.object({ domain: p.domain }),
     },
+    clear_dns: {
+      command: 'set_dns2',
+      description:
+        'Clear all DNS records for a domain (removes all A, AAAA, CNAME, MX, TXT records)',
+      params: z.object({
+        domain: p.domain,
+      }),
+      transform: (_action, input) => ({
+        domain: input.domain as string,
+        // No records = clears all
+      }),
+    },
   },
 };

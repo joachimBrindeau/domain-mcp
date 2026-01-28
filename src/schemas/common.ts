@@ -17,28 +17,38 @@ export interface ActionDefinition {
 
 // Reusable param schemas
 export const p = {
-  domain: z.string().describe('Domain name (e.g., example.com)'),
-  domains: z.array(z.string()).describe('List of domain names'),
-  duration: z.number().min(1).max(10).describe('Duration in years (1-10)'),
-  currency: z.string().describe('Currency code (default: USD)').default('USD'),
-  contactId: z.string().describe('Contact ID'),
-  folderId: z.string().describe('Folder ID'),
-  auctionId: z.string().describe('Auction ID'),
-  orderId: z.string().describe('Order ID'),
-  nameservers: z.array(z.string()).describe('List of nameservers'),
-  host: z.string().describe('Nameserver hostname'),
-  ip: z.string().describe('IP address'),
-  url: z.string().describe('URL'),
-  email: z.string().describe('Email address'),
-  note: z.string().describe('Note text'),
-  authCode: z.string().describe('Authorization code'),
-  amount: z.number().describe('Amount'),
-  name: z.string().describe('Name'),
-  renewOption: z.enum(['auto', 'donot', 'reset']).describe('Renewal option'),
-  privacyOption: z.enum(['full', 'partial', 'off']).describe('Privacy level'),
-  lockAction: z.enum(['lock', 'unlock']).describe('Lock action'),
-  confirmAction: z.enum(['confirm', 'decline']).describe('Confirm action'),
-  pushAction: z.enum(['accept', 'decline']).describe('Push request action'),
+  domain: z.string().describe('Domain name (e.g., example.com, mysite.net)'),
+  domains: z
+    .array(z.string())
+    .describe('List of domain names (e.g., ["example.com", "example.net"])'),
+  duration: z.number().min(1).max(10).describe('Duration in years, 1-10 (e.g., 1 for one year)'),
+  currency: z.string().describe('Currency code (e.g., USD, EUR, GBP)').default('USD'),
+  contactId: z.string().describe('Contact ID from contact list (e.g., "12345")'),
+  folderId: z.string().describe('Folder ID from folder list (e.g., "67890")'),
+  auctionId: z.string().describe('Auction ID (e.g., "auction_123")'),
+  orderId: z.string().describe('Order ID (e.g., "order_456")'),
+  nameservers: z
+    .array(z.string())
+    .describe('Nameservers (e.g., ["ns1.example.com", "ns2.example.com"])'),
+  host: z.string().describe('Nameserver hostname (e.g., ns1.example.com)'),
+  ip: z.string().describe('IP address (e.g., 192.168.1.1 or 2001:db8::1)'),
+  url: z.string().describe('URL for forwarding (e.g., https://example.com/page)'),
+  email: z.string().describe('Email address (e.g., admin@example.com)'),
+  note: z.string().describe('Note text (e.g., "Primary business domain")'),
+  authCode: z.string().describe('Transfer authorization/EPP code'),
+  amount: z.number().describe('Amount in currency (e.g., 9.99)'),
+  name: z.string().describe('Name (e.g., "John Doe")'),
+  renewOption: z
+    .enum(['auto', 'donot', 'reset'])
+    .describe('Renewal: auto (renew), donot (expire), reset (default)'),
+  privacyOption: z
+    .enum(['full', 'partial', 'off'])
+    .describe('WHOIS privacy: full (hide all), partial (hide email), off (public)'),
+  lockAction: z
+    .enum(['lock', 'unlock'])
+    .describe('Lock: lock (prevent transfer), unlock (allow transfer)'),
+  confirmAction: z.enum(['confirm', 'decline']).describe('Confirm or decline action'),
+  pushAction: z.enum(['accept', 'decline']).describe('Accept or decline push request'),
 };
 
 // DNS record schemas

@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import type { CompositeTool } from './common.js';
-import { p, tx, dnsRecord, subdomainRecord } from './common.js';
 import type { ApiParams } from '../client.js';
 import { DYNADOT_URLS } from '../constants.js';
+import type { CompositeTool } from './common.js';
+import { dnsRecord, p, subdomainRecord, tx } from './common.js';
 
 export const accountTool: CompositeTool = {
   name: 'dynadot_account',

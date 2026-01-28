@@ -1,8 +1,10 @@
-import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 const inputSchema = {
-  prompt: z.string().describe('Description of what the domains should convey (e.g., "task breakdown tool")'),
+  prompt: z
+    .string()
+    .describe('Description of what the domains should convey (e.g., "task breakdown tool")'),
   count: z.number().optional().default(20).describe('Number of suggestions to generate'),
   tlds: z.array(z.string()).optional().default(['com']).describe('Preferred TLDs'),
   maxLength: z.number().optional().default(15).describe('Maximum domain length'),
@@ -53,11 +55,11 @@ Output format: one domain per line (e.g., taskly.com)`;
                   'Collect all suggestions, deduplicate, write to CSV with columns: domain,available',
               },
               null,
-              2
+              2,
             ),
           },
         ],
       };
-    }
+    },
   );
 }

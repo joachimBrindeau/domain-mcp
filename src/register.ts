@@ -1,8 +1,8 @@
-import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { getClient, type ApiParams } from './client.js';
+import { z } from 'zod';
+import { type ApiParams, getClient } from './client.js';
 import { compositeTools } from './schemas/index.js';
-import { registerGenerateDomainsTools, registerCheckDomainTool } from './tools/index.js';
+import { registerCheckDomainTool, registerGenerateDomainsTools } from './tools/index.js';
 
 export function registerAllTools(server: McpServer): void {
   for (const tool of compositeTools) {
@@ -60,7 +60,7 @@ export function registerAllTools(server: McpServer): void {
         return {
           content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
         };
-      }
+      },
     );
   }
 

@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import type { CompositeTool } from './common.js';
-import { p, tx, contactFields } from './common.js';
 import type { ApiParams } from '../client.js';
+import type { CompositeTool } from './common.js';
+import { contactFields, p, tx } from './common.js';
 
 // Helper for contact settings transforms (EU/LV/LT)
 const settingsTransform = (_: string, input: Record<string, unknown>): ApiParams => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { getClient } from '../src/client.js';
 
 const TEST_DOMAIN = process.env.TEST_DOMAIN;
@@ -47,7 +47,7 @@ describeIntegration('Functional: Folder CRUD', () => {
     // Find our folder in the list
     const folders = response.FolderList as Array<Record<string, unknown>> | undefined;
     const found = folders?.some(
-      (f) => String(f.FolderId) === createdFolderId || f.FolderName === testFolderName
+      (f) => String(f.FolderId) === createdFolderId || f.FolderName === testFolderName,
     );
 
     expect(found).toBe(true);

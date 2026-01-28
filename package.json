@@ -37,11 +37,13 @@
     "test:coverage": "vitest run --coverage",
     "test:generate": "tsx scripts/test-with-claude-code.ts",
     "test:generate:write": "tsx scripts/test-with-claude-code.ts --write",
-    "lint": "eslint src test --ext .ts",
-    "lint:fix": "eslint src test --ext .ts --fix",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "check": "biome check src/ test/",
+    "check:fix": "biome check --write src/ test/",
     "typecheck": "tsc --noEmit",
+    "knip": "knip --no-progress",
+    "publint": "publint",
+    "attw": "attw --pack --ignore-rules cjs-resolves-to-esm",
+    "size": "size-limit",
     "prepare": "npm run build"
   },
   "keywords": [
@@ -81,16 +83,23 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@biomejs/biome": "^2.3.13",
+    "@size-limit/file": "^12.0.0",
     "@types/node": "^24.10.1",
-    "@typescript-eslint/eslint-plugin": "^8.48.1",
-    "@typescript-eslint/parser": "^8.48.1",
     "@vitest/coverage-v8": "^4.0.15",
     "dotenv": "^17.2.3",
-    "eslint": "^9.39.1",
-    "prettier": "^3.7.4",
+    "knip": "^5.82.1",
+    "publint": "^0.3.17",
+    "size-limit": "^12.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "dist/**/*.js",
+      "limit": "250 kB"
+    }
+  ]
 }

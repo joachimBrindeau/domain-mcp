@@ -70,5 +70,43 @@ describe('Response Normalizer', () => {
         error: 'Domain not found',
       });
     });
+
+    it('should normalize search results', () => {
+      const raw = {
+        Status: 'success',
+        SearchResponse: {
+          SearchResults: [
+            { Domain: 'example.com', Available: 'yes', Price: '9.99' },
+            { Domain: 'example.net', Available: 'no', Price: null },
+          ],
+        },
+      };
+
+      const result = normalizeResponse('search', raw);
+
+      expect(result.success).toBe(true);
+      expect(result.results).toEqual([
+        { domain: 'example.com', available: true, price: '9.99' },
+        { domain: 'example.net', available: false, price: undefined },
+      ]);
+    });
+
+    it('should normalize create_contact response', () => {
+      const raw = {
+        Status: 'success',
+        CreateContactResponse: {
+          ContactContent: {
+            ContactId: '98765',
+          },
+        },
+      };
+
+      const result = normalizeResponse('create_contact', raw);
+
+      expect(result).toEqual({
+        success: true,
+        contactId: '98765',
+      });
+    });
   });
 });

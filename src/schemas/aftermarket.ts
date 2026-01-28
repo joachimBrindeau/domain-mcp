@@ -1,7 +1,7 @@
 import { z } from 'zod';
+import { DYNADOT_URLS } from '../constants.js';
 import type { CompositeTool } from './common.js';
 import { p } from './common.js';
-import { DYNADOT_URLS } from '../constants.js';
 
 export const aftermarketTool: CompositeTool = {
   name: 'dynadot_aftermarket',

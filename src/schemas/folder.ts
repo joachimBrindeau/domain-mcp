@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import type { CompositeTool } from './common.js';
-import { p, tx, dnsRecord, subdomainRecord } from './common.js';
 import type { ApiParams } from '../client.js';
+import type { CompositeTool } from './common.js';
+import { dnsRecord, p, subdomainRecord, tx } from './common.js';
 
 export const folderTool: CompositeTool = {
   name: 'dynadot_folder',

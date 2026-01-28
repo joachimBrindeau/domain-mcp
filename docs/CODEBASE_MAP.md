@@ -23,7 +23,6 @@ Domain MCP Server - AI-powered domain management through Dynadot API
 - **Source directory**: `src/`
 - **Build output**: `dist/`
 - **Documentation**: `docs/` + 6 MD files in root (README, CHANGELOG, CONTRIBUTING, AGENTS, LICENSE, CODEBASE_MAP)
-- **Examples**: `examples/`
 - **Tests**: `test/`
 - **Scripts**: `scripts/`
 - **Logs**: `logs/`
@@ -43,7 +42,6 @@ Domain MCP Server - AI-powered domain management through Dynadot API
 │   └── schemas/
 ├── docs/             # Documentation
 │   └── plans/        # Planning docs
-├── examples/         # Example usage
 ├── scripts/          # Build/test scripts
 ├── logs/             # Log files
 └── images/           # Project images
@@ -54,18 +52,16 @@ Domain MCP Server - AI-powered domain management through Dynadot API
 |-----------|-------|-----------|--------|
 | test/     | 2     | ~1,253    | ⚠️ Giant file |
 | src/      | ~19   | ~1,687    | ✅ Good |
-| scripts/  | 3     | ~1,000    | ⚠️ Large scripts |
-| docs/     | ~8    | Unknown   | ✅ Good |
-| examples/ | Unknown | Unknown | ✅ Good |
+| scripts/  | 1     | ~487      | ⚠️ Large script |
+| docs/     | ~7    | Unknown   | ✅ Good |
 
 ## Hotspots (Largest Files) ⚠️
 1. **test/e2e.test.ts** - 891 lines ⚠️ **CRITICAL - Needs splitting**
 2. scripts/test-with-claude-code.ts - 487 lines ⚠️
-3. scripts/test-all-tools.ts - 407 lines ⚠️
-4. test/functional.test.ts - 362 lines ⚠️
-5. src/schemas/common.ts - 217 lines ✅
-6. src/client.ts - 164 lines ✅
-7. src/schemas/domain-settings.ts - 145 lines ✅
+3. test/functional.test.ts - 362 lines ⚠️
+4. src/schemas/common.ts - 217 lines ✅
+5. src/client.ts - 164 lines ✅
+6. src/schemas/domain-settings.ts - 145 lines ✅
 
 ## Red Flags
 - [x] **Too many root configs (>10)** - Multiple config files
@@ -112,8 +108,7 @@ Domain MCP Server - AI-powered domain management through Dynadot API
 **Status**: LOW PRIORITY
 **Issue**: Structure is mostly good
 **Actions**:
-1. Verify examples/ is needed/documented
-2. Consider consolidating hidden tool directories
+1. Consider consolidating hidden tool directories
 
 ## Next Phase
 **Run `root-organization.md` FIRST** - Root directory exceeds target by 7 items and needs cleanup before proceeding to architecture phase.

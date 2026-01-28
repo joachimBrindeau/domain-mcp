@@ -1,7 +1,7 @@
 import { z } from 'zod';
+import type { ApiParams } from '../client.js';
 import type { CompositeTool } from './common.js';
 import { p, tx } from './common.js';
-import type { ApiParams } from '../client.js';
 
 export const domainSettingsTool: CompositeTool = {
   name: 'dynadot_domain_settings',

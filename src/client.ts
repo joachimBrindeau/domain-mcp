@@ -83,12 +83,12 @@ class DynadotClient {
         limit: this.maxRetries,
         methods: ['get', 'post'],
         statusCodes: [408, 429, 500, 502, 503, 504],
-        backoffLimit: this.retryDelay * Math.pow(2, this.maxRetries),
+        backoffLimit: this.retryDelay * 2 ** this.maxRetries,
       },
       hooks: {
         beforeRetry: [
           async ({ retryCount }) => {
-            const delay = this.retryDelay * Math.pow(2, retryCount);
+            const delay = this.retryDelay * 2 ** retryCount;
             await new Promise((resolve) => setTimeout(resolve, delay));
           },
         ],

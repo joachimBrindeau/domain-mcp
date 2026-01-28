@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import type { CompositeTool } from './common.js';
-import { p } from './common.js';
 import type { ApiParams } from '../client.js';
 import { DYNADOT_URLS } from '../constants.js';
+import type { CompositeTool } from './common.js';
+import { p } from './common.js';
 
 export const domainTool: CompositeTool = {
   name: 'dynadot_domain',
@@ -68,8 +68,7 @@ export const domainTool: CompositeTool = {
           currency: (input.currency as string) || 'USD',
         };
         const domains = input.domains as string[] | undefined;
-        if (!domains?.length)
-          throw new Error('domains array is required for bulk_register action');
+        if (!domains?.length) throw new Error('domains array is required for bulk_register action');
         domains.forEach((d, i) => {
           params[`domain${i}`] = d;
         });

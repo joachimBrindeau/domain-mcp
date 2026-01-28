@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CompositeTool } from './common.js';
-import { p, tx, dnsRecord, subdomainRecord } from './common.js';
+import { dnsRecord, p, subdomainRecord, tx } from './common.js';
 
 export const dnsTool: CompositeTool = {
   name: 'dynadot_dns',

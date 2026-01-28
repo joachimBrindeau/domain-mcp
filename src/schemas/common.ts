@@ -77,7 +77,13 @@ export const contactFields = z.object({
 const processDnsRecords = (
   params: ApiParams,
   mainRecords?: Array<{ type: string; value: string; ttl?: number; priority?: number }>,
-  subRecords?: Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }>
+  subRecords?: Array<{
+    subdomain: string;
+    type: string;
+    value: string;
+    ttl?: number;
+    priority?: number;
+  }>,
 ): void => {
   mainRecords?.forEach((r, i) => {
     params[`main_record_type${i}`] = r.type;
@@ -122,8 +128,12 @@ export const tx = {
 
   dnsRecords: (input: Record<string, unknown>): ApiParams => {
     const params: ApiParams = { domain: input.domain as string };
-    const main = input.mainRecords as Array<{ type: string; value: string; ttl?: number; priority?: number }> | undefined;
-    const sub = input.subdomainRecords as Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }> | undefined;
+    const main = input.mainRecords as
+      | Array<{ type: string; value: string; ttl?: number; priority?: number }>
+      | undefined;
+    const sub = input.subdomainRecords as
+      | Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }>
+      | undefined;
     processDnsRecords(params, main, sub);
     return params;
   },
@@ -157,8 +167,12 @@ export const tx = {
 
   folderDns: (input: Record<string, unknown>): ApiParams => {
     const params: ApiParams = { folder_id: input.folderId as string };
-    const main = input.mainRecords as Array<{ type: string; value: string; ttl?: number; priority?: number }> | undefined;
-    const sub = input.subdomainRecords as Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }> | undefined;
+    const main = input.mainRecords as
+      | Array<{ type: string; value: string; ttl?: number; priority?: number }>
+      | undefined;
+    const sub = input.subdomainRecords as
+      | Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }>
+      | undefined;
     processDnsRecords(params, main, sub);
     return params;
   },
@@ -174,8 +188,12 @@ export const tx = {
 
   defaultDns: (input: Record<string, unknown>): ApiParams => {
     const params: ApiParams = {};
-    const main = input.mainRecords as Array<{ type: string; value: string; ttl?: number; priority?: number }> | undefined;
-    const sub = input.subdomainRecords as Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }> | undefined;
+    const main = input.mainRecords as
+      | Array<{ type: string; value: string; ttl?: number; priority?: number }>
+      | undefined;
+    const sub = input.subdomainRecords as
+      | Array<{ subdomain: string; type: string; value: string; ttl?: number; priority?: number }>
+      | undefined;
     processDnsRecords(params, main, sub);
     return params;
   },

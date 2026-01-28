@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 import { getClient } from '../client.js';
 
 const inputSchema = {
@@ -52,11 +52,11 @@ export function registerCheckDomainTool(server: McpServer): void {
                 ...(showPrice && price ? { price } : {}),
               },
               null,
-              2
+              2,
             ),
           },
         ],
       };
-    }
+    },
   );
 }

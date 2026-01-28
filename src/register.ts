@@ -1,6 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { type ApiParams, getClient } from './client.js';
+import { createToolError } from './errors.js';
 import { normalizeResponse } from './normalize.js';
 import { compositeTools } from './schemas/index.js';
 import { registerCheckDomainTool, registerGenerateDomainsTools } from './tools/index.js';
@@ -46,7 +47,16 @@ export function registerAllTools(server: McpServer): void {
         const actionDef = tool.actions[action];
 
         if (!actionDef) {
-          throw new Error(`Unknown action: ${action}. Valid actions: ${actionKeys.join(', ')}`);
+          const error = createToolError(`Unknown action: ${action}`, {
+            type: 'UNKNOWN_ACTION',
+            action,
+            validActions: actionKeys,
+            tool: tool.name,
+          });
+          return {
+            content: [{ type: 'text', text: error.toJSON() }],
+            isError: true,
+          };
         }
 
         const client = getClient();

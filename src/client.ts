@@ -62,16 +62,25 @@ class DynadotClient {
    * @throws {Error} If API key is not provided via config or environment variable
    */
   constructor(config: ClientConfig = {}) {
-    const apiKey = config.apiKey ?? process.env.DYNADOT_API_KEY;
+    const sandbox = config.sandbox ?? process.env.DYNADOT_SANDBOX === 'true';
+
+    // Use sandbox key if in sandbox mode and available, otherwise use main API key
+    const apiKey =
+      config.apiKey ??
+      (sandbox ? process.env.DYNADOT_SANDBOX_KEY : null) ??
+      process.env.DYNADOT_API_KEY;
     if (!apiKey) {
-      throw new Error('API key required: provide via config.apiKey or DYNADOT_API_KEY env var');
+      throw new Error(
+        sandbox
+          ? 'Sandbox API key required: provide via config.apiKey, DYNADOT_SANDBOX_KEY, or DYNADOT_API_KEY env var'
+          : 'API key required: provide via config.apiKey or DYNADOT_API_KEY env var',
+      );
     }
 
     this.apiKey = apiKey;
     this.maxRetries = config.maxRetries ?? 3;
     this.retryDelay = config.retryDelay ?? 1000;
 
-    const sandbox = config.sandbox ?? process.env.DYNADOT_SANDBOX === 'true';
     const baseUrl = sandbox ? 'https://api-sandbox.dynadot.com' : 'https://api.dynadot.com';
 
     const timeout = config.timeout ?? 30000;

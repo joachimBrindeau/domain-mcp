@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+
 /**
  * Claude Code MCP Tool Tester
  *
@@ -6,9 +7,9 @@
  * No external API calls - uses your Claude Code subscription.
  */
 
-import { compositeTools } from '../src/schemas/index.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { compositeTools } from '../src/schemas/index.js';
 
 interface TestCase {
   tool: string;
@@ -30,20 +31,56 @@ interface TestResult {
 
 // Actions that require write operations (skip in read-only mode)
 const WRITE_ACTIONS = new Set([
-  'register', 'bulk_register', 'delete', 'restore', 'lock',
-  'set_ns', 'set_renew_option', 'set_privacy', 'set_whois',
-  'set_forwarding', 'set_stealth', 'set_parking', 'set_hosting',
-  'set_email_forward', 'set_folder', 'set_note', 'clear_settings',
-  'set', 'set_dnssec', 'clear_dnssec',
-  'create', 'edit', 'delete',
-  'initiate', 'cancel', 'set_auth_code', 'authorize_away', 'set_push_request',
-  'register', 'add', 'set_ip', 'delete', 'delete_by_domain',
-  'rename', 'clear_defaults',
-  'backorder_add', 'backorder_delete', 'auction_bid', 'backorder_auction_bid',
-  'expired_buy', 'buy_now', 'set_for_sale', 'afternic_confirm', 'sedo_confirm',
-  'update_environment_group_environments', 'update_environment_group_tags',
-  'update_environment_tags', 'update_environment_team_accesses',
-  'update_environment_user_accesses', 'update_team_members',
+  'register',
+  'bulk_register',
+  'delete',
+  'restore',
+  'lock',
+  'set_ns',
+  'set_renew_option',
+  'set_privacy',
+  'set_whois',
+  'set_forwarding',
+  'set_stealth',
+  'set_parking',
+  'set_hosting',
+  'set_email_forward',
+  'set_folder',
+  'set_note',
+  'clear_settings',
+  'set',
+  'set_dnssec',
+  'clear_dnssec',
+  'create',
+  'edit',
+  'delete',
+  'initiate',
+  'cancel',
+  'set_auth_code',
+  'authorize_away',
+  'set_push_request',
+  'register',
+  'add',
+  'set_ip',
+  'delete',
+  'delete_by_domain',
+  'rename',
+  'clear_defaults',
+  'backorder_add',
+  'backorder_delete',
+  'auction_bid',
+  'backorder_auction_bid',
+  'expired_buy',
+  'buy_now',
+  'set_for_sale',
+  'afternic_confirm',
+  'sedo_confirm',
+  'update_environment_group_environments',
+  'update_environment_group_tags',
+  'update_environment_tags',
+  'update_environment_team_accesses',
+  'update_environment_user_accesses',
+  'update_team_members',
 ]);
 
 // Sample test data (loaded from environment variables)
@@ -92,8 +129,8 @@ class ClaudeCodeToolTester {
       }
     }
 
-    const toTest = this.testCases.filter(tc => !tc.skip).length;
-    const skipped = this.testCases.filter(tc => tc.skip).length;
+    const toTest = this.testCases.filter((tc) => !tc.skip).length;
+    const skipped = this.testCases.filter((tc) => tc.skip).length;
     console.log(`📊 Discovered ${this.testCases.length} total actions`);
     console.log(`   ${toTest} to test, ${skipped} skipped\n`);
   }
@@ -103,7 +140,7 @@ class ClaudeCodeToolTester {
    */
   private generateParams(
     action: string,
-    schema?: Record<string, unknown>
+    schema?: Record<string, unknown>,
   ): Record<string, unknown> | undefined {
     if (!schema || Object.keys(schema).length === 0) {
       return undefined;
@@ -151,11 +188,11 @@ class ClaudeCodeToolTester {
    */
   generateTestBatch(batchSize = 5): string[][] {
     const batches: string[][] = [];
-    const toTest = this.testCases.filter(tc => !tc.skip);
+    const toTest = this.testCases.filter((tc) => !tc.skip);
 
     for (let i = 0; i < toTest.length; i += batchSize) {
       const batch = toTest.slice(i, i + batchSize);
-      const commands = batch.map(tc => {
+      const commands = batch.map((tc) => {
         const toolName = `mcp__dynadot__${tc.tool}`;
         const params = tc.params
           ? `{ action: "${tc.action}", ...${JSON.stringify(tc.params)} }`
@@ -202,8 +239,8 @@ class ClaudeCodeToolTester {
    */
   async generateMarkdownInstructions(filename = 'TEST_INSTRUCTIONS.md'): Promise<void> {
     const batches = this.generateTestBatch(5);
-    const toTest = this.testCases.filter(tc => !tc.skip);
-    const skipped = this.testCases.filter(tc => tc.skip);
+    const toTest = this.testCases.filter((tc) => !tc.skip);
+    const skipped = this.testCases.filter((tc) => tc.skip);
 
     let md = `# Claude Code MCP Tool Testing Instructions
 
@@ -286,7 +323,7 @@ console.log(\`TEST_FOLDER_ID=\${folderId}\`);
       const testCases = toTest.slice(startIdx, startIdx + 5);
 
       md += `### Batch ${idx + 1} of ${batches.length}\n\n`;
-      md += `**Testing**: ${testCases.map(tc => `${tc.tool}:${tc.action}`).join(', ')}\n\n`;
+      md += `**Testing**: ${testCases.map((tc) => `${tc.tool}:${tc.action}`).join(', ')}\n\n`;
       md += '```typescript\n';
       md += `// Batch ${idx + 1}\n`;
       md += 'const results = await Promise.allSettled([\n';
@@ -351,7 +388,7 @@ Write operations skipped in read-only mode:
 `;
 
     const skippedByTool = new Map<string, TestCase[]>();
-    skipped.forEach(tc => {
+    skipped.forEach((tc) => {
       if (!skippedByTool.has(tc.tool)) {
         skippedByTool.set(tc.tool, []);
       }
@@ -360,7 +397,7 @@ Write operations skipped in read-only mode:
 
     for (const [tool, cases] of skippedByTool) {
       md += `### ${tool}\n`;
-      cases.forEach(tc => {
+      cases.forEach((tc) => {
         md += `- \`${tc.action}\` - ${tc.description}\n`;
       });
       md += '\n';
@@ -408,7 +445,7 @@ console.log(\`❌ Failed: \${summary.failed}/\${summary.total}\`);
    * Generate a simple shell script that can be executed
    */
   async generateShellScript(filename = 'test-mcp-tools.sh'): Promise<void> {
-    const toTest = this.testCases.filter(tc => !tc.skip);
+    const toTest = this.testCases.filter((tc) => !tc.skip);
 
     let script = `#!/bin/bash
 #

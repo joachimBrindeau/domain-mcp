@@ -1,0 +1,24 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{ts,js,json}"
+      run: npx biome check --write {staged_files} && git add {staged_files}
+    typecheck:
+      run: npx tsc --noEmit
+    gitleaks:
+      run: gitleaks protect --staged --no-banner
+    knip:
+      run: npx knip --no-progress
+
+pre-push:
+  parallel: true
+  commands:
+    test:
+      run: npx vitest run
+    publint:
+      run: npx publint
+    attw:
+      run: npx attw --pack --ignore-rules cjs-resolves-to-esm
+    size:
+      run: npx size-limit

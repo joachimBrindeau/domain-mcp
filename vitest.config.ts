@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import { config } from 'dotenv';
+import { defineConfig } from 'vitest/config';
 
 // Load .env file for tests
 config();
@@ -14,13 +14,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        'test/',
-        '**/*.config.ts',
-        '**/*.d.ts',
-      ],
+      exclude: ['node_modules/', 'dist/', 'test/', '**/*.config.ts', '**/*.d.ts'],
       thresholds: {
         lines: 80,
         functions: 80,

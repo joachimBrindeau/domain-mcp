@@ -4,11 +4,7 @@ import { type ApiParams, getClient } from './client.js';
 import { createToolError } from './errors.js';
 import { normalizeResponse } from './normalize.js';
 import { compositeTools } from './schemas/index.js';
-import {
-  registerCheckDomainTool,
-  registerGenerateDomainsTools,
-  registerHelpTool,
-} from './tools/index.js';
+import { registerCheckDomainTool, registerHelpTool } from './tools/index.js';
 
 export function registerAllTools(server: McpServer): void {
   for (const tool of compositeTools) {
@@ -81,7 +77,6 @@ export function registerAllTools(server: McpServer): void {
   }
 
   // Register standalone tools
-  registerGenerateDomainsTools(server);
   registerCheckDomainTool(server);
   registerHelpTool(server);
 }

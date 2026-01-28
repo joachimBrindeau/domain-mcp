@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { EXAMPLE_CONFIG, GITHUB_URL } from './constants.js';
+import { registerAllPrompts } from './prompts.js';
 import { registerAllTools } from './register.js';
 import { registerAllResources } from './resources.js';
 
@@ -68,6 +69,7 @@ const server = new McpServer({
 
 registerAllTools(server);
 registerAllResources(server);
+registerAllPrompts(server);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

@@ -1,6 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { type ApiParams, getClient } from './client.js';
+import { normalizeResponse } from './normalize.js';
 import { compositeTools } from './schemas/index.js';
 import { registerCheckDomainTool, registerGenerateDomainsTools } from './tools/index.js';
 
@@ -57,8 +58,9 @@ export function registerAllTools(server: McpServer): void {
         delete params.action;
 
         const result = await client.execute(actionDef.command, params);
+        const normalized = normalizeResponse(actionDef.command, result);
         return {
-          content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+          content: [{ type: 'text', text: JSON.stringify(normalized, null, 2) }],
         };
       },
     );

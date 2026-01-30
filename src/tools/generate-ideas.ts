@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { getClient } from '../client.js';
 import { normalizeResponse } from '../normalize.js';
 
-const PATTERNS = ['exact', 'compound', 'hyphenated', 'prefix', 'suffix'] as const;
+const PATTERNS = ['exact', 'hyphenated', 'prefix', 'suffix'] as const;
 const DEFAULT_TLDS = ['com', 'io', 'co', 'app', 'dev', 'ai'];
 const PREFIXES = ['get', 'try', 'use', 'go', 'my', 'the', 'hey', 'meet'];
 const SUFFIXES = ['app', 'hq', 'io', 'ai', 'hub', 'lab', 'dev', 'now'];
@@ -23,27 +23,6 @@ function generateExact(keywords: string[], tlds: string[]): string[] {
     if (clean.length >= 2) {
       for (const tld of tlds) {
         results.push(`${clean}.${tld}`);
-      }
-    }
-  }
-  return results;
-}
-
-function generateCompound(keywords: string[], tlds: string[]): string[] {
-  const results: string[] = [];
-  const cleaned = keywords
-    .map((k) => k.toLowerCase().replace(/[^a-z0-9]/g, ''))
-    .filter((k) => k.length >= 2);
-
-  for (const first of cleaned) {
-    for (const second of cleaned) {
-      if (first !== second) {
-        const compound = first + second;
-        if (compound.length <= 20) {
-          for (const tld of tlds) {
-            results.push(`${compound}.${tld}`);
-          }
-        }
       }
     }
   }
@@ -74,7 +53,7 @@ function generatePrefix(keywords: string[], tlds: string[]): string[] {
     const clean = keyword.toLowerCase().replace(/[^a-z0-9]/g, '');
     if (clean.length >= 2) {
       for (const prefix of PREFIXES) {
-        const domain = prefix + clean;
+        const domain = `${prefix}-${clean}`;
         if (domain.length <= 20) {
           for (const tld of tlds) {
             results.push(`${domain}.${tld}`);
@@ -92,7 +71,7 @@ function generateSuffix(keywords: string[], tlds: string[]): string[] {
     const clean = keyword.toLowerCase().replace(/[^a-z0-9]/g, '');
     if (clean.length >= 2) {
       for (const suffix of SUFFIXES) {
-        const domain = clean + suffix;
+        const domain = `${clean}-${suffix}`;
         if (domain.length <= 20) {
           for (const tld of tlds) {
             results.push(`${domain}.${tld}`);
@@ -106,7 +85,6 @@ function generateSuffix(keywords: string[], tlds: string[]): string[] {
 
 const generators: Record<Pattern, (keywords: string[], tlds: string[]) => string[]> = {
   exact: generateExact,
-  compound: generateCompound,
   hyphenated: generateHyphenated,
   prefix: generatePrefix,
   suffix: generateSuffix,
@@ -153,7 +131,7 @@ const inputSchema = {
   patterns: z
     .array(z.enum(PATTERNS))
     .optional()
-    .describe('Generation patterns: exact, compound, hyphenated, prefix, suffix (default: all)'),
+    .describe('Generation patterns: exact, hyphenated, prefix, suffix (default: all)'),
   maxToCheck: z
     .number()
     .min(10)
@@ -176,20 +154,25 @@ export function registerGenerateIdeasTool(server: McpServer): void {
       const patterns = (input.patterns as Pattern[]) ?? [...PATTERNS];
       const maxToCheck = (input.maxToCheck as number) ?? 100;
 
-      // Generate all domain ideas
-      const allDomains = new Set<string>();
+      // Generate exact matches first (always checked), then other patterns
+      const exactDomains = patterns.includes('exact') ? generateExact(keywords, tlds) : [];
+      const otherDomains = new Set<string>();
       for (const pattern of patterns) {
+        if (pattern === 'exact') continue;
         const generator = generators[pattern];
         if (generator) {
           for (const domain of generator(keywords, tlds)) {
-            allDomains.add(domain);
+            otherDomains.add(domain);
           }
         }
       }
 
-      // Shuffle and limit to maxToCheck
-      const shuffled = [...allDomains].sort(() => Math.random() - 0.5);
-      const toCheck = shuffled.slice(0, maxToCheck);
+      // Exact matches always included, fill remaining capacity with shuffled others
+      const shuffledOthers = [...otherDomains].sort(() => Math.random() - 0.5);
+      const toCheck = [
+        ...exactDomains,
+        ...shuffledOthers.slice(0, maxToCheck - exactDomains.length),
+      ];
 
       // Check availability in batches
       const available: AvailableDomain[] = [];

@@ -76,8 +76,8 @@ describe('Response Normalizer', () => {
         Status: 'success',
         SearchResponse: {
           SearchResults: [
-            { Domain: 'example.com', Available: 'yes', Price: '9.99' },
-            { Domain: 'example.net', Available: 'no', Price: null },
+            { DomainName: 'example.com', Available: 'yes', Price: '9.99' },
+            { DomainName: 'example.net', Available: 'no', Price: null },
           ],
         },
       };

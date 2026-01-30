@@ -77,8 +77,8 @@ const normalizers: Record<string, (content: Record<string, unknown>) => Normaliz
 
   search: (content) => {
     const results = (content.SearchResults ?? content.searchResults) as Array<{
-      Domain?: string;
-      domain?: string;
+      DomainName?: string;
+      domainName?: string;
       Available?: string;
       available?: string;
       Price?: string;
@@ -86,7 +86,7 @@ const normalizers: Record<string, (content: Record<string, unknown>) => Normaliz
     }>;
     return {
       results: results?.map((r) => ({
-        domain: r.Domain ?? r.domain,
+        domain: r.DomainName ?? r.domainName,
         available: (r.Available ?? r.available) === 'yes',
         price: r.Price ?? r.price,
       })),

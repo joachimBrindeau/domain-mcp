@@ -12,11 +12,11 @@ import {
 
 export function registerAllTools(server: McpServer): void {
   for (const tool of compositeTools) {
-    // Build action enum from keys
-    const actionKeys = Object.keys(tool.actions) as [string, ...string[]];
+    // Build operation enum from keys
+    const operationKeys = Object.keys(tool.actions) as [string, ...string[]];
 
-    // Build combined input schema with action + all possible params
-    const actionDescriptions = actionKeys
+    // Build combined input schema with operation + all possible params
+    const operationDescriptions = operationKeys
       .map((k) => {
         const actionDef = tool.actions[k];
         return actionDef ? `${k}: ${actionDef.description}` : k;
@@ -24,7 +24,7 @@ export function registerAllTools(server: McpServer): void {
       .join(' | ');
 
     const inputSchema: Record<string, z.ZodTypeAny> = {
-      action: z.enum(actionKeys).describe(`Action to perform: ${actionDescriptions}`),
+      operation: z.enum(operationKeys).describe(`Operation to perform: ${operationDescriptions}`),
     };
 
     // Collect all unique params across actions
@@ -47,14 +47,14 @@ export function registerAllTools(server: McpServer): void {
         inputSchema,
       },
       async (input) => {
-        const action = input.action as string;
-        const actionDef = tool.actions[action];
+        const operation = input.operation as string;
+        const actionDef = tool.actions[operation];
 
         if (!actionDef) {
-          const error = createToolError(`Unknown action: ${action}`, {
+          const error = createToolError(`Unknown operation: ${operation}`, {
             type: 'UNKNOWN_ACTION',
-            action,
-            validActions: actionKeys,
+            action: operation,
+            validActions: operationKeys,
             tool: tool.name,
           });
           return {
@@ -63,19 +63,48 @@ export function registerAllTools(server: McpServer): void {
           };
         }
 
-        const client = getClient();
-        const params = actionDef.transform
-          ? actionDef.transform(action, input as Record<string, unknown>)
-          : (input as ApiParams);
+        const parsedInput = actionDef.params
+          ? actionDef.params.safeParse(input)
+          : ({ success: true, data: {} } as const);
 
-        // Remove 'action' from params sent to API
-        delete params.action;
+        if (!parsedInput.success) {
+          const details = parsedInput.error.issues
+            .map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`)
+            .join('; ');
 
-        const result = await client.execute(actionDef.command, params);
-        const normalized = normalizeResponse(actionDef.command, result);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(normalized, null, 2) }],
-        };
+          const error = createToolError('Invalid tool input', {
+            type: 'VALIDATION_ERROR',
+            tool: tool.name,
+            message: details,
+          });
+          return {
+            content: [{ type: 'text', text: error.toJSON() }],
+            isError: true,
+          };
+        }
+
+        try {
+          const client = getClient();
+          const params = actionDef.transform
+            ? actionDef.transform(operation, parsedInput.data as Record<string, unknown>)
+            : (parsedInput.data as Record<string, unknown> as ApiParams);
+
+          const result = await client.execute(actionDef.command, params);
+          const normalized = normalizeResponse(actionDef.command, result);
+          return {
+            content: [{ type: 'text', text: JSON.stringify(normalized, null, 2) }],
+          };
+        } catch (error) {
+          const toolError = createToolError('Tool execution failed', {
+            type: 'API_ERROR',
+            tool: tool.name,
+            message: error instanceof Error ? error.message : String(error),
+          });
+          return {
+            content: [{ type: 'text', text: toolError.toJSON() }],
+            isError: true,
+          };
+        }
       },
     );
   }

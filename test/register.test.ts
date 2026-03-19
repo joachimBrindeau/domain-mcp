@@ -15,6 +15,15 @@ import { getClient } from '../src/client.js';
 import { normalizeResponse } from '../src/normalize.js';
 import { registerAllTools } from '../src/register.js';
 
+type RegisteredTool = {
+  handler: (input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+};
+
+function getRegisteredTools(server: McpServer): Record<string, RegisteredTool> {
+  return (server as unknown as { _registeredTools: Record<string, RegisteredTool> })
+    ._registeredTools;
+}
+
 describe('Tool Registration with Normalizer', () => {
   let server: McpServer;
   let mockClient: { execute: ReturnType<typeof vi.fn> };
@@ -33,8 +42,39 @@ describe('Tool Registration with Normalizer', () => {
 
   it('should call normalizeResponse for tool results', async () => {
     registerAllTools(server);
+    const tools = getRegisteredTools(server);
+    const domainTool = tools.dynadot_domain;
 
-    // The normalizer should be imported and used
-    expect(normalizeResponse).toBeDefined();
+    await domainTool.handler({ operation: 'list' });
+
+    expect(normalizeResponse).toHaveBeenCalled();
+  });
+
+  it('should require operation-specific params before executing', async () => {
+    registerAllTools(server);
+    const tools = getRegisteredTools(server);
+    const domainTool = tools.dynadot_domain;
+
+    const result = await domainTool.handler({ operation: 'register' });
+
+    expect(result.isError).toBe(true);
+    expect(mockClient.execute).not.toHaveBeenCalled();
+  });
+
+  it('should preserve api action parameter for operations that need it', async () => {
+    registerAllTools(server);
+    const tools = getRegisteredTools(server);
+    const transferTool = tools.dynadot_transfer;
+
+    await transferTool.handler({
+      operation: 'set_push_request',
+      domain: 'example.com',
+      action: 'decline',
+    });
+
+    expect(mockClient.execute).toHaveBeenCalledWith('set_domain_push_request', {
+      domain: 'example.com',
+      action: 'decline',
+    });
   });
 });

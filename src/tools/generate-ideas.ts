@@ -16,6 +16,15 @@ interface AvailableDomain {
   price?: string;
 }
 
+function shuffle<T>(items: T[]): T[] {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j] as T, shuffled[i] as T];
+  }
+  return shuffled;
+}
+
 function generateExact(keywords: string[], tlds: string[]): string[] {
   const results: string[] = [];
   for (const keyword of keywords) {
@@ -155,7 +164,9 @@ export function registerGenerateIdeasTool(server: McpServer): void {
       const maxToCheck = (input.maxToCheck as number) ?? 100;
 
       // Generate exact matches first (always checked), then other patterns
-      const exactDomains = patterns.includes('exact') ? generateExact(keywords, tlds) : [];
+      const exactDomains = patterns.includes('exact')
+        ? [...new Set(generateExact(keywords, tlds))]
+        : [];
       const otherDomains = new Set<string>();
       for (const pattern of patterns) {
         if (pattern === 'exact') continue;
@@ -168,11 +179,10 @@ export function registerGenerateIdeasTool(server: McpServer): void {
       }
 
       // Exact matches always included, fill remaining capacity with shuffled others
-      const shuffledOthers = [...otherDomains].sort(() => Math.random() - 0.5);
-      const toCheck = [
-        ...exactDomains,
-        ...shuffledOthers.slice(0, maxToCheck - exactDomains.length),
-      ];
+      const shuffledOthers = shuffle([...otherDomains]);
+      const limitedExactDomains = exactDomains.slice(0, maxToCheck);
+      const remainingSlots = Math.max(0, maxToCheck - limitedExactDomains.length);
+      const toCheck = [...limitedExactDomains, ...shuffledOthers.slice(0, remainingSlots)];
 
       // Check availability in batches
       const available: AvailableDomain[] = [];

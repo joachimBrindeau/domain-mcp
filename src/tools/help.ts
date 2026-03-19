@@ -13,7 +13,7 @@ export function registerHelpTool(server: McpServer): void {
     'dynadot_help',
     {
       description:
-        'Discover available tools and actions. Use query: "tools" to list all tools, "actions" with a tool name to list actions, "examples" for usage examples.',
+        'Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.',
       inputSchema,
     },
     async (input) => {
@@ -37,6 +37,10 @@ export function registerHelpTool(server: McpServer): void {
                   tools,
                   standalone: [
                     { name: 'check_domain', description: 'Check single domain availability' },
+                    {
+                      name: 'generate_domain_ideas',
+                      description: 'Generate available domain ideas from keywords',
+                    },
                     { name: 'dynadot_help', description: 'This help tool' },
                   ],
                 },
@@ -102,7 +106,7 @@ export function registerHelpTool(server: McpServer): void {
                     {
                       description: 'List all domains',
                       tool: 'dynadot_domain',
-                      input: { action: 'list' },
+                      input: { operation: 'list' },
                     },
                     {
                       description: 'Check domain availability',
@@ -112,7 +116,7 @@ export function registerHelpTool(server: McpServer): void {
                     {
                       description: 'Get domain DNS records',
                       tool: 'dynadot_dns',
-                      input: { action: 'get', domain: 'example.com' },
+                      input: { operation: 'get', domain: 'example.com' },
                     },
                   ],
                 },

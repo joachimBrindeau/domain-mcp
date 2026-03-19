@@ -1,5 +1,7 @@
 import ky, { type KyInstance } from 'ky';
 
+const RESERVED_PARAM_KEYS = new Set(['key', 'command']);
+
 /**
  * Parameters passed to Dynadot API commands.
  * Values can be string, number, boolean, or undefined (undefined values are filtered out).
@@ -123,6 +125,9 @@ export class DynadotClient {
     searchParams.set('command', command);
 
     for (const [key, value] of Object.entries(params)) {
+      if (RESERVED_PARAM_KEYS.has(key)) {
+        throw new Error(`Reserved parameter "${key}" cannot be set by tool input`);
+      }
       if (value !== undefined) {
         searchParams.set(key, String(value));
       }

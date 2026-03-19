@@ -41,14 +41,14 @@ export function registerAllPrompts(server: McpServer): void {
             type: 'text',
             text: `Help me configure DNS for ${args.domain}:
 
-1. First, get current DNS records using dynadot_dns with action: get
+1. First, get current DNS records using dynadot_dns with operation: get
 2. Ask me what I want to set up:
    - Website hosting (A/AAAA records)
    - Email (MX records)
    - Domain verification (TXT records)
    - Subdomain (CNAME records)
 3. Guide me through the configuration
-4. Apply changes using dynadot_dns with action: set
+4. Apply changes using dynadot_dns with operation: set
 5. Verify the changes were applied`,
           },
         },

@@ -39,7 +39,7 @@ A Domain MCP server that brings natural language domain management to Claude, Cu
 ## Features
 
 - **🤖 Natural Language Domain Management**: Use AI assistants like Claude and Cursor to manage domains conversationally - no API knowledge needed
-- **📦 Complete Domain MCP Server**: 106 Dynadot API actions across 10 composite MCP tools for domains, DNS, transfers, and more
+- **📦 Complete Domain MCP Server**: 108 Dynadot API actions across 10 composite MCP tools for domains, DNS, transfers, and more
 - **⚡ Production-Ready AI Integration**: Built for Claude Code, Cursor, Claude Desktop, and any MCP-compatible client
 - **🔒 Type-Safe & Reliable**: TypeScript, Zod validation, comprehensive test suite with 100% tool coverage
 - **✅ MCP Protocol Compliant**: Full Model Context Protocol specification compliance with real CRUD operation tests
@@ -364,7 +364,7 @@ npm test
 # Integration tests (requires network access + Dynadot credentials)
 RUN_INTEGRATION_TESTS=true DYNADOT_API_KEY=your-api-key TEST_DOMAIN=your-domain.com npm test
 
-# E2E tests (validates all 106 API endpoints)
+# E2E tests (validates all 108 API endpoints)
 RUN_INTEGRATION_TESTS=true TEST_DOMAIN=your-domain.com npm test -- test/e2e.test.ts
 
 # Functional tests (real CRUD operations)
@@ -383,7 +383,7 @@ npm run dev
 ## Testing
 
 ### E2E Tests
-Validates that all 106 API actions are properly mapped and return valid responses.
+Validates that all 108 API actions are properly mapped and return valid responses.
 
 ### Functional Tests
 Tests real CRUD operations:
@@ -427,10 +427,10 @@ Unlocking domains may need to be done through the Dynadot control panel.
 
 ```
 src/
-├── index.ts       # MCP server entry point
-├── client.ts      # Dynadot API client
-├── schema.ts      # Tool and action definitions (10 tools, 106 actions)
-└── register.ts    # Tool registration with MCP server
+├── index.ts         # MCP server entry point
+├── client.ts        # Dynadot API client
+├── register.ts      # Tool registration with MCP server
+└── schemas/*.ts     # Tool and operation definitions (10 tools, 108 actions)
 
 test/
 ├── e2e.test.ts         # Endpoint validation tests

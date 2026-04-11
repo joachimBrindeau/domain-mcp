@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "dynadot": {
+      "command": "bash",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/launch-domain-mcp.sh"],
+      "env": {
+        "DOMAIN_MCP_VERSION": "^1.1.0"
+      }
+    }
+  }
+}

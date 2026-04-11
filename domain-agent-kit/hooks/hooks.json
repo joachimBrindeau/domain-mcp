@@ -1,0 +1,29 @@
+{
+  "description": "Safety hooks for domain-agent-kit. (1) PreToolUse: surfaces a native Claude Code confirmation prompt before irreversible Dynadot operations. Non-destructive ops pass through unchanged; parse failures fail closed. (2) SessionStart: fast credential presence check with a loud warning when neither a project settings file nor a shell DYNADOT_API_KEY env var is configured.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__dynadot__domain|mcp__dynadot__transfer|mcp__dynadot__aftermarket|mcp__dynadot__contact|mcp__dynadot__folder",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/confirm-destructive.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/session-preflight.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

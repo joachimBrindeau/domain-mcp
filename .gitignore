@@ -21,8 +21,10 @@ logs/
 coverage/
 .nyc_output/
 
-# MCP config (contains API keys)
-.mcp.json
+# MCP config (root-only — the file at the repo root contains API keys).
+# Anchored so the plugin's own .mcp.json (which has no secrets — credentials
+# resolve at runtime via the launcher script) is trackable.
+/.mcp.json
 
 # IDE
 .vscode/

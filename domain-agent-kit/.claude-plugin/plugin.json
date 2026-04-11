@@ -1,0 +1,21 @@
+{
+  "name": "domain-agent-kit",
+  "version": "0.2.1",
+  "description": "Autonomous agents and slash commands for Dynadot domain management — portfolio audits, name brainstorming with trademark checks, DNS diagnostics, and renewal management. Wraps the domain-mcp MCP server.",
+  "author": {
+    "name": "Joachim Brindeau"
+  },
+  "repository": "https://github.com/joachimBrindeau/domain-mcp",
+  "license": "MIT",
+  "keywords": [
+    "dynadot",
+    "domain",
+    "mcp",
+    "dns",
+    "registrar",
+    "ai",
+    "agent",
+    "domain-management",
+    "claude-code"
+  ]
+}

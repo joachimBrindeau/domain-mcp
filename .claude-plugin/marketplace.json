@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "domain-mcp-local",
+  "description": "Local development marketplace for the domain-mcp repo. Hosts domain-agent-kit as a single-plugin marketplace so it can be installed via claude plugin install without publishing to a remote source.",
+  "owner": {
+    "name": "Joachim Brindeau"
+  },
+  "plugins": [
+    {
+      "name": "domain-agent-kit",
+      "description": "Autonomous agents and slash commands for Dynadot domain management — portfolio audits, name brainstorming with trademark checks, DNS diagnostics, and renewal management. Wraps the domain-mcp MCP server.",
+      "author": {
+        "name": "Joachim Brindeau"
+      },
+      "source": "./domain-agent-kit",
+      "category": "productivity",
+      "homepage": "https://github.com/joachimBrindeau/domain-mcp"
+    }
+  ]
+}

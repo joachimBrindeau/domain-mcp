@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local plugin settings (user-specific, never ship in plugin distribution)
+.claude/*.local.md
+.claude/*.local.json

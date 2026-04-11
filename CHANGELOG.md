@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING: drop `dynadot_` prefix from composite tool names.** Rename
+  `dynadot_domain` → `domain`, `dynadot_domain_settings` → `domain_settings`,
+  `dynadot_dns` → `dns`, `dynadot_nameserver` → `nameserver`,
+  `dynadot_transfer` → `transfer`, `dynadot_contact` → `contact`,
+  `dynadot_folder` → `folder`, `dynadot_account` → `account`,
+  `dynadot_aftermarket` → `aftermarket`, `dynadot_order` → `order`,
+  `dynadot_help` → `help`. Tool names are now provider-agnostic and rely
+  on the MCP server namespace for disambiguation (`mcp__domain-mcp__domain`).
+  Any agent prompt, script, or saved conversation referencing a
+  `dynadot_*` tool name must be updated. The underlying Dynadot API is
+  unchanged; only the MCP-facing tool names differ.
+- Sharpen npm description and keywords for discoverability (mcp-server,
+  registrar-api, agent-tools, claude-code, cursor-mcp).
+- `errors.ts` docsUrl: drop the now-pointless `replace('dynadot_', '')`.
+- README, setup, environment, reference, and sandbox docs updated to use
+  the new names and the correct `mcp__domain-mcp__<tool>` namespace form.
+
 ## [1.0.3] - 2026-01-16
 
 ### Changed

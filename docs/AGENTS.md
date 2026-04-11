@@ -44,7 +44,7 @@ src/
 ├── resources.ts      # MCP resources (account://info, domains://list, …)
 ├── constants.ts      # GITHUB_URL, DYNADOT_URLS, referral-tagged links
 ├── schemas/          # One CompositeTool per file; schemas/index.ts aggregates
-└── tools/            # Standalone MCP tools (check_domain, generate_domain_ideas, dynadot_help)
+└── tools/            # Standalone MCP tools (check_domain, generate_domain_ideas, help)
 test/                 # vitest, flat; integration tests gated on env vars
 scripts/              # CLI helpers (exempt from noConsole)
 dist/                 # tsc output, published to npm

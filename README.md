@@ -1,4 +1,4 @@
-# Domain MCP - Domain Management for AI Assistants
+# Domain MCP — Domain Management MCP Server for Claude, Cursor, and AI Agents
 
 [![npm version](https://img.shields.io/npm/v/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
@@ -9,9 +9,9 @@
 [![CI](https://github.com/joachimBrindeau/domain-mcp/workflows/CI/badge.svg)](https://github.com/joachimBrindeau/domain-mcp/actions)
 [![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
-A Domain MCP server that brings natural language domain management to Claude, Cursor, and other AI assistants. Manage Dynadot domains, DNS, contacts, and transfers through conversational commands powered by the Model Context Protocol (MCP).
+An MCP (Model Context Protocol) server for domain management. Register, renew, transfer, and configure domains — plus DNS, WHOIS, nameservers, folders, and aftermarket — through Claude, Cursor, Claude Desktop, and any MCP-compatible client. Wraps the Dynadot registrar API as 10 generic, AI-friendly tools.
 
-**🚀 AI-powered domain operations - Just ask: "List my domains", "Register example.com", or "Set up DNS"**
+**🚀 Just ask: "List my domains", "Register example.com", "Set up DNS for mysite.com"**
 
 
 ---
@@ -297,52 +297,54 @@ await client.execute('set_dns2', {
 
 This Domain MCP server provides 10 comprehensive tools for AI-powered domain operations:
 
-### 1. dynadot_domain - Core Domain Operations
+Tool names are provider-agnostic; they are namespaced by the MCP server (`mcp__domain-mcp__domain`, `mcp__domain-mcp__dns`, etc.).
+
+### 1. domain - Core Domain Operations
 List, search, register, renew, delete, info, lock, and pricing operations for your domains.
 
 **Common AI commands**: "List my domains", "Search for example.com", "Register domain", "Check .com pricing"
 
-### 2. dynadot_domain_settings - Domain Configuration
+### 2. domain_settings - Domain Configuration
 Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS.
 
 **Common AI commands**: "Enable WHOIS privacy", "Set nameservers", "Configure domain forwarding", "Enable auto-renewal"
 
-### 3. dynadot_dns - DNS Management
+### 3. dns - DNS Management
 DNS management: get/set DNS records, DNSSEC configuration.
 
 **Common AI commands**: "Show DNS records", "Add A record", "Configure MX records", "Enable DNSSEC"
 
-### 4. dynadot_nameserver - Nameserver Management
+### 4. nameserver - Nameserver Management
 Manage registered nameservers (glue records): register, update IP, delete, list.
 
 **Common AI commands**: "Register nameserver", "Update nameserver IP", "List my nameservers"
 
-### 5. dynadot_transfer - Domain Transfers
+### 5. transfer - Domain Transfers
 Domain transfers: initiate, check status, manage auth codes, push requests.
 
-**Common AI commands**: "Transfer domain to Dynadot", "Get auth code", "Check transfer status", "Push domain to another account"
+**Common AI commands**: "Transfer domain in", "Get auth code", "Check transfer status", "Push domain to another account"
 
-### 6. dynadot_contact - WHOIS Contact Management
+### 6. contact - WHOIS Contact Management
 WHOIS contact management: create, edit, delete, list, regional settings.
 
 **Common AI commands**: "Create new contact", "List contacts", "Update contact info", "Delete contact"
 
-### 7. dynadot_folder - Folder Management
+### 7. folder - Folder Management
 Folder management: create, delete, list, configure folder-level settings.
 
 **Common AI commands**: "Create domain folder", "List folders", "Move domain to folder", "Configure folder settings"
 
-### 8. dynadot_account - Account Settings
+### 8. account - Account Settings
 Account info, balance, and default settings for new domains.
 
 **Common AI commands**: "Check account balance", "Show account info", "Set default nameservers", "Configure default WHOIS"
 
-### 9. dynadot_aftermarket - Aftermarket Operations
+### 9. aftermarket - Aftermarket Operations
 Aftermarket: auctions, backorders, expired domains, marketplace listings.
 
 **Common AI commands**: "List domain auctions", "Place bid on auction", "Backorder expired domain", "List my marketplace domains"
 
-### 10. dynadot_order - Order Management
+### 10. order - Order Management
 Orders, coupons, processing status, reseller operations.
 
 **Common AI commands**: "Check order status", "List available coupons", "View order history"

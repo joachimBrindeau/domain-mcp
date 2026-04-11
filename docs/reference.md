@@ -68,16 +68,16 @@ Quick reference for AI-powered domain operations using the Domain MCP server wit
 
 The MCP server provides 10 tools (106 total actions):
 
-1. **dynadot_domain** - Core domain operations (search, register, renew, delete, info, lock, pricing)
-2. **dynadot_dns** - DNS management (get/set records, DNSSEC)
-3. **dynadot_contact** - WHOIS contacts (create, edit, delete, list)
-4. **dynadot_domain_settings** - Domain config (nameservers, privacy, forwarding)
-5. **dynadot_nameserver** - Nameserver management (glue records)
-6. **dynadot_transfer** - Domain transfers (in/out, auth codes)
-7. **dynadot_folder** - Domain organization (folders, bulk settings)
-8. **dynadot_account** - Account settings and defaults
-9. **dynadot_aftermarket** - Auctions, backorders, marketplace
-10. **dynadot_order** - Order management and history
+1. **domain** - Core domain operations (search, register, renew, delete, info, lock, pricing)
+2. **dns** - DNS management (get/set records, DNSSEC)
+3. **contact** - WHOIS contacts (create, edit, delete, list)
+4. **domain_settings** - Domain config (nameservers, privacy, forwarding)
+5. **nameserver** - Nameserver management (glue records)
+6. **transfer** - Domain transfers (in/out, auth codes)
+7. **folder** - Domain organization (folders, bulk settings)
+8. **account** - Account settings and defaults
+9. **aftermarket** - Auctions, backorders, marketplace
+10. **order** - Order management and history
 
 ## Configuration Quick Reference
 
@@ -160,7 +160,7 @@ The AI understands natural requests. Here are examples:
 ### 💡 Use Natural Language
 Don't try to guess the exact API syntax. Just ask naturally:
 - ✅ "What domains do I own?"
-- ❌ "Execute dynadot_domain with action list"
+- ❌ "Execute the domain tool with action list"
 
 ### 💡 Start with Sandbox
 Always test new operations in sandbox mode first:

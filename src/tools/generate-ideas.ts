@@ -7,7 +7,11 @@ const PATTERNS = ['exact', 'hyphenated', 'prefix', 'suffix'] as const;
 const DEFAULT_TLDS = ['com', 'io', 'co', 'app', 'dev', 'ai'];
 const PREFIXES = ['get', 'try', 'use', 'go', 'my', 'the', 'hey', 'meet'];
 const SUFFIXES = ['app', 'hq', 'io', 'ai', 'hub', 'lab', 'dev', 'now'];
-const BATCH_SIZE = 100; // Dynadot API limit per request
+// Dynadot's `search` command accepts exactly one domain per call — any n>1 returns
+// "too many domains entered, please search one domain per command". It is also
+// effectively serial: parallel calls (even concurrency=2) intermittently return
+// `{ResponseCode: 0}` with no `SearchResults`, silently dropping candidates. So we
+// walk the list one at a time and retry empty responses once.
 
 type Pattern = (typeof PATTERNS)[number];
 
@@ -99,30 +103,38 @@ const generators: Record<Pattern, (keywords: string[], tlds: string[]) => string
   suffix: generateSuffix,
 };
 
-async function checkAvailabilityBatch(domains: string[]): Promise<AvailableDomain[]> {
+async function searchOnce(
+  domain: string,
+): Promise<{ domain: string; available: boolean; price?: string } | 'empty' | null> {
   const client = getClient();
-  const params: Record<string, string | number | boolean> = {
-    show_price: 1,
-  };
-
-  // Add domains as domain0, domain1, etc.
-  for (let i = 0; i < domains.length; i++) {
-    params[`domain${i}`] = domains[i] as string;
+  try {
+    const response = await client.execute('search', { domain0: domain, show_price: 1 });
+    const normalized = normalizeResponse('search', response) as {
+      success: boolean;
+      results?: Array<{ domain: string; available: boolean; price?: string }>;
+    };
+    if (!normalized.success) return null;
+    const result = normalized.results?.[0];
+    return result ?? 'empty';
+  } catch {
+    return null;
   }
+}
 
-  const response = await client.execute('search', params);
-  const normalized = normalizeResponse('search', response) as {
-    success: boolean;
-    results?: Array<{ domain: string; available: boolean; price?: string }>;
-  };
+async function checkOne(domain: string): Promise<AvailableDomain | null> {
+  let result = await searchOnce(domain);
+  if (result === 'empty') result = await searchOnce(domain);
+  if (!result || result === 'empty' || !result.available) return null;
+  return { domain: result.domain, price: result.price };
+}
 
-  if (!normalized.success || !normalized.results) {
-    return [];
+async function checkAvailability(domains: string[]): Promise<AvailableDomain[]> {
+  const available: AvailableDomain[] = [];
+  for (const domain of domains) {
+    const result = await checkOne(domain);
+    if (result) available.push(result);
   }
-
-  return normalized.results
-    .filter((r) => r.available)
-    .map((r) => ({ domain: r.domain, price: r.price }));
+  return available;
 }
 
 const inputSchema = {
@@ -154,7 +166,7 @@ export function registerGenerateIdeasTool(server: McpServer): void {
     'generate_domain_ideas',
     {
       description:
-        'Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. One API call checks up to 100 domains.',
+        'Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.',
       inputSchema,
     },
     async (input) => {
@@ -184,13 +196,7 @@ export function registerGenerateIdeasTool(server: McpServer): void {
       const remainingSlots = Math.max(0, maxToCheck - limitedExactDomains.length);
       const toCheck = [...limitedExactDomains, ...shuffledOthers.slice(0, remainingSlots)];
 
-      // Check availability in batches
-      const available: AvailableDomain[] = [];
-      for (let i = 0; i < toCheck.length; i += BATCH_SIZE) {
-        const batch = toCheck.slice(i, i + BATCH_SIZE);
-        const results = await checkAvailabilityBatch(batch);
-        available.push(...results);
-      }
+      const available = await checkAvailability(toCheck);
 
       // Sort by price (cheapest first)
       available.sort((a, b) => {

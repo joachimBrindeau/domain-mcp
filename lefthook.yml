@@ -11,6 +11,11 @@ pre-commit:
     knip:
       run: npx knip --no-progress
 
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}
+
 pre-push:
   parallel: true
   commands:

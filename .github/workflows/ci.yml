@@ -13,6 +13,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          # commitlint --from/--to needs full history to walk PR commits
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -31,6 +34,13 @@ jobs:
 
       - name: Knip
         run: npx knip --no-progress
+
+      - name: Commitlint (PR commits)
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.event.pull_request.head.sha }} --verbose
+
+      - name: Publint
+        run: npm run publint
 
       - name: Check types export (attw)
         run: npm run attw

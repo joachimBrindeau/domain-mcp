@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-04-11
+
 ### Changed
 - **BREAKING: drop `dynadot_` prefix from composite tool names.** Rename
   `dynadot_domain` → `domain`, `dynadot_domain_settings` → `domain_settings`,

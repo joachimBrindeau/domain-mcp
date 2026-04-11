@@ -7,8 +7,8 @@
  * No external API calls - uses your Claude Code subscription.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { compositeTools } from '../src/schemas/index.js';
 
 interface TestCase {
@@ -18,15 +18,6 @@ interface TestCase {
   params?: Record<string, unknown>;
   skip?: boolean;
   skipReason?: string;
-}
-
-interface TestResult {
-  tool: string;
-  action: string;
-  status: 'pass' | 'fail' | 'skip';
-  error?: string;
-  duration?: number;
-  response?: unknown;
 }
 
 // Actions that require write operations (skip in read-only mode)
@@ -96,7 +87,6 @@ const TEST_DATA = {
 
 class ClaudeCodeToolTester {
   private testCases: TestCase[] = [];
-  private results: TestResult[] = [];
 
   /**
    * Discover all test cases from schema
@@ -139,7 +129,7 @@ class ClaudeCodeToolTester {
    * Generate sample parameters for an action
    */
   private generateParams(
-    action: string,
+    _action: string,
     schema?: Record<string, unknown>,
   ): Record<string, unknown> | undefined {
     if (!schema || Object.keys(schema).length === 0) {
@@ -334,8 +324,10 @@ console.log(\`TEST_FOLDER_ID=\${folderId}\`);
       md += ']);\n';
       md += 'results.forEach((r, i) => {\n';
       md += '  if (r.status === "fulfilled") {\n';
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: emitting a template-literal placeholder into generated TS code
       md += '    console.log(`✅ Test ${i + 1}: PASS`);\n';
       md += '  } else {\n';
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: emitting a template-literal placeholder into generated TS code
       md += '    console.log(`❌ Test ${i + 1}: FAIL - ${r.reason}`);\n';
       md += '  }\n';
       md += '});\n';
@@ -392,7 +384,7 @@ Write operations skipped in read-only mode:
       if (!skippedByTool.has(tc.tool)) {
         skippedByTool.set(tc.tool, []);
       }
-      skippedByTool.get(tc.tool)!.push(tc);
+      skippedByTool.get(tc.tool)?.push(tc);
     });
 
     for (const [tool, cases] of skippedByTool) {

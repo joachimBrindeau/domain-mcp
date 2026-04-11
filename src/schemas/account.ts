@@ -5,7 +5,7 @@ import type { CompositeTool } from './common.js';
 import { dnsRecord, p, subdomainRecord, tx } from './common.js';
 
 export const accountTool: CompositeTool = {
-  name: 'dynadot_account',
+  name: 'account',
   description: `Account info, balance, and default settings for new domains. Manage API keys: ${DYNADOT_URLS.apiKey}`,
   actions: {
     info: {

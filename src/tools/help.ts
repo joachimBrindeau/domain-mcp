@@ -10,7 +10,7 @@ const inputSchema = {
 
 export function registerHelpTool(server: McpServer): void {
   server.registerTool(
-    'dynadot_help',
+    'help',
     {
       description:
         'Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.',
@@ -41,7 +41,7 @@ export function registerHelpTool(server: McpServer): void {
                       name: 'generate_domain_ideas',
                       description: 'Generate available domain ideas from keywords',
                     },
-                    { name: 'dynadot_help', description: 'This help tool' },
+                    { name: 'help', description: 'This help tool' },
                   ],
                 },
                 null,
@@ -57,7 +57,7 @@ export function registerHelpTool(server: McpServer): void {
           const error = createToolError('Missing tool parameter', {
             type: 'MISSING_PARAM',
             param: 'tool',
-            tool: 'dynadot_help',
+            tool: 'help',
           });
           return {
             content: [{ type: 'text', text: error.toJSON() }],
@@ -69,7 +69,7 @@ export function registerHelpTool(server: McpServer): void {
         if (!tool) {
           const error = createToolError(`Tool "${toolName}" not found`, {
             type: 'VALIDATION_ERROR',
-            tool: 'dynadot_help',
+            tool: 'help',
           });
           error.suggestions = [`Available tools: ${compositeTools.map((t) => t.name).join(', ')}`];
           return {
@@ -105,7 +105,7 @@ export function registerHelpTool(server: McpServer): void {
                   examples: [
                     {
                       description: 'List all domains',
-                      tool: 'dynadot_domain',
+                      tool: 'domain',
                       input: { operation: 'list' },
                     },
                     {
@@ -115,7 +115,7 @@ export function registerHelpTool(server: McpServer): void {
                     },
                     {
                       description: 'Get domain DNS records',
-                      tool: 'dynadot_dns',
+                      tool: 'dns',
                       input: { operation: 'get', domain: 'example.com' },
                     },
                   ],
@@ -130,7 +130,7 @@ export function registerHelpTool(server: McpServer): void {
 
       const error = createToolError('Invalid query', {
         type: 'VALIDATION_ERROR',
-        tool: 'dynadot_help',
+        tool: 'help',
       });
       error.suggestions = ['Use query: "tools", "actions", or "examples"'];
       return {

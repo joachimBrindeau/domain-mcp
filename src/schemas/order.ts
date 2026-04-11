@@ -3,7 +3,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const orderTool: CompositeTool = {
-  name: 'dynadot_order',
+  name: 'order',
   description: 'Orders, coupons, processing status, reseller operations',
   actions: {
     list: {

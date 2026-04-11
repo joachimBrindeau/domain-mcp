@@ -193,7 +193,7 @@ class ClaudeCodeToolTester {
     for (let i = 0; i < toTest.length; i += batchSize) {
       const batch = toTest.slice(i, i + batchSize);
       const commands = batch.map((tc) => {
-        const toolName = `mcp__dynadot__${tc.tool}`;
+        const toolName = `mcp__domain-mcp__${tc.tool}`;
         const params = tc.params
           ? `{ action: "${tc.action}", ...${JSON.stringify(tc.params)} }`
           : `{ action: "${tc.action}" }`;
@@ -273,7 +273,7 @@ Create test contact and folder for testing:
 \`\`\`typescript
 // Setup: Create test resources
 const setupResults = await Promise.allSettled([
-  mcp__dynadot__dynadot_contact({
+  mcp__domain-mcp__contact({
     action: "create",
     name: "MCP Test Contact",
     email: "mcp-test@example.com",
@@ -285,7 +285,7 @@ const setupResults = await Promise.allSettled([
     zipCode: "94102",
     country: "US"
   }),
-  mcp__dynadot__dynadot_folder({
+  mcp__domain-mcp__folder({
     action: "create",
     folderName: "MCP Test Folder"
   })
@@ -359,11 +359,11 @@ const TEST_CONTACT_ID = "your-contact-id";
 const TEST_FOLDER_ID = "your-folder-id";
 
 const cleanupResults = await Promise.allSettled([
-  mcp__dynadot__dynadot_contact({
+  mcp__domain-mcp__contact({
     action: "delete",
     contactId: TEST_CONTACT_ID
   }),
-  mcp__dynadot__dynadot_folder({
+  mcp__domain-mcp__folder({
     action: "delete",
     folderId: TEST_FOLDER_ID
   })
@@ -466,7 +466,7 @@ TOTAL=0
 `;
 
     toTest.forEach((tc, idx) => {
-      const toolName = `mcp__dynadot__${tc.tool}`;
+      const toolName = `mcp__domain-mcp__${tc.tool}`;
       const params = tc.params
         ? `'action=${tc.action}, params=${JSON.stringify(tc.params)}'`
         : `'action=${tc.action}'`;

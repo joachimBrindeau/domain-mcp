@@ -53,9 +53,9 @@ describeIntegration('Integration test prerequisites', () => {
 });
 
 // =============================================================================
-// TOOL 1: dynadot_domain (11 actions)
+// TOOL 1: domain (11 actions)
 // =============================================================================
-describeIntegration('dynadot_domain', () => {
+describeIntegration('domain', () => {
   describe('read operations', () => {
     it('list - should list all domains', async () => {
       const result = await prodClient.execute('list_domain');
@@ -150,9 +150,9 @@ describeIntegration('dynadot_domain', () => {
 });
 
 // =============================================================================
-// TOOL 2: dynadot_domain_settings (13 actions)
+// TOOL 2: domain_settings (13 actions)
 // =============================================================================
-describeIntegration('dynadot_domain_settings', () => {
+describeIntegration('domain_settings', () => {
   describe('read operations', () => {
     it('get_ns - should get nameservers', async () => {
       const result = await prodClient.execute('get_ns', { domain: TEST_DOMAIN });
@@ -260,9 +260,9 @@ describeIntegration('dynadot_domain_settings', () => {
 });
 
 // =============================================================================
-// TOOL 3: dynadot_dns (5 actions)
+// TOOL 3: dns (5 actions)
 // =============================================================================
-describeIntegration('dynadot_dns', () => {
+describeIntegration('dns', () => {
   describe('read operations', () => {
     it('get - should get DNS records', async () => {
       const result = await prodClient.execute('get_dns', { domain: TEST_DOMAIN });
@@ -304,9 +304,9 @@ describeIntegration('dynadot_dns', () => {
 });
 
 // =============================================================================
-// TOOL 4: dynadot_nameserver (6 actions)
+// TOOL 4: nameserver (6 actions)
 // =============================================================================
-describeIntegration('dynadot_nameserver', () => {
+describeIntegration('nameserver', () => {
   describe('read operations', () => {
     it('list - should list registered nameservers', async () => {
       const result = await prodClient.execute('server_list');
@@ -351,9 +351,9 @@ describeIntegration('dynadot_nameserver', () => {
 });
 
 // =============================================================================
-// TOOL 5: dynadot_transfer (8 actions)
+// TOOL 5: transfer (8 actions)
 // =============================================================================
-describeIntegration('dynadot_transfer', () => {
+describeIntegration('transfer', () => {
   describe('read operations', () => {
     it('status - should get transfer status', async () => {
       const result = await prodClient.execute('get_transfer_status', { domain: TEST_DOMAIN });
@@ -411,9 +411,9 @@ describeIntegration('dynadot_transfer', () => {
 });
 
 // =============================================================================
-// TOOL 6: dynadot_contact (11 actions)
+// TOOL 6: contact (11 actions)
 // =============================================================================
-describeIntegration('dynadot_contact', () => {
+describeIntegration('contact', () => {
   describe('read operations', () => {
     it('list - should list all contacts', async () => {
       const result = await prodClient.execute('contact_list');
@@ -494,9 +494,9 @@ describeIntegration('dynadot_contact', () => {
 });
 
 // =============================================================================
-// TOOL 7: dynadot_folder (15 actions)
+// TOOL 7: folder (15 actions)
 // =============================================================================
-describeIntegration('dynadot_folder', () => {
+describeIntegration('folder', () => {
   describe('read operations', () => {
     it('list - should list all folders', async () => {
       const result = await prodClient.execute('folder_list');
@@ -613,9 +613,9 @@ describeIntegration('dynadot_folder', () => {
 });
 
 // =============================================================================
-// TOOL 8: dynadot_account (13 actions)
+// TOOL 8: account (13 actions)
 // =============================================================================
-describeIntegration('dynadot_account', () => {
+describeIntegration('account', () => {
   describe('read operations', () => {
     it('info - should get account info', async () => {
       const result = await prodClient.execute('account_info');
@@ -705,9 +705,9 @@ describeIntegration('dynadot_account', () => {
 });
 
 // =============================================================================
-// TOOL 9: dynadot_aftermarket (20 actions)
+// TOOL 9: aftermarket (20 actions)
 // =============================================================================
-describeIntegration('dynadot_aftermarket', () => {
+describeIntegration('aftermarket', () => {
   describe('backorders', () => {
     it('backorder_list - should list backorder requests', async () => {
       const result = await prodClient.execute('backorder_request_list');
@@ -863,9 +863,9 @@ describeIntegration('dynadot_aftermarket', () => {
 });
 
 // =============================================================================
-// TOOL 10: dynadot_order (5 actions)
+// TOOL 10: order (5 actions)
 // =============================================================================
-describeIntegration('dynadot_order', () => {
+describeIntegration('order', () => {
   describe('read operations', () => {
     it('list - should list recent orders', async () => {
       const today = new Date();

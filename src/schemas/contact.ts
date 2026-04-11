@@ -13,7 +13,7 @@ const settingsTransform = (_: string, input: Record<string, unknown>): ApiParams
 };
 
 export const contactTool: CompositeTool = {
-  name: 'dynadot_contact',
+  name: 'contact',
   description: 'WHOIS contact management: create, edit, delete, list, regional settings',
   actions: {
     list: {

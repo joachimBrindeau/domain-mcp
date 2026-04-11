@@ -3,7 +3,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const transferTool: CompositeTool = {
-  name: 'dynadot_transfer',
+  name: 'transfer',
   description: 'Domain transfers: initiate, check status, manage auth codes, push requests',
   actions: {
     initiate: {

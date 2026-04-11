@@ -7,7 +7,7 @@ describe('Structured Errors', () => {
       type: 'UNKNOWN_ACTION',
       action: 'locks',
       validActions: ['lock', 'unlock', 'list'],
-      tool: 'dynadot_domain',
+      tool: 'domain',
     });
 
     expect(error.suggestions).toContain("Did you mean 'lock'?");
@@ -18,7 +18,7 @@ describe('Structured Errors', () => {
     const error = createToolError('missing_param', {
       type: 'MISSING_PARAM',
       param: 'domain',
-      tool: 'dynadot_domain',
+      tool: 'domain',
     });
 
     expect(error.docsUrl).toContain('github.com');
@@ -28,7 +28,7 @@ describe('Structured Errors', () => {
     const error = createToolError('api_error', {
       type: 'API_ERROR',
       message: 'Domain not found',
-      tool: 'dynadot_domain',
+      tool: 'domain',
     });
 
     const json = JSON.parse(error.toJSON());

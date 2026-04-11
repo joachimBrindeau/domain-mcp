@@ -1,6 +1,6 @@
 /**
- * Schema exports for all Dynadot MCP tools
- * Split from monolithic schema.ts for better maintainability
+ * Schema exports for all composite MCP tools backed by the Dynadot registrar API.
+ * Split from monolithic schema.ts for better maintainability.
  */
 
 import { accountTool } from './account.js';

@@ -3,7 +3,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const nameserverTool: CompositeTool = {
-  name: 'dynadot_nameserver',
+  name: 'nameserver',
   description: 'Manage registered nameservers (glue records): register, update IP, delete, list',
   actions: {
     list: {

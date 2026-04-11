@@ -5,7 +5,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const domainTool: CompositeTool = {
-  name: 'dynadot_domain',
+  name: 'domain',
   description: `Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: ${DYNADOT_URLS.domainSearch}`,
   actions: {
     list: {

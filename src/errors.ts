@@ -23,7 +23,7 @@ export class ToolError extends Error {
     this.tool = details.tool;
     this.suggestions = [];
     this.validActions = details.validActions;
-    this.docsUrl = `${DOCS_BASE}#${details.tool.replace('dynadot_', '')}`;
+    this.docsUrl = `${DOCS_BASE}#${details.tool}`;
 
     if (details.type === 'UNKNOWN_ACTION' && details.action && details.validActions) {
       const suggestion = this.findSimilar(details.action, details.validActions);

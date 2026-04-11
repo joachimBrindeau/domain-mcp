@@ -4,7 +4,7 @@ import type { CompositeTool } from './common.js';
 import { dnsRecord, p, subdomainRecord, tx } from './common.js';
 
 export const folderTool: CompositeTool = {
-  name: 'dynadot_folder',
+  name: 'folder',
   description: 'Folder management: create, delete, list, configure folder-level settings',
   actions: {
     list: {

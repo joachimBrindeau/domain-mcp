@@ -4,7 +4,7 @@ import type { CompositeTool } from './common.js';
 import { p, tx } from './common.js';
 
 export const domainSettingsTool: CompositeTool = {
-  name: 'dynadot_domain_settings',
+  name: 'domain_settings',
   description:
     'Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS',
   actions: {

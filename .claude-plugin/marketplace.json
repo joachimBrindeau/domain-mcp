@@ -12,7 +12,7 @@
       "author": {
         "name": "Joachim Brindeau"
       },
-      "source": "./domain-agent-kit",
+      "source": "./packages/domain-agent-kit",
       "category": "productivity",
       "homepage": "https://github.com/joachimBrindeau/domain-mcp"
     }

@@ -1,0 +1,115 @@
+{
+  "name": "domain-mcp",
+  "version": "2.0.0",
+  "description": "MCP server for domain management via Claude, Cursor, and any Model Context Protocol client. 108 Dynadot API actions across 10 generic tools: domain search, registration, renewal, DNS, WHOIS, nameservers, transfers, and aftermarket.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "domain-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joachimBrindeau/domain-mcp.git",
+    "directory": "packages/domain-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/joachimBrindeau/domain-mcp/issues"
+  },
+  "homepage": "https://github.com/joachimBrindeau/domain-mcp#readme",
+  "author": {
+    "name": "Joachim Brindeau"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "prebuild": "pnpm run clean",
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:generate": "tsx scripts/test-with-claude-code.ts",
+    "test:generate:write": "tsx scripts/test-with-claude-code.ts --write",
+    "check": "biome check src/ test/",
+    "check:fix": "biome check --write src/ test/",
+    "typecheck": "tsc --noEmit",
+    "knip": "knip --no-progress",
+    "publint": "publint",
+    "attw": "attw --pack --ignore-rules cjs-resolves-to-esm",
+    "size": "size-limit",
+    "prepare": "pnpm run build"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "anthropic-mcp",
+    "domain-mcp",
+    "mcp-domain",
+    "dynadot",
+    "dynadot-api",
+    "dynadot-mcp",
+    "domain",
+    "domains",
+    "domain-management",
+    "domain-registration",
+    "domain-api",
+    "dns",
+    "dns-api",
+    "dns-management",
+    "nameserver",
+    "whois",
+    "domain-transfer",
+    "domain-parking",
+    "domain-forwarding",
+    "registrar",
+    "registrar-api",
+    "aftermarket",
+    "domain-auction",
+    "ai-domain",
+    "ai-agent",
+    "agent-tools",
+    "llm-tools",
+    "claude",
+    "claude-code",
+    "claude-mcp-server",
+    "cursor",
+    "cursor-mcp",
+    "natural-language-domains",
+    "typescript",
+    "automation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "ky": "^1.14.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@size-limit/file": "^12.0.0",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.15",
+    "dotenv": "^17.2.3",
+    "publint": "^0.3.17",
+    "size-limit": "^12.0.0",
+    "tsx": "^4.21.0",
+    "vitest": "^4.0.15"
+  },
+  "size-limit": [
+    {
+      "path": "dist/**/*.js",
+      "limit": "250 kB"
+    }
+  ]
+}

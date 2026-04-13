@@ -3,27 +3,27 @@ pre-commit:
   commands:
     biome:
       glob: "*.{ts,js,json}"
-      run: npx biome check --write {staged_files} && git add {staged_files}
+      run: pnpm exec biome check --write {staged_files} && git add {staged_files}
     typecheck:
-      run: npx tsc --noEmit
+      run: pnpm --filter domain-mcp run typecheck
     gitleaks:
       run: gitleaks protect --staged --no-banner
     knip:
-      run: npx knip --no-progress
+      run: pnpm --filter domain-mcp run knip
 
 commit-msg:
   commands:
     commitlint:
-      run: npx commitlint --edit {1}
+      run: pnpm exec commitlint --edit {1}
 
 pre-push:
   parallel: true
   commands:
     test:
-      run: npx vitest run
+      run: pnpm --filter domain-mcp run test
     publint:
-      run: npx publint
+      run: pnpm --filter domain-mcp run publint
     attw:
-      run: npx attw --pack --ignore-rules cjs-resolves-to-esm
+      run: pnpm --filter domain-mcp run attw
     size:
-      run: npx size-limit
+      run: pnpm --filter domain-mcp run size

@@ -1,0 +1,12 @@
+{
+  "name": "domain-agent-kit",
+  "version": "0.2.1",
+  "private": true,
+  "description": "Claude Code plugin for Dynadot domain management.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joachimBrindeau/domain-mcp.git",
+    "directory": "packages/domain-agent-kit"
+  },
+  "license": "MIT"
+}

@@ -14,39 +14,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # commitlint --from/--to needs full history to walk PR commits
           fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Biome check
-        run: npx biome check src/ test/
+        run: pnpm exec biome check packages/domain-mcp/src packages/domain-mcp/test
 
       - name: Type check
-        run: npm run typecheck
+        run: pnpm --filter domain-mcp run typecheck
 
       - name: Knip
-        run: npx knip --no-progress
+        run: pnpm --filter domain-mcp run knip
 
       - name: Commitlint (PR commits)
         if: github.event_name == 'pull_request'
-        run: npx commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.event.pull_request.head.sha }} --verbose
+        run: pnpm exec commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.event.pull_request.head.sha }} --verbose
 
       - name: Publint
-        run: npm run publint
+        run: pnpm --filter domain-mcp run publint
 
       - name: Check types export (attw)
-        run: npm run attw
+        run: pnpm --filter domain-mcp run attw
 
       - name: Check size
-        run: npm run size
+        run: pnpm --filter domain-mcp run size
 
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
@@ -64,20 +66,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Test
-        run: npm test
+        run: pnpm --filter domain-mcp run test
 
       - name: Build
-        run: npm run build
+        run: pnpm --filter domain-mcp run build
 
   publish:
     name: Publish to npm
@@ -88,19 +93,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build
+        run: pnpm --filter domain-mcp run build
 
       - name: Publish to npm
-        run: npm publish
+        run: pnpm --filter domain-mcp publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

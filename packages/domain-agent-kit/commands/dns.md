@@ -1,7 +1,7 @@
 ---
 description: Diagnose DNS problems or configure DNS records for a domain
 argument-hint: "[diagnose|setup] <domain>"
-allowed-tools: Task, AskUserQuestion, Read, mcp__dynadot__dns, mcp__dynadot__domain
+allowed-tools: Task, AskUserQuestion, Read, mcp__domain-mcp__dns, mcp__domain-mcp__domain
 ---
 
 Route the DNS request to the right backend: the `dns-diagnostic` agent for troubleshooting, or direct `dns` MCP tool calls for first-time setup.

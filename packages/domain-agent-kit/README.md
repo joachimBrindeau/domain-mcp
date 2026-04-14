@@ -13,7 +13,7 @@ hook on destructive operations — all wrapping the
 
 | Component | What it does |
 |---|---|
-| **`.mcp.json`** | Auto-registers the plugin's MCP server (named `dynadot` to avoid collision with any project-scope `domain-mcp` the user may already have) when Claude Code loads the plugin. No manual `claude mcp add`. |
+| **`.mcp.json`** | Auto-registers the plugin's MCP server (named `domain-mcp`) when Claude Code loads the plugin. No manual `claude mcp add`. |
 | **`scripts/launch-domain-mcp.sh`** | Wrapper that resolves credentials from `.claude/domain-agent-kit.local.md` (project-scoped) or the shell environment, then execs `npx -y domain-mcp`. |
 | **`commands/setup.md`** | `/domain-agent-kit:setup` — collects the Dynadot API key, verifies it against the live API, persists to the project-scoped settings file. |
 | **`commands/audit.md`** | `/domain-agent-kit:audit` — dispatches a full portfolio health walk to the `portfolio-auditor` agent. |
@@ -209,8 +209,8 @@ help query=actions tool=domain
 
 The plugin ships a `PreToolUse` hook that surfaces a native Claude Code
 confirmation prompt before any of these operations (tools are routed
-through the plugin's `dynadot` MCP registration, so Claude Code resolves
-them as `mcp__dynadot__<tool>`):
+through the plugin's `domain-mcp` MCP registration, so Claude Code resolves
+them as `mcp__domain-mcp__<tool>`):
 
 - `domain` with `operation: delete` or `operation: push`
 - `transfer` with `operation: initiate`

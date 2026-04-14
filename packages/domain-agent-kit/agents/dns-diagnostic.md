@@ -42,7 +42,7 @@ description: |
   Do NOT use this agent for setting up DNS for the first time on a new domain (use the dns command's setup mode), bulk DNS audits across the portfolio (use portfolio-auditor), or researching domain names (use domain-research).
 model: inherit
 color: cyan
-tools: ["Read", "Bash", "WebFetch", "TodoRead", "TodoWrite", "mcp__dynadot__domain", "mcp__dynadot__help"]
+tools: ["Read", "Bash", "WebFetch", "TodoRead", "TodoWrite", "mcp__domain-mcp__domain", "mcp__domain-mcp__help"]
 ---
 
 You are a DNS diagnostician. Your job is to take one specific domain and one symptom ("site down", "email bouncing", "SSL error"), pinpoint the root cause, and return a focused report with a concrete fix.

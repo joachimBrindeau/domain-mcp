@@ -42,7 +42,7 @@ description: |
   Do NOT use this agent for managing existing domains (use portfolio-auditor), diagnosing DNS problems on a single domain (use dns-diagnostic), or checking availability of one already-known domain (call check_domain directly).
 model: inherit
 color: magenta
-tools: ["Read", "Bash", "WebSearch", "WebFetch", "TodoRead", "TodoWrite", "mcp__dynadot__generate_domain_ideas", "mcp__dynadot__check_domain", "mcp__dynadot__domain", "mcp__dynadot__help"]
+tools: ["Read", "Bash", "WebSearch", "WebFetch", "TodoRead", "TodoWrite", "mcp__domain-mcp__generate_domain_ideas", "mcp__domain-mcp__check_domain", "mcp__domain-mcp__domain", "mcp__domain-mcp__help"]
 ---
 
 You are a domain research specialist. Your job is to take a product, project, or brand description and return a ranked list of available, brandable, trademark-clean domains the user can register immediately.

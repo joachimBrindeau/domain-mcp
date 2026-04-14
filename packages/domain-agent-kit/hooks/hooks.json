@@ -3,7 +3,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__dynadot__domain|mcp__dynadot__transfer|mcp__dynadot__aftermarket|mcp__dynadot__contact|mcp__dynadot__folder",
+        "matcher": "mcp__domain-mcp__domain|mcp__domain-mcp__transfer|mcp__domain-mcp__aftermarket|mcp__domain-mcp__contact|mcp__domain-mcp__folder",
         "hooks": [
           {
             "type": "command",

@@ -10,10 +10,10 @@
 # confirmation than to silently let a delete through because jq tripped.
 #
 # Note on tool names: the underlying domain-mcp server registers composite
-# tools without the `dynadot_` prefix (`domain`, `dns`, `domain_settings`,
-# `transfer`, `contact`, `folder`, `aftermarket`, `account`, etc.). Claude
-# Code prefixes those with `mcp__dynadot__` because the plugin's .mcp.json
-# names the server `dynadot`.
+# tools without any prefix (`domain`, `dns`, `domain_settings`, `transfer`,
+# `contact`, `folder`, `aftermarket`, `account`, etc.). Claude Code prefixes
+# those with `mcp__domain-mcp__` because the plugin's .mcp.json names the
+# server `domain-mcp`.
 
 set -uo pipefail
 
@@ -49,31 +49,31 @@ fi
 is_destructive=false
 reason=""
 case "${TOOL_NAME}:${OPERATION}" in
-  mcp__dynadot__domain:delete)
+  mcp__domain-mcp__domain:delete)
     is_destructive=true
     reason="permanently deletes a domain from the account"
     ;;
-  mcp__dynadot__domain:push)
+  mcp__domain-mcp__domain:push)
     is_destructive=true
     reason="transfers ownership to another Dynadot account"
     ;;
-  mcp__dynadot__transfer:initiate)
+  mcp__domain-mcp__transfer:initiate)
     is_destructive=true
     reason="starts an inbound domain transfer (billable, multi-day commitment)"
     ;;
-  mcp__dynadot__aftermarket:delist)
+  mcp__domain-mcp__aftermarket:delist)
     is_destructive=true
     reason="removes an aftermarket listing and voids any standing offers"
     ;;
-  mcp__dynadot__aftermarket:cancel_bid)
+  mcp__domain-mcp__aftermarket:cancel_bid)
     is_destructive=true
     reason="cancels a placed auction bid"
     ;;
-  mcp__dynadot__contact:delete)
+  mcp__domain-mcp__contact:delete)
     is_destructive=true
     reason="permanently deletes a WHOIS contact"
     ;;
-  mcp__dynadot__folder:delete)
+  mcp__domain-mcp__folder:delete)
     is_destructive=true
     reason="permanently deletes a domain folder"
     ;;

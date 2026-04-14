@@ -42,7 +42,7 @@ description: |
   Do NOT use this agent for searching for new domain names (use domain-research), diagnosing DNS problems on a single domain (use dns-diagnostic), or auditing a domain that is not yet in the user's Dynadot account.
 model: inherit
 color: yellow
-tools: ["Read", "Bash", "TodoRead", "TodoWrite", "mcp__dynadot__domain", "mcp__dynadot__dns", "mcp__dynadot__account", "mcp__dynadot__help", "ListMcpResourcesTool", "ReadMcpResourceTool"]
+tools: ["Read", "Bash", "TodoRead", "TodoWrite", "mcp__domain-mcp__domain", "mcp__domain-mcp__dns", "mcp__domain-mcp__account", "mcp__domain-mcp__help", "ListMcpResourcesTool", "ReadMcpResourceTool"]
 ---
 
 You are a domain portfolio auditor. Your job is to walk every domain in the user's Dynadot account, check health across six dimensions, and return a prioritized report the user can act on.

@@ -10,9 +10,9 @@ vi.mock('ky', () => ({
   },
 }));
 
-import { DynadotClient } from '../src/client.js';
+import { DomainClient } from '../src/client.js';
 
-describe('DynadotClient', () => {
+describe('DomainClient', () => {
   beforeEach(() => {
     getSpy.mockReset();
     getSpy.mockReturnValue({
@@ -21,7 +21,7 @@ describe('DynadotClient', () => {
   });
 
   it('should reject reserved command parameter override', async () => {
-    const client = new DynadotClient({ apiKey: 'test-key' });
+    const client = new DomainClient({ apiKey: 'test-key' });
 
     await expect(client.execute('domain_info', { command: 'delete' })).rejects.toThrow(
       'Reserved parameter "command" cannot be set by tool input',
@@ -29,7 +29,7 @@ describe('DynadotClient', () => {
   });
 
   it('should preserve command and key when building search params', async () => {
-    const client = new DynadotClient({ apiKey: 'test-key' });
+    const client = new DomainClient({ apiKey: 'test-key' });
     await client.execute('domain_info', { domain: 'example.com' });
 
     const options = getSpy.mock.calls[0]?.[1] as { searchParams: URLSearchParams };

@@ -45,11 +45,11 @@ export interface ClientConfig {
  *
  * @example
  * ```typescript
- * const client = new DynadotClient();
+ * const client = new DomainClient();
  * const response = await client.execute('domain_info', { domain: 'example.com' });
  * ```
  */
-export class DynadotClient {
+export class DomainClient {
   private client: KyInstance;
   private apiKey: string;
   private maxRetries: number;
@@ -144,7 +144,7 @@ export class DynadotClient {
 }
 
 // Singleton instance
-let instance: DynadotClient | null = null;
+let instance: DomainClient | null = null;
 
 /**
  * Returns a singleton instance of the Dynadot API client.
@@ -165,9 +165,9 @@ let instance: DynadotClient | null = null;
  * const client = getClient({ maxRetries: 5, retryDelay: 2000 });
  * ```
  */
-export function getClient(config?: ClientConfig): DynadotClient {
+export function getClient(config?: ClientConfig): DomainClient {
   if (!instance) {
-    instance = new DynadotClient(config);
+    instance = new DomainClient(config);
   }
   return instance;
 }

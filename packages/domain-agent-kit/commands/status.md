@@ -1,6 +1,6 @@
 ---
 description: Check domain-agent-kit health — plugin files, dependencies, credentials, MCP server, account reachability
-allowed-tools: Read, Bash, mcp__dynadot__help, mcp__dynadot__account
+allowed-tools: Read, Bash, mcp__domain-mcp__help, mcp__domain-mcp__account
 ---
 
 Run a focused health check of the domain-agent-kit plugin. Report green/yellow/red status for each dimension, then give an overall verdict. This command must work even when the MCP server is broken — that is exactly when users run it.
@@ -57,7 +57,7 @@ Include the sandbox flag in the report when reading the project file, since it a
 Call `help` with `query: tools` via the MCP tool. This is a fast read-only probe that confirms:
 - the MCP server process is running
 - the launcher successfully resolved credentials
-- the plugin correctly registered `dynadot` under the `mcp__dynadot__` namespace
+- the plugin correctly registered `domain-mcp` under the `mcp__domain-mcp__` namespace
 
 Report one of:
 - `✅ reachable (N tools available)` with the count from the help response

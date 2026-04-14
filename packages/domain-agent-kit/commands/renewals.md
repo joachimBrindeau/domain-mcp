@@ -1,6 +1,6 @@
 ---
 description: Interactively manage Dynadot domain renewals — bucket by urgency, forecast cost, act per domain
-allowed-tools: mcp__dynadot__domain, mcp__dynadot__domain_settings, mcp__dynadot__account, ReadMcpResourceTool, AskUserQuestion
+allowed-tools: mcp__domain-mcp__domain, mcp__domain-mcp__domain_settings, mcp__domain-mcp__account, ReadMcpResourceTool, AskUserQuestion
 ---
 
 Manage domain renewals interactively: review upcoming expirations, calculate costs, and take action (auto-renew, manual renew, let expire) per domain. This command runs inline (no agent dispatch) because each domain needs an explicit user decision.

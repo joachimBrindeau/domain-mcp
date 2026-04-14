@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { DynadotClient } from '../src/client.js';
+import { DomainClient } from '../src/client.js';
 
 const TEST_DOMAIN = process.env.TEST_DOMAIN;
 const isIntegrationEnabled = process.env.RUN_INTEGRATION_TESTS === 'true';
 
 // Production client for safe read operations (full API support)
-const prodClient = new DynadotClient({ sandbox: false });
+const prodClient = new DomainClient({ sandbox: false });
 
 // Sandbox client for write operations (safe to test mutations)
-const sandboxClient = new DynadotClient({ sandbox: true });
+const sandboxClient = new DomainClient({ sandbox: true });
 const describeIntegration = describe.runIf(isIntegrationEnabled);
 
 // Helper to extract status from nested response

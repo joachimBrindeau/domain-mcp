@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { DynadotClient } from '../src/client.js';
+import { DomainClient } from '../src/client.js';
 
 const TEST_DOMAIN = process.env.TEST_DOMAIN;
 const isIntegrationEnabled = process.env.RUN_INTEGRATION_TESTS === 'true';
 
 // Sandbox client for functional CRUD tests (safe to create/delete)
-const sandboxClient = new DynadotClient({ sandbox: true });
+const sandboxClient = new DomainClient({ sandbox: true });
 const describeIntegration = describe.runIf(isIntegrationEnabled);
 
 describeIntegration('Integration test prerequisites', () => {

@@ -47,7 +47,7 @@ Everything funnels through one registration pipeline and one API client. Underst
 
 1. **`src/index.ts`** — entry point. Creates `McpServer`, calls `registerAllTools` / `registerAllResources` / `registerAllPrompts`, then connects `StdioServerTransport`. Handles `--help` / `--version` and refuses to run when stdin is a TTY.
 
-2. **`src/client.ts`** — `DynadotClient` singleton (via `getClient()`) wrapping `ky`. Every API call goes through `client.execute(command, params)`:
+2. **`src/client.ts`** — `DomainClient` singleton (via `getClient()`) wrapping `ky`. Every API call goes through `client.execute(command, params)`:
    - `key` and `command` are reserved and injected — tool input cannot set them (throws).
    - Undefined params are stripped.
    - `ky` retries on 408/429/5xx with exponential backoff (`retryDelay * 2^retryCount`, default 3 retries).

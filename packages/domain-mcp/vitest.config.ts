@@ -1,8 +1,9 @@
+import { resolve } from 'node:path';
 import { config } from 'dotenv';
 import { defineConfig } from 'vitest/config';
 
-// Load .env file for tests
-config();
+// Load .env from the workspace root (two levels up from packages/domain-mcp/).
+config({ path: resolve(import.meta.dirname, '../../.env') });
 
 export default defineConfig({
   test: {

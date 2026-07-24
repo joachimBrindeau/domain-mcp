@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/joachimbrindeau-domain-mcp-badge.png)](https://mseep.ai/app/joachimbrindeau-domain-mcp)
+
 # domain-mcp
 
 A Claude / MCP toolkit for managing domains via Dynadot. This monorepo contains:

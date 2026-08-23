@@ -84,9 +84,9 @@ wired up correctly.
 
 ### MCP server version pinning
 
-The plugin pins the underlying `domain-mcp` npm package to `^1.1.0` via
-`DOMAIN_MCP_VERSION` in `.mcp.json`. This means new 1.x releases are
-picked up automatically (bug fixes, additive features) but a future 2.x
+The plugin pins the underlying `domain-mcp` npm package to `^3.0.0` via
+`DOMAIN_MCP_VERSION` in `.mcp.json`. This means new 3.x releases are
+picked up automatically (bug fixes, additive features) but a future 4.x
 with breaking tool-shape changes will not silently replace the version
 the plugin was built against. To override, edit the `env` block in
 `.mcp.json` or export `DOMAIN_MCP_VERSION` in your shell before launching
@@ -184,12 +184,12 @@ All underlying MCP tools are available too. Use the `server.help` tool for
 discovery:
 
 ```
-help query=tools
-help query=actions tool=domain
+server.help query=tools
+server.help query=actions tool=domains.manage
 ```
 
 **Composite tools** (each takes an `operation` argument — use
-`help query=actions tool=<name>` to list operations):
+`server.help query=actions tool=<name>` to list operations):
 
 `domains.manage`, `domains.settings.manage`, `dns.manage`, `nameservers.manage`, `transfers.manage`, `contacts.manage`,
 `folders.manage`, `account.manage`, `aftermarket.manage`, `orders.manage`

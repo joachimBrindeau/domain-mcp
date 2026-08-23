@@ -101,7 +101,7 @@ You are a DNS diagnostician. Your job is to take one specific domain and one sym
 
 ### Proposed fix (for the user to run)
 ```
-dns operation=set domain=<domain> <full parameter list>
+dns.manage operation=set domain=<domain> <full parameter list>
 ```
 
 Or, if the issue is registry-side: "Wait <X>h for NS propagation" / "Re-apply nameserver change at the current registrar".
@@ -110,7 +110,7 @@ Or, if the issue is registry-side: "Wait <X>h for NS propagation" / "Re-apply na
 - <one or two dig/curl commands that confirm the fix landed>
 
 ### To inspect Dynadot's configured records (optional)
-Run: `dns operation=get domain=<domain>`
+Run: `dns.manage operation=get domain=<domain>`
 ```
 
 **Quality Standards:**

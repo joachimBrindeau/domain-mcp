@@ -1,6 +1,6 @@
 ---
 title: "account.manage MCP Tool"
-description: "Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v"
+description: "Account info, balance, and default settings for new domains. Manage API keys: Get a Dynadot API key"
 keywords:
   - MCP tool
   - domain management
@@ -11,7 +11,7 @@ slug: /tools/account/manage
 
 # `account.manage`
 
-Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v
+Account info, balance, and default settings for new domains. Manage API keys: [Get a Dynadot API key](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v)
 
 ## Safety and behavior
 

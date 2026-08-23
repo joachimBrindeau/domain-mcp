@@ -1,0 +1,48 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.joachimBrindeau/domain-mcp",
+  "title": "Domain MCP",
+  "description": "Manage Dynadot domains, DNS, WHOIS, nameservers, transfers, and aftermarket through MCP.",
+  "repository": {
+    "url": "https://github.com/joachimBrindeau/domain-mcp",
+    "source": "github",
+    "id": "1110576079",
+    "subfolder": "packages/domain-mcp"
+  },
+  "version": "2.0.1",
+  "websiteUrl": "https://github.com/joachimBrindeau/domain-mcp#readme",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "domain-mcp",
+      "version": "2.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "DYNADOT_API_KEY",
+          "description": "Dynadot API key used for domain-management operations.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "DYNADOT_SANDBOX",
+          "description": "Route requests to the Dynadot sandbox API.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "DYNADOT_SANDBOX_KEY",
+          "description": "Optional API key used when Dynadot sandbox mode is enabled.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-08-23
+
+### Added
+- Official MCP Registry metadata and automated registry publishing for releases.
+
 ## [2.0.0] - 2026-04-11
 
 ### Changed
@@ -109,7 +114,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic parameter validation and transformation
 - Error handling with detailed error messages
 
-[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/joachimBrindeau/domain-mcp/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.1.1...v2.0.0
 [1.0.3]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.0...v1.0.1

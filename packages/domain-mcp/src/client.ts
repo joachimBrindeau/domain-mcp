@@ -83,7 +83,7 @@ export class DomainClient {
     const timeout = config.timeout ?? 30000;
 
     this.client = ky.create({
-      prefixUrl: baseUrl,
+      prefix: baseUrl,
       timeout,
       retry: {
         limit: this.maxRetries,

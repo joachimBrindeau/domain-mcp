@@ -1,2 +1,11 @@
 packages:
   - 'packages/*'
+
+allowBuilds:
+  core-js: true
+  esbuild: true
+  lefthook: true
+
+overrides:
+  fast-uri: 3.1.5
+  vite: 8.1.0

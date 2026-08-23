@@ -17,11 +17,11 @@
     "CHANGELOG.md"
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.13.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joachimBrindeau/domain-mcp.git",
+    "url": "git+https://github.com/joachimBrindeau/domain-mcp.git",
     "directory": "packages/domain-mcp"
   },
   "bugs": {
@@ -96,28 +96,34 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.24.3",
-    "ky": "^1.14.0",
-    "zod": "^4.1.13"
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "ky": "^2.0.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
-    "@size-limit/file": "^12.0.0",
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@size-limit/file": "^13.0.3",
     "@types/archiver": "8.0.0",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "archiver": "8.0.0",
-    "dotenv": "^17.2.3",
-    "publint": "^0.3.17",
-    "size-limit": "^12.0.0",
+    "dotenv": "^17.4.2",
+    "publint": "^0.3.24",
+    "size-limit": "^13.0.3",
     "ts-morph": "28.0.0",
-    "tsx": "^4.21.0",
-    "vitest": "^4.0.15"
+    "tsx": "^4.23.12",
+    "vitest": "^4.1.11"
   },
   "size-limit": [
     {
       "path": "dist/**/*.js",
       "limit": "250 kB"
     }
-  ]
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  }
 }

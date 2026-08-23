@@ -5,12 +5,12 @@
   "description": "Monorepo for domain-mcp (MCP server) and domain-agent-kit (Claude Code plugin).",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.13.0"
   },
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@11.22.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joachimBrindeau/domain-mcp.git"
+    "url": "git+https://github.com/joachimBrindeau/domain-mcp.git"
   },
   "license": "MIT",
   "scripts": {
@@ -34,11 +34,17 @@
     "prepare": "lefthook install"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.13",
-    "@commitlint/cli": "^20.5.0",
-    "@commitlint/config-conventional": "^20.5.0",
-    "knip": "^5.82.1",
-    "lefthook": "^1.13.6",
-    "typescript": "^5.9.3"
-  }
+    "@biomejs/biome": "^2.5.10",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "knip": "^6.32.2",
+    "lefthook": "^2.1.10",
+    "typescript": "^7.0.2"
+  },
+  "main": "commitlint.config.js",
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/joachimBrindeau/domain-mcp/issues"
+  },
+  "homepage": "https://github.com/joachimBrindeau/domain-mcp#readme"
 }

@@ -18,6 +18,17 @@ try {
   if (manifest.tools?.length !== 13) {
     throw new Error(`Expected 13 tool schemas, got ${manifest.tools?.length ?? 0}`);
   }
+  const incompleteTools = manifest.tools.filter(
+    (tool) =>
+      !tool.outputSchema ||
+      !tool.annotations ||
+      Object.values(tool.inputSchema?.properties ?? {}).some((parameter) => !parameter.description),
+  );
+  if (incompleteTools.length > 0) {
+    throw new Error(
+      `Incomplete quality metadata for: ${incompleteTools.map((tool) => tool.name).join(', ')}`,
+    );
+  }
 
   const transport = new StdioClientTransport({
     command: process.execPath,

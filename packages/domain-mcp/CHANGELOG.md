@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-08-23
+
+### Changed
+- **BREAKING: adopt category-oriented dot notation for every MCP tool.** The 13 public names are now `domains.manage`, `domains.settings.manage`, `dns.manage`, `nameservers.manage`, `transfers.manage`, `contacts.manage`, `folders.manage`, `account.manage`, `aftermarket.manage`, `orders.manage`, `domains.availability.check`, `domains.ideas.generate`, and `server.help`.
+- MCPB configuration now allows installation without a Dynadot key so clients can discover tools and read local help before configuring credentials. Registrar-backed calls still return an actionable credential error until a key is supplied.
+- MCPB packages now include an explicit icon and preserve complete runtime tool metadata.
+
 ## [2.0.1] - 2026-08-23
 
 ### Added
@@ -114,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic parameter validation and transformation
 - Error handling with detailed error messages
 
-[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/joachimBrindeau/domain-mcp/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/joachimBrindeau/domain-mcp/compare/v2.0.1...v3.0.0
 [2.0.1]: https://github.com/joachimBrindeau/domain-mcp/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.1.1...v2.0.0
 [1.0.3]: https://github.com/joachimBrindeau/domain-mcp/compare/v1.0.2...v1.0.3

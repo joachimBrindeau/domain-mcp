@@ -1,6 +1,6 @@
 ---
 description: Check domain-agent-kit health — plugin files, dependencies, credentials, MCP server, account reachability
-allowed-tools: Read, Bash, mcp__domain-mcp__help, mcp__domain-mcp__account
+allowed-tools: Read, Bash, mcp__domain-mcp__server_help, mcp__domain-mcp__account_manage
 ---
 
 Run a focused health check of the domain-agent-kit plugin. Report green/yellow/red status for each dimension, then give an overall verdict. This command must work even when the MCP server is broken — that is exactly when users run it.
@@ -54,7 +54,7 @@ Include the sandbox flag in the report when reading the project file, since it a
 
 ## 4. MCP server reachability
 
-Call `help` with `query: tools` via the MCP tool. This is a fast read-only probe that confirms:
+Call `server.help` with `query: tools` via the MCP tool. This is a fast read-only probe that confirms:
 - the MCP server process is running
 - the launcher successfully resolved credentials
 - the plugin correctly registered `domain-mcp` under the `mcp__domain-mcp__` namespace
@@ -67,7 +67,7 @@ If the MCP server is not reachable, stop here and do not attempt check 5.
 
 ## 5. Account verification
 
-Call `account` with `operation: info`. This confirms the stored credentials are accepted by the live Dynadot API and retrieves the current balance.
+Call `account.manage` with `operation: info`. This confirms the stored credentials are accepted by the live Dynadot API and retrieves the current balance.
 
 Report one of:
 - `✅ connected (balance $X.XX, email <redacted>)` on success

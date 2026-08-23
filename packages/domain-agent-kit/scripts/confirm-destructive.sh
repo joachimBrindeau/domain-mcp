@@ -9,11 +9,12 @@
 # closed, not open. Better to inconvenience the user with one extra
 # confirmation than to silently let a delete through because jq tripped.
 #
-# Note on tool names: the underlying domain-mcp server registers composite
-# tools without any prefix (`domain`, `dns`, `domain_settings`, `transfer`,
-# `contact`, `folder`, `aftermarket`, `account`, etc.). Claude Code prefixes
-# those with `mcp__domain-mcp__` because the plugin's .mcp.json names the
-# server `domain-mcp`.
+# Tool names are category-oriented dot notation (`domains.manage`, `dns.manage`,
+# `domains.settings.manage`, `transfers.manage`, `contacts.manage`,
+# `folders.manage`, `aftermarket.manage`, `account.manage`, etc.). Claude Code
+# normalizes punctuation to underscores and prefixes them with
+# `mcp__domain-mcp__` because the plugin's .mcp.json names the server
+# `domain-mcp`.
 
 set -uo pipefail
 
@@ -49,31 +50,31 @@ fi
 is_destructive=false
 reason=""
 case "${TOOL_NAME}:${OPERATION}" in
-  mcp__domain-mcp__domain:delete)
+  mcp__domain-mcp__domains_manage:delete)
     is_destructive=true
     reason="permanently deletes a domain from the account"
     ;;
-  mcp__domain-mcp__domain:push)
+  mcp__domain-mcp__domains_manage:push)
     is_destructive=true
     reason="transfers ownership to another Dynadot account"
     ;;
-  mcp__domain-mcp__transfer:initiate)
+  mcp__domain-mcp__transfers_manage:initiate)
     is_destructive=true
     reason="starts an inbound domain transfer (billable, multi-day commitment)"
     ;;
-  mcp__domain-mcp__aftermarket:delist)
+  mcp__domain-mcp__aftermarket_manage:delist)
     is_destructive=true
     reason="removes an aftermarket listing and voids any standing offers"
     ;;
-  mcp__domain-mcp__aftermarket:cancel_bid)
+  mcp__domain-mcp__aftermarket_manage:cancel_bid)
     is_destructive=true
     reason="cancels a placed auction bid"
     ;;
-  mcp__domain-mcp__contact:delete)
+  mcp__domain-mcp__contacts_manage:delete)
     is_destructive=true
     reason="permanently deletes a WHOIS contact"
     ;;
-  mcp__domain-mcp__folder:delete)
+  mcp__domain-mcp__folders_manage:delete)
     is_destructive=true
     reason="permanently deletes a domain folder"
     ;;

@@ -117,7 +117,7 @@ This prevents other local users from reading the key. Note that `chmod 600` does
 2. Show the available entry points:
    - **Slash commands**: `/domain-agent-kit:audit`, `/domain-agent-kit:brainstorm <description>`, `/domain-agent-kit:dns <domain>`, `/domain-agent-kit:renewals`.
    - **Agents** (trigger on natural language): `domain-research`, `portfolio-auditor`, `dns-diagnostic`.
-   - **Direct MCP tools**: `help` (for discovery), `generate_domain_ideas`, `check_domain`, plus the composite tools `domain`, `domain_settings`, `dns`, `nameserver`, `transfer`, `contact`, `folder`, `account`, `aftermarket`, `order`. Each composite tool takes an `operation` argument — use `help query=actions tool=<name>` to list operations.
+   - **Direct MCP tools**: `server.help` (for discovery), `domains.ideas.generate`, `domains.availability.check`, plus the composite tools `domains.manage`, `domains.settings.manage`, `dns.manage`, `nameservers.manage`, `transfers.manage`, `contacts.manage`, `folders.manage`, `account.manage`, `aftermarket.manage`, `orders.manage`. Each composite tool takes an `operation` argument — use `server.help query=actions tool=<name>` to list operations.
 
 # Rationalizations to reject
 

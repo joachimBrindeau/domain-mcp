@@ -183,7 +183,7 @@ class ClaudeCodeToolTester {
     for (let i = 0; i < toTest.length; i += batchSize) {
       const batch = toTest.slice(i, i + batchSize);
       const commands = batch.map((tc) => {
-        const toolName = `mcp__domain-mcp__${tc.tool}`;
+        const toolName = `mcp__domain-mcp__${tc.tool.replaceAll('.', '_')}`;
         const params = tc.params
           ? `{ action: "${tc.action}", ...${JSON.stringify(tc.params)} }`
           : `{ action: "${tc.action}" }`;
@@ -263,7 +263,7 @@ Create test contact and folder for testing:
 \`\`\`typescript
 // Setup: Create test resources
 const setupResults = await Promise.allSettled([
-  mcp__domain-mcp__contact({
+  mcp__domain-mcp__contacts_manage({
     action: "create",
     name: "MCP Test Contact",
     email: "mcp-test@example.com",
@@ -275,7 +275,7 @@ const setupResults = await Promise.allSettled([
     zipCode: "94102",
     country: "US"
   }),
-  mcp__domain-mcp__folder({
+  mcp__domain-mcp__folders_manage({
     action: "create",
     folderName: "MCP Test Folder"
   })
@@ -351,11 +351,11 @@ const TEST_CONTACT_ID = "your-contact-id";
 const TEST_FOLDER_ID = "your-folder-id";
 
 const cleanupResults = await Promise.allSettled([
-  mcp__domain-mcp__contact({
+  mcp__domain-mcp__contacts_manage({
     action: "delete",
     contactId: TEST_CONTACT_ID
   }),
-  mcp__domain-mcp__folder({
+  mcp__domain-mcp__folders_manage({
     action: "delete",
     folderId: TEST_FOLDER_ID
   })
@@ -458,7 +458,7 @@ TOTAL=0
 `;
 
     toTest.forEach((tc, idx) => {
-      const toolName = `mcp__domain-mcp__${tc.tool}`;
+      const toolName = `mcp__domain-mcp__${tc.tool.replaceAll('.', '_')}`;
       const params = tc.params
         ? `'action=${tc.action}, params=${JSON.stringify(tc.params)}'`
         : `'action=${tc.action}'`;

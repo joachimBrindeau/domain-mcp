@@ -13,7 +13,7 @@ const settingsTransform = (_: string, input: Record<string, unknown>): ApiParams
 };
 
 export const contactTool: CompositeTool = {
-  name: 'contact',
+  name: 'contacts.manage',
   description: 'WHOIS contact management: create, edit, delete, list, regional settings',
   actions: {
     list: {

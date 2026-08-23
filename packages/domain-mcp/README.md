@@ -312,59 +312,68 @@ await client.execute('set_dns2', {
 
 ## MCP Tools for Domain Management
 
-This Domain MCP server provides 10 comprehensive tools for AI-powered domain operations:
+This Domain MCP server provides 13 AI-native tools: 10 composite management tools and 3 focused discovery helpers.
 
-Tool names are provider-agnostic; they are namespaced by the MCP server (`mcp__domain-mcp__domain`, `mcp__domain-mcp__dns`, etc.).
+Public MCP names use category-oriented dot notation; clients may normalize punctuation in their host-specific aliases (for example, Claude Code exposes `domains.manage` as `mcp__domain-mcp__domains_manage`).
 
-### 1. domain - Core Domain Operations
+### 1. domains.manage - Core Domain Operations
 List, search, register, renew, delete, info, lock, and pricing operations for your domains.
 
 **Common AI commands**: "List my domains", "Search for example.com", "Register domain", "Check .com pricing"
 
-### 2. domain_settings - Domain Configuration
+### 2. domains.settings.manage - Domain Configuration
 Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS.
 
 **Common AI commands**: "Enable WHOIS privacy", "Set nameservers", "Configure domain forwarding", "Enable auto-renewal"
 
-### 3. dns - DNS Management
+### 3. dns.manage - DNS Management
 DNS management: get/set DNS records, DNSSEC configuration.
 
 **Common AI commands**: "Show DNS records", "Add A record", "Configure MX records", "Enable DNSSEC"
 
-### 4. nameserver - Nameserver Management
+### 4. nameservers.manage - Nameserver Management
 Manage registered nameservers (glue records): register, update IP, delete, list.
 
 **Common AI commands**: "Register nameserver", "Update nameserver IP", "List my nameservers"
 
-### 5. transfer - Domain Transfers
+### 5. transfers.manage - Domain Transfers
 Domain transfers: initiate, check status, manage auth codes, push requests.
 
 **Common AI commands**: "Transfer domain in", "Get auth code", "Check transfer status", "Push domain to another account"
 
-### 6. contact - WHOIS Contact Management
+### 6. contacts.manage - WHOIS Contact Management
 WHOIS contact management: create, edit, delete, list, regional settings.
 
 **Common AI commands**: "Create new contact", "List contacts", "Update contact info", "Delete contact"
 
-### 7. folder - Folder Management
+### 7. folders.manage - Folder Management
 Folder management: create, delete, list, configure folder-level settings.
 
 **Common AI commands**: "Create domain folder", "List folders", "Move domain to folder", "Configure folder settings"
 
-### 8. account - Account Settings
+### 8. account.manage - Account Settings
 Account info, balance, and default settings for new domains.
 
 **Common AI commands**: "Check account balance", "Show account info", "Set default nameservers", "Configure default WHOIS"
 
-### 9. aftermarket - Aftermarket Operations
+### 9. aftermarket.manage - Aftermarket Operations
 Aftermarket: auctions, backorders, expired domains, marketplace listings.
 
 **Common AI commands**: "List domain auctions", "Place bid on auction", "Backorder expired domain", "List my marketplace domains"
 
-### 10. order - Order Management
+### 10. orders.manage - Order Management
 Orders, coupons, processing status, reseller operations.
 
 **Common AI commands**: "Check order status", "List available coupons", "View order history"
+
+### 11. domains.availability.check - Focused Availability Check
+Check one domain's registration availability, optionally including pricing.
+
+### 12. domains.ideas.generate - Domain Idea Generation
+Generate candidates from keywords and return only available domains with prices.
+
+### 13. server.help - Tool Discovery
+List tools, inspect composite-tool actions, and retrieve concrete usage examples without registrar credentials.
 
 ## Development
 

@@ -59,8 +59,8 @@ export DYNADOT_SANDBOX="${DYNADOT_SANDBOX:-false}"
 # `exec` replaces this shell so the MCP server owns stdin/stdout directly.
 #
 # The version spec is controlled by DOMAIN_MCP_VERSION (set in .mcp.json env
-# block). Default: ^1.1.0. Pinning prevents surprise breakage when upstream
+# block). Default: ^3.0.0. Pinning prevents surprise breakage when upstream
 # ships a new major version with an incompatible tool surface. Override by
 # exporting DOMAIN_MCP_VERSION in your shell or editing the plugin's .mcp.json.
-VERSION="${DOMAIN_MCP_VERSION:-^1.1.0}"
+VERSION="${DOMAIN_MCP_VERSION:-^3.0.0}"
 exec npx -y "domain-mcp@${VERSION}"

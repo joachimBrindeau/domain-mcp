@@ -4,7 +4,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const aftermarketTool: CompositeTool = {
-  name: 'aftermarket',
+  name: 'aftermarket.manage',
   description: `Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: ${DYNADOT_URLS.home}`,
   actions: {
     // Backorders

@@ -1,8 +1,8 @@
 {
   "name": "domain-mcp",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "mcpName": "io.github.joachimBrindeau/domain-mcp",
-  "description": "MCP server for domain management via Claude, Cursor, and any Model Context Protocol client. 108 Dynadot API actions across 10 generic tools: domain search, registration, renewal, DNS, WHOIS, nameservers, transfers, and aftermarket.",
+  "description": "MCP server for domain management via Claude, Cursor, and any Model Context Protocol client. 108 Dynadot API actions across 13 AI-native tools for domain search, registration, renewal, DNS, WHOIS, nameservers, transfers, and aftermarket.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -44,6 +44,7 @@
     "test:coverage": "vitest run --coverage",
     "test:generate": "tsx scripts/test-with-claude-code.ts",
     "test:generate:write": "tsx scripts/test-with-claude-code.ts --write",
+    "migrate:tool-names": "node scripts/migrate-tool-names.mjs",
     "check": "biome check src/ test/",
     "check:fix": "biome check --write src/ test/",
     "typecheck": "tsc --noEmit",
@@ -109,6 +110,7 @@
     "dotenv": "^17.2.3",
     "publint": "^0.3.17",
     "size-limit": "^12.0.0",
+    "ts-morph": "28.0.0",
     "tsx": "^4.21.0",
     "vitest": "^4.0.15"
   },

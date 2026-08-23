@@ -2,9 +2,9 @@
   "manifest_version": "0.3",
   "name": "domain-mcp",
   "display_name": "Domain MCP",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Manage Dynadot domains, DNS, WHOIS, nameservers, transfers, and aftermarket through MCP.",
-  "long_description": "Domain MCP exposes Dynadot domain-management operations to Claude, Cursor, Claude Desktop, and other MCP-compatible clients. It supports domain registration and renewal, DNS and DNSSEC, WHOIS contacts, nameservers and glue records, transfers, account settings, folders, orders, and aftermarket operations.",
+  "long_description": "Domain MCP exposes 108 Dynadot operations through 13 AI-native tools for Claude, Cursor, Claude Desktop, and other MCP-compatible clients. It supports domain registration and renewal, DNS and DNSSEC, WHOIS contacts, nameservers and glue records, transfers, account settings, folders, orders, aftermarket operations, focused availability checks, domain idea generation, and credential-free local help.",
   "author": {
     "name": "Joachim Brindeau",
     "url": "https://github.com/joachimBrindeau"
@@ -16,6 +16,7 @@
   "homepage": "https://github.com/joachimBrindeau/domain-mcp#readme",
   "documentation": "https://github.com/joachimBrindeau/domain-mcp#readme",
   "support": "https://github.com/joachimBrindeau/domain-mcp/issues",
+  "icon": "icon.png",
   "server": {
     "type": "node",
     "entry_point": "dist/index.js",
@@ -43,9 +44,9 @@
     "dynadot_api_key": {
       "type": "string",
       "title": "Dynadot API Key",
-      "description": "Your Dynadot API key for domain-management operations.",
+      "description": "Optional Dynadot API key. Tool discovery and local help work without it; registrar operations return an actionable configuration error until provided.",
       "sensitive": true,
-      "required": true
+      "required": false
     },
     "dynadot_sandbox": {
       "type": "boolean",

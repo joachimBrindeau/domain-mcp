@@ -6,7 +6,7 @@ version: 0.1.0
 
 # DNS Best Practices for Domains
 
-Copy-pasteable templates for the DNS configurations users ask about most. Use these as the source of truth rather than reasoning about record formats from memory. When applying via the plugin's `dns` command, translate the templates into the `dns` MCP tool's `operation: set` parameters and preserve any existing records the user isn't replacing.
+Copy-pasteable templates for the DNS configurations users ask about most. Use these as the source of truth rather than reasoning about record formats from memory. When applying via the plugin's `dns.manage` command, translate the templates into the `dns.manage` MCP tool's `operation: set` parameters and preserve any existing records the user isn't replacing.
 
 # Email
 
@@ -138,7 +138,7 @@ AAAA   @      2001:db8::10    3600       (optional — IPv6)
 
 CNAME records are forbidden on the apex (`@`) per RFC 1034. If your host only gives you a hostname (e.g., `myapp.vercel.app`), solutions:
 
-1. **ALIAS / ANAME / flattened CNAME** — some DNS providers support this as an extension (Dynadot, Cloudflare, Route 53 with alias). Check the Dynadot `dns` tool's supported types.
+1. **ALIAS / ANAME / flattened CNAME** — some DNS providers support this as an extension (Dynadot, Cloudflare, Route 53 with alias). Check the Dynadot `dns.manage` tool's supported types.
 2. **Manual A record** — resolve the host to an IP and use an A record, accepting that the IP can change.
 3. **Front with a redirect** — use URL forwarding on the apex, put the app on `www.example.com` with a CNAME.
 
@@ -154,7 +154,7 @@ Or point `www` at the same IP as the apex with an A record. Both work; CNAME is 
 ## HTTPS redirect from apex to www (or vice versa)
 
 DNS alone cannot redirect HTTPS traffic. Either:
-- Use the Dynadot URL forwarding feature via `domain_settings` (operates at HTTP level, user's browser hits Dynadot's redirect service first).
+- Use the Dynadot URL forwarding feature via `domains.settings.manage` (operates at HTTP level, user's browser hits Dynadot's redirect service first).
 - Run a redirect server at the apex that does HTTP/HTTPS 301.
 
 # CAA — restrict which Certificate Authorities can issue certs
@@ -227,4 +227,4 @@ Now `sub.example.com` and everything under it is resolved by the delegated names
 
 When the user describes a DNS setup task, do NOT try to recall record formats from memory. Pattern-match the task to one of the sections above and use the template verbatim. If the user's situation isn't covered, say so and ask for the provider's published DNS setup docs — do not guess.
 
-When applying records via the plugin's `dns` command, preserve any existing records for tuples the new template doesn't touch. The `dns` MCP tool's `operation: set` rewrites the whole record set, so the user's existing A records, verification TXTs, etc. must be included in the call alongside the new records from the template.
+When applying records via the plugin's `dns.manage` command, preserve any existing records for tuples the new template doesn't touch. The `dns.manage` MCP tool's `operation: set` rewrites the whole record set, so the user's existing A records, verification TXTs, etc. must be included in the call alongside the new records from the template.

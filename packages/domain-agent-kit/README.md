@@ -84,9 +84,9 @@ wired up correctly.
 
 ### MCP server version pinning
 
-The plugin pins the underlying `domain-mcp` npm package to `^1.1.0` via
-`DOMAIN_MCP_VERSION` in `.mcp.json`. This means new 1.x releases are
-picked up automatically (bug fixes, additive features) but a future 2.x
+The plugin pins the underlying `domain-mcp` npm package to `^3.0.0` via
+`DOMAIN_MCP_VERSION` in `.mcp.json`. This means new 3.x releases are
+picked up automatically (bug fixes, additive features) but a future 4.x
 with breaking tool-shape changes will not silently replace the version
 the plugin was built against. To override, edit the `env` block in
 `.mcp.json` or export `DOMAIN_MCP_VERSION` in your shell before launching
@@ -180,23 +180,23 @@ have agents and rely on explicit invocation.
 
 ### Raw MCP tools
 
-All underlying MCP tools are available too. Use the `help` tool for
+All underlying MCP tools are available too. Use the `server.help` tool for
 discovery:
 
 ```
-help query=tools
-help query=actions tool=domain
+server.help query=tools
+server.help query=actions tool=domains.manage
 ```
 
 **Composite tools** (each takes an `operation` argument — use
-`help query=actions tool=<name>` to list operations):
+`server.help query=actions tool=<name>` to list operations):
 
-`domain`, `domain_settings`, `dns`, `nameserver`, `transfer`, `contact`,
-`folder`, `account`, `aftermarket`, `order`
+`domains.manage`, `domains.settings.manage`, `dns.manage`, `nameservers.manage`, `transfers.manage`, `contacts.manage`,
+`folders.manage`, `account.manage`, `aftermarket.manage`, `orders.manage`
 
 **Standalone tools**:
 
-`check_domain`, `generate_domain_ideas`, `help`
+`domains.availability.check`, `domains.ideas.generate`, `server.help`
 
 ### MCP resources
 
@@ -212,11 +212,11 @@ confirmation prompt before any of these operations (tools are routed
 through the plugin's `domain-mcp` MCP registration, so Claude Code resolves
 them as `mcp__domain-mcp__<tool>`):
 
-- `domain` with `operation: delete` or `operation: push`
-- `transfer` with `operation: initiate`
-- `aftermarket` with `operation: delist` or `cancel_bid`
-- `contact` with `operation: delete`
-- `folder` with `operation: delete`
+- `domains.manage` with `operation: delete` or `operation: push`
+- `transfers.manage` with `operation: initiate`
+- `aftermarket.manage` with `operation: delist` or `cancel_bid`
+- `contacts.manage` with `operation: delete`
+- `folders.manage` with `operation: delete`
 
 All other operations pass through unchanged. The hook is a safety net on
 top of Claude's own judgment, not a replacement for it.

@@ -3,7 +3,7 @@ import type { CompositeTool } from './common.js';
 import { dnsRecord, p, subdomainRecord, tx } from './common.js';
 
 export const dnsTool: CompositeTool = {
-  name: 'dns',
+  name: 'dns.manage',
   description: 'DNS management: get/set DNS records, DNSSEC configuration',
   actions: {
     get: {

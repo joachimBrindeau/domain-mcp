@@ -3,7 +3,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const orderTool: CompositeTool = {
-  name: 'order',
+  name: 'orders.manage',
   description: 'Orders, coupons, processing status, reseller operations',
   actions: {
     list: {

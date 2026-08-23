@@ -9,13 +9,18 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
 const packageRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const repositoryRoot = resolve(packageRoot, '..', '..');
 const bundlePath = resolve(process.argv[2] ?? join(packageRoot, 'domain-mcp.mcpb'));
 const extracted = await mkdtemp(join(tmpdir(), 'domain-mcp-mcpb-test-'));
 
 try {
   execFileSync('unzip', ['-q', bundlePath, '-d', extracted]);
   const manifest = JSON.parse(await readFile(join(extracted, 'manifest.json'), 'utf8'));
-  await readFile(join(extracted, manifest.icon));
+  const bundledIcon = await readFile(join(extracted, manifest.icon));
+  const repositoryIcon = await readFile(join(repositoryRoot, 'icon.png'));
+  if (!bundledIcon.equals(repositoryIcon)) {
+    throw new Error('Bundle icon must be copied from the repository-root Smithery icon');
+  }
   if (manifest.tools?.length !== 13) {
     throw new Error(`Expected 13 tool schemas, got ${manifest.tools?.length ?? 0}`);
   }

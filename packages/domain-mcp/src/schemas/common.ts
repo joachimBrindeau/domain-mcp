@@ -96,18 +96,18 @@ const processDnsRecords = (
   }>,
 ): void => {
   mainRecords?.forEach((r, i) => {
-    params[`main_record_type${i}`] = r.type;
+    params[`main_record_type${i}`] = r.type.toLowerCase();
     params[`main_record${i}`] = r.value;
     if (r.ttl) params[`main_record_ttl${i}`] = r.ttl;
-    if (r.priority !== undefined) params[`main_record_distance${i}`] = r.priority;
+    if (r.priority !== undefined) params[`main_recordx${i}`] = r.priority;
   });
 
   subRecords?.forEach((r, i) => {
     params[`subdomain${i}`] = r.subdomain;
-    params[`sub_record_type${i}`] = r.type;
+    params[`sub_record_type${i}`] = r.type.toLowerCase();
     params[`sub_record${i}`] = r.value;
     if (r.ttl) params[`sub_record_ttl${i}`] = r.ttl;
-    if (r.priority !== undefined) params[`sub_record_distance${i}`] = r.priority;
+    if (r.priority !== undefined) params[`sub_recordx${i}`] = r.priority;
   });
 };
 

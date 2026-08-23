@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   generateGitHubWiki,
   generateWiki,
+  hideAffiliateUrls,
   loadMcpSurface,
   type McpTool,
   renderGitHubToolPage,
@@ -56,6 +57,32 @@ describe('generated MCP wiki', () => {
     expect(renderToolPage(tool)).toContain('## Output schema');
     expect(renderGitHubToolPage(tool)).not.toContain('---\n');
     expect(renderGitHubToolPage(tool)).toContain('[Back to the tool index](MCP-Tools)');
+  });
+
+  it('hides affiliate URLs behind descriptive link text and removes them from code blocks', () => {
+    const description =
+      'Search manually: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v';
+
+    expect(hideAffiliateUrls(description, 'markdown')).toBe(
+      'Search manually: [Search for a domain on Dynadot](https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v). View pricing: [View domain pricing on Dynadot](https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v)',
+    );
+    expect(hideAffiliateUrls(description, 'plain')).toBe(
+      'Search manually: Search for a domain on Dynadot. View pricing: View domain pricing on Dynadot',
+    );
+  });
+
+  it('does not render affiliate URLs as visible text in generated documentation', async () => {
+    const outputDirectory = await mkdtemp(join(tmpdir(), 'domain-mcp-affiliate-docs-'));
+    temporaryDirectories.push(outputDirectory);
+
+    const surface = await loadMcpSurface();
+    await generateWiki({ outputDirectory, surface });
+
+    const domainTool = await readFile(join(outputDirectory, 'tools/domains/manage.md'), 'utf8');
+    expect(domainTool).toContain(
+      '[Search for a domain on Dynadot](https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v)',
+    );
+    expect(domainTool).not.toMatch(/```json[\s\S]*s9F6L9F7U8Q9U8Z8v[\s\S]*```/);
   });
 
   it('generates a native GitHub Wiki with a home page, sidebar, and flat tool pages', async () => {

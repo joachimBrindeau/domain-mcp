@@ -1,6 +1,6 @@
 ---
 title: "aftermarket.manage MCP Tool"
-description: "Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v"
+description: "Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: Open this page on Dynadot"
 keywords:
   - MCP tool
   - domain management
@@ -11,7 +11,7 @@ slug: /tools/aftermarket/manage
 
 # `aftermarket.manage`
 
-Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v
+Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: [Open this page on Dynadot](https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v)
 
 ## Safety and behavior
 

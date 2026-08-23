@@ -1,6 +1,6 @@
 ---
 title: "domains.manage MCP Tool"
-description: "Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v"
+description: "Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: Search for a domain on Dynadot"
 keywords:
   - MCP tool
   - domain management
@@ -11,7 +11,7 @@ slug: /tools/domains/manage
 
 # `domains.manage`
 
-Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v
+Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: [Search for a domain on Dynadot](https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v)
 
 ## Safety and behavior
 
@@ -26,7 +26,7 @@ Core domain operations: list, search, register, renew, delete, info, lock, prici
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `operation` | string | Yes | Operation to perform: list: List all domains in your account \| info: Get detailed info about a domain \| search: Check domain availability (with optional pricing). Search manually: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v \| register: Register a new domain. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v \| bulk_register: Register multiple domains at once. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v \| renew: Renew a domain or check renewal price \| delete: Delete a domain \| restore: Restore a deleted/expired domain \| lock: Lock or unlock a domain \| tld_price: Get TLD pricing \| push: Push domain to another Dynadot account |
+| `operation` | string | Yes | Operation to perform: list: List all domains in your account \| info: Get detailed info about a domain \| search: Check domain availability (with optional pricing). Search manually: [Search for a domain on Dynadot](https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v) \| register: Register a new domain. View pricing: [View domain pricing on Dynadot](https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v) \| bulk_register: Register multiple domains at once. View pricing: [View domain pricing on Dynadot](https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v) \| renew: Renew a domain or check renewal price \| delete: Delete a domain \| restore: Restore a deleted/expired domain \| lock: Lock or unlock a domain \| tld_price: Get TLD pricing \| push: Push domain to another Dynadot account |
 | `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
 | `domains` | array | No | List of domain names |
 | `showPrice` | boolean | No | Include pricing |
@@ -59,7 +59,7 @@ Core domain operations: list, search, register, renew, delete, info, lock, prici
         "tld_price",
         "push"
       ],
-      "description": "Operation to perform: list: List all domains in your account | info: Get detailed info about a domain | search: Check domain availability (with optional pricing). Search manually: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v | register: Register a new domain. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v | bulk_register: Register multiple domains at once. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v | renew: Renew a domain or check renewal price | delete: Delete a domain | restore: Restore a deleted/expired domain | lock: Lock or unlock a domain | tld_price: Get TLD pricing | push: Push domain to another Dynadot account"
+      "description": "Operation to perform: list: List all domains in your account | info: Get detailed info about a domain | search: Check domain availability (with optional pricing). Search manually: Search for a domain on Dynadot | register: Register a new domain. View pricing: View domain pricing on Dynadot | bulk_register: Register multiple domains at once. View pricing: View domain pricing on Dynadot | renew: Renew a domain or check renewal price | delete: Delete a domain | restore: Restore a deleted/expired domain | lock: Lock or unlock a domain | tld_price: Get TLD pricing | push: Push domain to another Dynadot account"
     },
     "domain": {
       "description": "Domain name (e.g., example.com, mysite.net)",

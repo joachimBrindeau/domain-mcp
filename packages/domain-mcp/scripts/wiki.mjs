@@ -7,6 +7,25 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const REPOSITORY_ROOT = resolve(PACKAGE_ROOT, '..', '..');
 const SITE_URL = 'https://joachimbrindeau.github.io/domain-mcp';
+const DYNADOT_AFFILIATE_URL = /https:\/\/www\.dynadot\.com\/[^\s|)"']*s9F6L9F7U8Q9U8Z8v/g;
+
+function affiliateLinkLabel(url) {
+  const pathname = new URL(url).pathname;
+  if (pathname === '/domain/search.html') return 'Search for a domain on Dynadot';
+  if (pathname === '/domain/pricing') return 'View domain pricing on Dynadot';
+  if (pathname.includes('/account/domain/setting/api')) return 'Get a Dynadot API key';
+  if (pathname === '/account/credit.html') return 'Add credit to your Dynadot account';
+  if (pathname === '/domain/api-commands') return 'Read the Dynadot API documentation';
+  if (pathname === '/community/help/api') return 'Get Dynadot API help';
+  return 'Open this page on Dynadot';
+}
+
+export function hideAffiliateUrls(value, format = 'markdown') {
+  return value.replace(DYNADOT_AFFILIATE_URL, (url) => {
+    const label = affiliateLinkLabel(url);
+    return format === 'markdown' ? `[${label}](${url})` : label;
+  });
+}
 
 function yamlString(value) {
   return JSON.stringify(value.replace(/\s+/g, ' ').trim());
@@ -21,7 +40,8 @@ function schemaType(schema = {}) {
 }
 
 function jsonBlock(value) {
-  return `\n\n\`\`\`json\n${JSON.stringify(value ?? {}, null, 2)}\n\`\`\`\n`;
+  const json = hideAffiliateUrls(JSON.stringify(value ?? {}, null, 2), 'plain');
+  return `\n\n\`\`\`json\n${json}\n\`\`\`\n`;
 }
 
 export function toolSlug(name) {
@@ -29,18 +49,22 @@ export function toolSlug(name) {
 }
 
 export function renderToolPage(tool) {
-  const description = tool.description?.trim() || `Reference for the ${tool.name} MCP tool.`;
+  const sourceDescription = tool.description?.trim() || `Reference for the ${tool.name} MCP tool.`;
+  const description = hideAffiliateUrls(sourceDescription);
+  const metadataDescription = hideAffiliateUrls(sourceDescription, 'plain');
   const properties = tool.inputSchema?.properties ?? {};
   const required = new Set(tool.inputSchema?.required ?? []);
   const rows = Object.entries(properties).map(([name, schema]) => {
-    const parameterDescription = schema.description?.replace(/\s+/g, ' ').trim() || '—';
-    return `| \`${name}\` | ${schemaType(schema)} | ${required.has(name) ? 'Yes' : 'No'} | ${parameterDescription.replaceAll('|', '\\|')} |`;
+    const parameterDescription = hideAffiliateUrls(
+      schema.description?.replace(/\s+/g, ' ').trim() || '—',
+    ).replaceAll('|', '\\|');
+    return `| \`${name}\` | ${schemaType(schema)} | ${required.has(name) ? 'Yes' : 'No'} | ${parameterDescription} |`;
   });
   const annotations = tool.annotations ?? {};
 
   return `---
 title: ${yamlString(`${tool.name} MCP Tool`)}
-description: ${yamlString(description)}
+description: ${yamlString(metadataDescription)}
 keywords:
   - MCP tool
   - domain management

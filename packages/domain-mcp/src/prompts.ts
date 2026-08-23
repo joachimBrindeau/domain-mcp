@@ -41,14 +41,14 @@ export function registerAllPrompts(server: McpServer): void {
             type: 'text',
             text: `Help me configure DNS for ${args.domain}:
 
-1. First, get current DNS records using the dns tool with operation: get
+1. First, get current DNS records using \`dns.manage\` with \`operation: "get"\`
 2. Ask me what I want to set up:
    - Website hosting (A/AAAA records)
    - Email (MX records)
    - Domain verification (TXT records)
    - Subdomain (CNAME records)
 3. Guide me through the configuration
-4. Apply changes using the dns tool with operation: set
+4. Apply changes using \`dns.manage\` with \`operation: "set"\`
 5. Verify the changes were applied`,
           },
         },
@@ -70,7 +70,7 @@ export function registerAllPrompts(server: McpServer): void {
             text: `Find available domains for: ${args.description}
 
 1. Extract 5-8 keywords from the description (core words, action verbs, abbreviations)
-2. Call generate_domain_ideas with those keywords
+2. Call \`domains.ideas.generate\` with those keywords
 3. The tool automatically checks availability and returns only available domains with prices
 4. Present the best options grouped by brandability`,
           },

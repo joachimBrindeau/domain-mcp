@@ -1,0 +1,78 @@
+name: Wiki
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/domain-mcp/src/**'
+      - 'packages/domain-mcp/scripts/wiki.mjs'
+      - 'packages/domain-mcp/package.json'
+      - 'packages/wiki/**'
+      - 'icon.png'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/wiki.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/domain-mcp/src/**'
+      - 'packages/domain-mcp/scripts/wiki.mjs'
+      - 'packages/domain-mcp/package.json'
+      - 'packages/wiki/**'
+      - 'icon.png'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/wiki.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build generated wiki
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run wiki:check
+      - run: pnpm --filter domain-mcp-wiki run build
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/wiki/build
+
+  deploy:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

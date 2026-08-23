@@ -476,6 +476,7 @@ test/
 ## Documentation
 
 ### 📚 Guides
+- **[Generated Wiki](https://joachimbrindeau.github.io/domain-mcp/)** - Indexable reference generated from the public MCP surface
 - **[Quick Start](#quick-installation)** - Get up and running in 5 minutes
 - **[Setup Guide](docs/setup.md)** - Detailed setup for Claude Code, Cursor, Claude Desktop
 - **[Deployment](docs/deployment.md)** - Local, Docker, remote, and serverless options

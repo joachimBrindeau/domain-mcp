@@ -1,0 +1,2391 @@
+# Domain MCP
+
+> AI-native domain management through the Model Context Protocol.
+
+## Tools
+- [domains.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/manage): Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v
+- [domains.settings.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/settings/manage): Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS
+- [dns.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/dns/manage): DNS management: get/set DNS records, DNSSEC configuration
+- [nameservers.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/nameservers/manage): Manage registered nameservers (glue records): register, update IP, delete, list
+- [transfers.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/transfers/manage): Domain transfers: initiate, check status, manage auth codes, push requests
+- [contacts.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/contacts/manage): WHOIS contact management: create, edit, delete, list, regional settings
+- [folders.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/folders/manage): Folder management: create, delete, list, configure folder-level settings
+- [account.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/account/manage): Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v
+- [aftermarket.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/aftermarket/manage): Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v
+- [orders.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/orders/manage): Orders, coupons, processing status, reseller operations
+- [domains.availability.check](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/availability/check): Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.
+- [domains.ideas.generate](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/ideas/generate): Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.
+- [server.help](https://joachimbrindeau.github.io/domain-mcp/docs/tools/server/help): Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.
+
+## Resources
+- [Account Information](https://joachimbrindeau.github.io/domain-mcp/docs/resources/account-information): Current Dynadot account info: balance, email, limits
+- [My Domains](https://joachimbrindeau.github.io/domain-mcp/docs/resources/my-domains): All domains in your Dynadot account with expiry dates
+- [My Contacts](https://joachimbrindeau.github.io/domain-mcp/docs/resources/my-contacts): All WHOIS contacts in your Dynadot account
+- [My Folders](https://joachimbrindeau.github.io/domain-mcp/docs/resources/my-folders): All folders in your Dynadot account
+
+## Prompts
+- [domain-audit](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/domain-audit): Audit all domains for expiration, DNS, and security settings
+- [dns-setup](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/dns-setup): Interactive DNS configuration for a domain
+- [domain-brainstorm](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/domain-brainstorm): Find available domains for a product or tool
+- [bulk-renewal](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/bulk-renewal): Review and manage domain renewals
+
+---
+title: "domains.manage MCP Tool"
+description: "Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - domains.manage
+slug: /tools/domains/manage
+---
+
+# `domains.manage`
+
+Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: list: List all domains in your account \| info: Get detailed info about a domain \| search: Check domain availability (with optional pricing). Search manually: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v \| register: Register a new domain. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v \| bulk_register: Register multiple domains at once. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v \| renew: Renew a domain or check renewal price \| delete: Delete a domain \| restore: Restore a deleted/expired domain \| lock: Lock or unlock a domain \| tld_price: Get TLD pricing \| push: Push domain to another Dynadot account |
+| `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
+| `domains` | array | No | List of domain names |
+| `showPrice` | boolean | No | Include pricing |
+| `currency` | string | No | Optional currency parameter. |
+| `duration` | number | No | Duration in years, 1-10 (e.g., 1 for one year) |
+| `priceCheck` | boolean | No | Only check price |
+| `lock` | string | No | Lock: lock (prevent transfer), unlock (allow transfer) |
+| `tld` | string | No | TLD (e.g., com, net) |
+| `username` | string | No | Target username |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "list",
+        "info",
+        "search",
+        "register",
+        "bulk_register",
+        "renew",
+        "delete",
+        "restore",
+        "lock",
+        "tld_price",
+        "push"
+      ],
+      "description": "Operation to perform: list: List all domains in your account | info: Get detailed info about a domain | search: Check domain availability (with optional pricing). Search manually: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v | register: Register a new domain. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v | bulk_register: Register multiple domains at once. View pricing: https://www.dynadot.com/domain/pricing?s9F6L9F7U8Q9U8Z8v | renew: Renew a domain or check renewal price | delete: Delete a domain | restore: Restore a deleted/expired domain | lock: Lock or unlock a domain | tld_price: Get TLD pricing | push: Push domain to another Dynadot account"
+    },
+    "domain": {
+      "description": "Domain name (e.g., example.com, mysite.net)",
+      "type": "string"
+    },
+    "domains": {
+      "description": "List of domain names",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "showPrice": {
+      "description": "Include pricing",
+      "type": "boolean"
+    },
+    "currency": {
+      "description": "Optional currency parameter.",
+      "default": "USD",
+      "type": "string"
+    },
+    "duration": {
+      "description": "Duration in years, 1-10 (e.g., 1 for one year)",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "priceCheck": {
+      "description": "Only check price",
+      "type": "boolean"
+    },
+    "lock": {
+      "description": "Lock: lock (prevent transfer), unlock (allow transfer)",
+      "type": "string",
+      "enum": [
+        "lock",
+        "unlock"
+      ]
+    },
+    "tld": {
+      "description": "TLD (e.g., com, net)",
+      "type": "string"
+    },
+    "username": {
+      "description": "Target username",
+      "type": "string"
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "domains.settings.manage MCP Tool"
+description: "Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - domains.settings.manage
+slug: /tools/domains/settings/manage
+---
+
+# `domains.settings.manage`
+
+Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: set_ns: Set nameservers \| get_ns: Get current nameservers \| set_renew_option: Set auto-renewal option \| set_privacy: Set WHOIS privacy \| set_whois: Set WHOIS contact \| set_forwarding: Set URL forwarding \| set_stealth: Set stealth/masked forwarding \| set_parking: Enable parking page \| set_hosting: Set hosting settings \| set_email_forward: Set email forwarding \| set_folder: Move domain to folder \| set_note: Set domain note \| clear_settings: Clear all custom settings |
+| `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
+| `nameservers` | array | No | Nameservers (e.g., ["ns1.example.com", "ns2.example.com"]) |
+| `renewOption` | string | No | Renewal: auto (renew), donot (expire), reset (default) |
+| `domains` | array | No | List of domain names (e.g., ["example.com", "example.net"]) |
+| `option` | string | No | WHOIS privacy: full (hide all), partial (hide email), off (public) |
+| `registrantContact` | string | No | Contact ID from contact list (e.g., "12345") |
+| `adminContact` | string | No | Optional adminContact parameter. |
+| `techContact` | string | No | Optional techContact parameter. |
+| `billingContact` | string | No | Optional billingContact parameter. |
+| `forwardUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
+| `forwardType` | string | No | Optional forwardType parameter. |
+| `stealthUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
+| `stealthTitle` | string | No | Page title |
+| `options` | object | No | Hosting options |
+| `forwardTo` | string | No | Email address (e.g., admin@example.com) |
+| `username` | string | No | Email username (default: *) |
+| `folderId` | string | No | Folder ID from folder list (e.g., "67890") |
+| `note` | string | No | Note text (e.g., "Primary business domain") |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "set_ns",
+        "get_ns",
+        "set_renew_option",
+        "set_privacy",
+        "set_whois",
+        "set_forwarding",
+        "set_stealth",
+        "set_parking",
+        "set_hosting",
+        "set_email_forward",
+        "set_folder",
+        "set_note",
+        "clear_settings"
+      ],
+      "description": "Operation to perform: set_ns: Set nameservers | get_ns: Get current nameservers | set_renew_option: Set auto-renewal option | set_privacy: Set WHOIS privacy | set_whois: Set WHOIS contact | set_forwarding: Set URL forwarding | set_stealth: Set stealth/masked forwarding | set_parking: Enable parking page | set_hosting: Set hosting settings | set_email_forward: Set email forwarding | set_folder: Move domain to folder | set_note: Set domain note | clear_settings: Clear all custom settings"
+    },
+    "domain": {
+      "description": "Domain name (e.g., example.com, mysite.net)",
+      "type": "string"
+    },
+    "nameservers": {
+      "description": "Nameservers (e.g., [\"ns1.example.com\", \"ns2.example.com\"])",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "renewOption": {
+      "description": "Renewal: auto (renew), donot (expire), reset (default)",
+      "type": "string",
+      "enum": [
+        "auto",
+        "donot",
+        "reset"
+      ]
+    },
+    "domains": {
+      "description": "List of domain names (e.g., [\"example.com\", \"example.net\"])",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "option": {
+      "description": "WHOIS privacy: full (hide all), partial (hide email), off (public)",
+      "type": "string",
+      "enum": [
+        "full",
+        "partial",
+        "off"
+      ]
+    },
+    "registrantContact": {
+      "description": "Contact ID from contact list (e.g., \"12345\")",
+      "type": "string"
+    },
+    "adminContact": {
+      "description": "Optional adminContact parameter.",
+      "type": "string"
+    },
+    "techContact": {
+      "description": "Optional techContact parameter.",
+      "type": "string"
+    },
+    "billingContact": {
+      "description": "Optional billingContact parameter.",
+      "type": "string"
+    },
+    "forwardUrl": {
+      "description": "URL for forwarding (e.g., https://example.com/page)",
+      "type": "string"
+    },
+    "forwardType": {
+      "description": "Optional forwardType parameter.",
+      "type": "string",
+      "enum": [
+        "temporary",
+        "permanent"
+      ]
+    },
+    "stealthUrl": {
+      "description": "URL for forwarding (e.g., https://example.com/page)",
+      "type": "string"
+    },
+    "stealthTitle": {
+      "description": "Page title",
+      "type": "string"
+    },
+    "options": {
+      "description": "Hosting options",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "forwardTo": {
+      "description": "Email address (e.g., admin@example.com)",
+      "type": "string"
+    },
+    "username": {
+      "description": "Email username (default: *)",
+      "type": "string"
+    },
+    "folderId": {
+      "description": "Folder ID from folder list (e.g., \"67890\")",
+      "type": "string"
+    },
+    "note": {
+      "description": "Note text (e.g., \"Primary business domain\")",
+      "type": "string"
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "dns.manage MCP Tool"
+description: "DNS management: get/set DNS records, DNSSEC configuration"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - dns.manage
+slug: /tools/dns/manage
+---
+
+# `dns.manage`
+
+DNS management: get/set DNS records, DNSSEC configuration
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: get: Get current DNS records \| set: Set DNS records \| set_dnssec: Enable DNSSEC \| get_dnssec: Get DNSSEC settings \| clear_dnssec: Remove DNSSEC \| clear_dns: Clear all DNS records for a domain (removes all A, AAAA, CNAME, MX, TXT records) |
+| `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
+| `mainRecords` | array | No | Main domain records |
+| `subdomainRecords` | array | No | Subdomain records |
+| `keyTag` | number | No | Key tag |
+| `algorithm` | number | No | Algorithm |
+| `digestType` | number | No | Digest type |
+| `digest` | string | No | DS record digest |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "get",
+        "set",
+        "set_dnssec",
+        "get_dnssec",
+        "clear_dnssec",
+        "clear_dns"
+      ],
+      "description": "Operation to perform: get: Get current DNS records | set: Set DNS records | set_dnssec: Enable DNSSEC | get_dnssec: Get DNSSEC settings | clear_dnssec: Remove DNSSEC | clear_dns: Clear all DNS records for a domain (removes all A, AAAA, CNAME, MX, TXT records)"
+    },
+    "domain": {
+      "description": "Domain name (e.g., example.com, mysite.net)",
+      "type": "string"
+    },
+    "mainRecords": {
+      "description": "Main domain records",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Record type (A, AAAA, CNAME, MX, TXT)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Record value"
+          },
+          "ttl": {
+            "description": "TTL in seconds",
+            "type": "number"
+          },
+          "priority": {
+            "description": "Priority (for MX)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      }
+    },
+    "subdomainRecords": {
+      "description": "Subdomain records",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subdomain": {
+            "type": "string",
+            "description": "Subdomain name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Record type"
+          },
+          "value": {
+            "type": "string",
+            "description": "Record value"
+          },
+          "ttl": {
+            "description": "TTL in seconds",
+            "type": "number"
+          },
+          "priority": {
+            "description": "Priority (for MX)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "subdomain",
+          "type",
+          "value"
+        ]
+      }
+    },
+    "keyTag": {
+      "description": "Key tag",
+      "type": "number"
+    },
+    "algorithm": {
+      "description": "Algorithm",
+      "type": "number"
+    },
+    "digestType": {
+      "description": "Digest type",
+      "type": "number"
+    },
+    "digest": {
+      "description": "DS record digest",
+      "type": "string"
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "nameservers.manage MCP Tool"
+description: "Manage registered nameservers (glue records): register, update IP, delete, list"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - nameservers.manage
+slug: /tools/nameservers/manage
+---
+
+# `nameservers.manage`
+
+Manage registered nameservers (glue records): register, update IP, delete, list
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: list: List all registered nameservers \| register: Register a custom nameserver \| add: Add a nameserver \| set_ip: Update nameserver IP \| delete: Delete a nameserver \| delete_by_domain: Delete all nameservers for a domain |
+| `host` | string | No | Nameserver hostname (e.g., ns1.example.com) |
+| `ip` | string | No | IP address (e.g., 192.168.1.1 or 2001:db8::1) |
+| `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "list",
+        "register",
+        "add",
+        "set_ip",
+        "delete",
+        "delete_by_domain"
+      ],
+      "description": "Operation to perform: list: List all registered nameservers | register: Register a custom nameserver | add: Add a nameserver | set_ip: Update nameserver IP | delete: Delete a nameserver | delete_by_domain: Delete all nameservers for a domain"
+    },
+    "host": {
+      "description": "Nameserver hostname (e.g., ns1.example.com)",
+      "type": "string"
+    },
+    "ip": {
+      "description": "IP address (e.g., 192.168.1.1 or 2001:db8::1)",
+      "type": "string"
+    },
+    "domain": {
+      "description": "Domain name (e.g., example.com, mysite.net)",
+      "type": "string"
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "transfers.manage MCP Tool"
+description: "Domain transfers: initiate, check status, manage auth codes, push requests"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - transfers.manage
+slug: /tools/transfers/manage
+---
+
+# `transfers.manage`
+
+Domain transfers: initiate, check status, manage auth codes, push requests
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: initiate: Initiate domain transfer \| status: Check transfer status \| cancel: Cancel pending transfer \| get_auth_code: Get transfer auth code \| set_auth_code: Set custom auth code \| authorize_away: Authorize transfer to another registrar \| get_push_request: Get pending push request \| set_push_request: Accept or decline push request |
+| `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
+| `authCode` | string | No | Transfer authorization/EPP code |
+| `action` | string | No | Accept or decline push request |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "initiate",
+        "status",
+        "cancel",
+        "get_auth_code",
+        "set_auth_code",
+        "authorize_away",
+        "get_push_request",
+        "set_push_request"
+      ],
+      "description": "Operation to perform: initiate: Initiate domain transfer | status: Check transfer status | cancel: Cancel pending transfer | get_auth_code: Get transfer auth code | set_auth_code: Set custom auth code | authorize_away: Authorize transfer to another registrar | get_push_request: Get pending push request | set_push_request: Accept or decline push request"
+    },
+    "domain": {
+      "description": "Domain name (e.g., example.com, mysite.net)",
+      "type": "string"
+    },
+    "authCode": {
+      "description": "Transfer authorization/EPP code",
+      "type": "string"
+    },
+    "action": {
+      "description": "Accept or decline push request",
+      "type": "string",
+      "enum": [
+        "accept",
+        "decline"
+      ]
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "contacts.manage MCP Tool"
+description: "WHOIS contact management: create, edit, delete, list, regional settings"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - contacts.manage
+slug: /tools/contacts/manage
+---
+
+# `contacts.manage`
+
+WHOIS contact management: create, edit, delete, list, regional settings
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: list: List all contacts \| get: Get contact details \| create: Create new contact \| edit: Update contact \| delete: Delete contact \| create_cn_audit: Create .CN domain audit \| get_cn_audit_status: Get .CN audit status \| set_eu_setting: Set EU contact settings \| set_lv_setting: Set Latvia contact settings \| set_lt_setting: Set Lithuania contact settings |
+| `contactId` | string | No | Contact ID from contact list (e.g., "12345") |
+| `name` | string | No | Contact name |
+| `email` | string | No | Email |
+| `phoneCc` | string | No | Phone country code (e.g., "1" for US, "33" for France) |
+| `phoneNum` | string | No | Phone number without country code (e.g., "5551234567") |
+| `address1` | string | No | Address line 1 |
+| `city` | string | No | City |
+| `state` | string | No | State/Province |
+| `zipCode` | string | No | Postal code |
+| `country` | string | No | Country code (2-letter) |
+| `organization` | string | No | Organization |
+| `address2` | string | No | Address line 2 |
+| `auditDetails` | object | No | Audit details |
+| `settings` | object | No | Optional settings parameter. |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "list",
+        "get",
+        "create",
+        "edit",
+        "delete",
+        "create_cn_audit",
+        "get_cn_audit_status",
+        "set_eu_setting",
+        "set_lv_setting",
+        "set_lt_setting"
+      ],
+      "description": "Operation to perform: list: List all contacts | get: Get contact details | create: Create new contact | edit: Update contact | delete: Delete contact | create_cn_audit: Create .CN domain audit | get_cn_audit_status: Get .CN audit status | set_eu_setting: Set EU contact settings | set_lv_setting: Set Latvia contact settings | set_lt_setting: Set Lithuania contact settings"
+    },
+    "contactId": {
+      "description": "Contact ID from contact list (e.g., \"12345\")",
+      "type": "string"
+    },
+    "name": {
+      "description": "Contact name",
+      "type": "string"
+    },
+    "email": {
+      "description": "Email",
+      "type": "string"
+    },
+    "phoneCc": {
+      "description": "Phone country code (e.g., \"1\" for US, \"33\" for France)",
+      "type": "string"
+    },
+    "phoneNum": {
+      "description": "Phone number without country code (e.g., \"5551234567\")",
+      "type": "string"
+    },
+    "address1": {
+      "description": "Address line 1",
+      "type": "string"
+    },
+    "city": {
+      "description": "City",
+      "type": "string"
+    },
+    "state": {
+      "description": "State/Province",
+      "type": "string"
+    },
+    "zipCode": {
+      "description": "Postal code",
+      "type": "string"
+    },
+    "country": {
+      "description": "Country code (2-letter)",
+      "type": "string"
+    },
+    "organization": {
+      "description": "Organization",
+      "type": "string"
+    },
+    "address2": {
+      "description": "Address line 2",
+      "type": "string"
+    },
+    "auditDetails": {
+      "description": "Audit details",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "description": "Optional settings parameter.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "folders.manage MCP Tool"
+description: "Folder management: create, delete, list, configure folder-level settings"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - folders.manage
+slug: /tools/folders/manage
+---
+
+# `folders.manage`
+
+Folder management: create, delete, list, configure folder-level settings
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: list: List all folders \| create: Create new folder \| delete: Delete folder \| rename: Rename folder \| set_whois: Set WHOIS for all domains in folder \| set_ns: Set nameservers for folder \| set_parking: Enable parking for folder \| set_forwarding: Set forwarding for folder \| set_stealth: Set stealth forwarding for folder \| set_hosting: Set hosting for folder \| set_dns: Set DNS for folder \| set_dns2: Set DNS2 for folder \| set_email_forward: Set email forwarding for folder \| set_renew_option: Set renewal option for folder \| clear_settings: Clear all folder settings |
+| `folderName` | string | No | Name (e.g., "John Doe") |
+| `folderId` | string | No | Folder ID from folder list (e.g., "67890") |
+| `contactId` | string | No | Contact ID from contact list (e.g., "12345") |
+| `nameservers` | array | No | Nameservers (e.g., ["ns1.example.com", "ns2.example.com"]) |
+| `forwardUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
+| `stealthUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
+| `options` | object | No | Optional options parameter. |
+| `mainRecords` | array | No | Optional mainRecords parameter. |
+| `subdomainRecords` | array | No | Optional subdomainRecords parameter. |
+| `email` | string | No | Email address (e.g., admin@example.com) |
+| `renewOption` | string | No | Renewal: auto (renew), donot (expire), reset (default) |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "list",
+        "create",
+        "delete",
+        "rename",
+        "set_whois",
+        "set_ns",
+        "set_parking",
+        "set_forwarding",
+        "set_stealth",
+        "set_hosting",
+        "set_dns",
+        "set_dns2",
+        "set_email_forward",
+        "set_renew_option",
+        "clear_settings"
+      ],
+      "description": "Operation to perform: list: List all folders | create: Create new folder | delete: Delete folder | rename: Rename folder | set_whois: Set WHOIS for all domains in folder | set_ns: Set nameservers for folder | set_parking: Enable parking for folder | set_forwarding: Set forwarding for folder | set_stealth: Set stealth forwarding for folder | set_hosting: Set hosting for folder | set_dns: Set DNS for folder | set_dns2: Set DNS2 for folder | set_email_forward: Set email forwarding for folder | set_renew_option: Set renewal option for folder | clear_settings: Clear all folder settings"
+    },
+    "folderName": {
+      "description": "Name (e.g., \"John Doe\")",
+      "type": "string"
+    },
+    "folderId": {
+      "description": "Folder ID from folder list (e.g., \"67890\")",
+      "type": "string"
+    },
+    "contactId": {
+      "description": "Contact ID from contact list (e.g., \"12345\")",
+      "type": "string"
+    },
+    "nameservers": {
+      "description": "Nameservers (e.g., [\"ns1.example.com\", \"ns2.example.com\"])",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forwardUrl": {
+      "description": "URL for forwarding (e.g., https://example.com/page)",
+      "type": "string"
+    },
+    "stealthUrl": {
+      "description": "URL for forwarding (e.g., https://example.com/page)",
+      "type": "string"
+    },
+    "options": {
+      "description": "Optional options parameter.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mainRecords": {
+      "description": "Optional mainRecords parameter.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Record type (A, AAAA, CNAME, MX, TXT)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Record value"
+          },
+          "ttl": {
+            "description": "TTL in seconds",
+            "type": "number"
+          },
+          "priority": {
+            "description": "Priority (for MX)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      }
+    },
+    "subdomainRecords": {
+      "description": "Optional subdomainRecords parameter.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subdomain": {
+            "type": "string",
+            "description": "Subdomain name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Record type"
+          },
+          "value": {
+            "type": "string",
+            "description": "Record value"
+          },
+          "ttl": {
+            "description": "TTL in seconds",
+            "type": "number"
+          },
+          "priority": {
+            "description": "Priority (for MX)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "subdomain",
+          "type",
+          "value"
+        ]
+      }
+    },
+    "email": {
+      "description": "Email address (e.g., admin@example.com)",
+      "type": "string"
+    },
+    "renewOption": {
+      "description": "Renewal: auto (renew), donot (expire), reset (default)",
+      "type": "string",
+      "enum": [
+        "auto",
+        "donot",
+        "reset"
+      ]
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "account.manage MCP Tool"
+description: "Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - account.manage
+slug: /tools/account/manage
+---
+
+# `account.manage`
+
+Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: info: Get account information \| balance: Get account balance \| set_default_whois: Set default WHOIS contact \| set_default_ns: Set default nameservers \| set_default_parking: Set default parking \| set_default_forwarding: Set default forwarding \| set_default_stealth: Set default stealth forwarding \| set_default_hosting: Set default hosting \| set_default_dns: Set default DNS \| set_default_dns2: Set default DNS2 \| set_default_email_forward: Set default email forwarding \| set_default_renew_option: Set default renewal option \| clear_defaults: Clear all default settings |
+| `currency` | string | No | Optional currency parameter. |
+| `contactId` | string | No | Contact ID from contact list (e.g., "12345") |
+| `nameservers` | array | No | Nameservers (e.g., ["ns1.example.com", "ns2.example.com"]) |
+| `forwardUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
+| `stealthUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
+| `options` | object | No | Optional options parameter. |
+| `mainRecords` | array | No | Optional mainRecords parameter. |
+| `subdomainRecords` | array | No | Optional subdomainRecords parameter. |
+| `email` | string | No | Email address (e.g., admin@example.com) |
+| `renewOption` | string | No | Optional renewOption parameter. |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "info",
+        "balance",
+        "set_default_whois",
+        "set_default_ns",
+        "set_default_parking",
+        "set_default_forwarding",
+        "set_default_stealth",
+        "set_default_hosting",
+        "set_default_dns",
+        "set_default_dns2",
+        "set_default_email_forward",
+        "set_default_renew_option",
+        "clear_defaults"
+      ],
+      "description": "Operation to perform: info: Get account information | balance: Get account balance | set_default_whois: Set default WHOIS contact | set_default_ns: Set default nameservers | set_default_parking: Set default parking | set_default_forwarding: Set default forwarding | set_default_stealth: Set default stealth forwarding | set_default_hosting: Set default hosting | set_default_dns: Set default DNS | set_default_dns2: Set default DNS2 | set_default_email_forward: Set default email forwarding | set_default_renew_option: Set default renewal option | clear_defaults: Clear all default settings"
+    },
+    "currency": {
+      "description": "Optional currency parameter.",
+      "default": "USD",
+      "type": "string"
+    },
+    "contactId": {
+      "description": "Contact ID from contact list (e.g., \"12345\")",
+      "type": "string"
+    },
+    "nameservers": {
+      "description": "Nameservers (e.g., [\"ns1.example.com\", \"ns2.example.com\"])",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forwardUrl": {
+      "description": "URL for forwarding (e.g., https://example.com/page)",
+      "type": "string"
+    },
+    "stealthUrl": {
+      "description": "URL for forwarding (e.g., https://example.com/page)",
+      "type": "string"
+    },
+    "options": {
+      "description": "Optional options parameter.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "mainRecords": {
+      "description": "Optional mainRecords parameter.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Record type (A, AAAA, CNAME, MX, TXT)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Record value"
+          },
+          "ttl": {
+            "description": "TTL in seconds",
+            "type": "number"
+          },
+          "priority": {
+            "description": "Priority (for MX)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      }
+    },
+    "subdomainRecords": {
+      "description": "Optional subdomainRecords parameter.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subdomain": {
+            "type": "string",
+            "description": "Subdomain name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Record type"
+          },
+          "value": {
+            "type": "string",
+            "description": "Record value"
+          },
+          "ttl": {
+            "description": "TTL in seconds",
+            "type": "number"
+          },
+          "priority": {
+            "description": "Priority (for MX)",
+            "type": "number"
+          }
+        },
+        "required": [
+          "subdomain",
+          "type",
+          "value"
+        ]
+      }
+    },
+    "email": {
+      "description": "Email address (e.g., admin@example.com)",
+      "type": "string"
+    },
+    "renewOption": {
+      "description": "Optional renewOption parameter.",
+      "type": "string",
+      "enum": [
+        "auto",
+        "donot"
+      ]
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "aftermarket.manage MCP Tool"
+description: "Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - aftermarket.manage
+slug: /tools/aftermarket/manage
+---
+
+# `aftermarket.manage`
+
+Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: backorder_add: Add domain to backorder list \| backorder_delete: Remove from backorder list \| backorder_list: List backorder requests \| auction_list_open: List open auctions \| auction_details: Get auction details \| auction_bids: Get auction bids \| auction_bid: Place auction bid \| auction_list_closed: List closed auctions \| backorder_auction_list_open: List open backorder auctions \| backorder_auction_details: Get backorder auction details \| backorder_auction_bid: Place backorder auction bid \| backorder_auction_list_closed: List closed backorder auctions \| expired_list: List expired closeout domains \| expired_buy: Buy expired closeout domain \| listings: Get marketplace listings \| listing_details: Get listing details \| buy_now: Buy domain from marketplace \| set_for_sale: List domain for sale \| remove_from_sale: Remove domain from marketplace/auction (delist from sale) \| afternic_confirm: Confirm/decline Afternic action \| sedo_confirm: Confirm/decline Sedo action |
+| `domain` | string | No | Domain name (e.g., example.com, mysite.net) |
+| `currency` | string | No | Optional currency parameter. |
+| `auctionId` | string | No | Auction ID (e.g., "auction_123") |
+| `bidAmount` | number | No | Amount in currency (e.g., 9.99) |
+| `price` | number | No | Amount in currency (e.g., 9.99) |
+| `action` | string | No | Confirm or decline action |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "backorder_add",
+        "backorder_delete",
+        "backorder_list",
+        "auction_list_open",
+        "auction_details",
+        "auction_bids",
+        "auction_bid",
+        "auction_list_closed",
+        "backorder_auction_list_open",
+        "backorder_auction_details",
+        "backorder_auction_bid",
+        "backorder_auction_list_closed",
+        "expired_list",
+        "expired_buy",
+        "listings",
+        "listing_details",
+        "buy_now",
+        "set_for_sale",
+        "remove_from_sale",
+        "afternic_confirm",
+        "sedo_confirm"
+      ],
+      "description": "Operation to perform: backorder_add: Add domain to backorder list | backorder_delete: Remove from backorder list | backorder_list: List backorder requests | auction_list_open: List open auctions | auction_details: Get auction details | auction_bids: Get auction bids | auction_bid: Place auction bid | auction_list_closed: List closed auctions | backorder_auction_list_open: List open backorder auctions | backorder_auction_details: Get backorder auction details | backorder_auction_bid: Place backorder auction bid | backorder_auction_list_closed: List closed backorder auctions | expired_list: List expired closeout domains | expired_buy: Buy expired closeout domain | listings: Get marketplace listings | listing_details: Get listing details | buy_now: Buy domain from marketplace | set_for_sale: List domain for sale | remove_from_sale: Remove domain from marketplace/auction (delist from sale) | afternic_confirm: Confirm/decline Afternic action | sedo_confirm: Confirm/decline Sedo action"
+    },
+    "domain": {
+      "description": "Domain name (e.g., example.com, mysite.net)",
+      "type": "string"
+    },
+    "currency": {
+      "description": "Optional currency parameter.",
+      "default": "USD",
+      "type": "string"
+    },
+    "auctionId": {
+      "description": "Auction ID (e.g., \"auction_123\")",
+      "type": "string"
+    },
+    "bidAmount": {
+      "description": "Amount in currency (e.g., 9.99)",
+      "type": "number"
+    },
+    "price": {
+      "description": "Amount in currency (e.g., 9.99)",
+      "type": "number"
+    },
+    "action": {
+      "description": "Confirm or decline action",
+      "type": "string",
+      "enum": [
+        "confirm",
+        "decline"
+      ]
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "orders.manage MCP Tool"
+description: "Orders, coupons, processing status, reseller operations"
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - orders.manage
+slug: /tools/orders/manage
+---
+
+# `orders.manage`
+
+Orders, coupons, processing status, reseller operations
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | No |
+| Destructive | Yes |
+| Idempotent | No |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `operation` | string | Yes | Operation to perform: list: List recent orders \| status: Get order status \| is_processing: Check if operations pending \| coupons: List available coupons \| reseller_verification: Set reseller WHOIS verification status |
+| `orderId` | string | No | Order ID (e.g., "order_456") |
+| `contactId` | string | No | Contact ID from contact list (e.g., "12345") |
+| `status` | string | No | Optional status parameter. |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "list",
+        "status",
+        "is_processing",
+        "coupons",
+        "reseller_verification"
+      ],
+      "description": "Operation to perform: list: List recent orders | status: Get order status | is_processing: Check if operations pending | coupons: List available coupons | reseller_verification: Set reseller WHOIS verification status"
+    },
+    "orderId": {
+      "description": "Order ID (e.g., \"order_456\")",
+      "type": "string"
+    },
+    "contactId": {
+      "description": "Contact ID from contact list (e.g., \"12345\")",
+      "type": "string"
+    },
+    "status": {
+      "description": "Optional status parameter.",
+      "type": "string",
+      "enum": [
+        "verified",
+        "unverified"
+      ]
+    }
+  },
+  "required": [
+    "operation"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "domains.availability.check MCP Tool"
+description: "Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once."
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - domains.availability.check
+slug: /tools/domains/availability/check
+---
+
+# `domains.availability.check`
+
+Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | Yes |
+| Destructive | No |
+| Idempotent | Yes |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `domain` | string | Yes | Domain to check (e.g., example.com) |
+| `showPrice` | boolean | No | Include pricing info |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "Domain to check (e.g., example.com)"
+    },
+    "showPrice": {
+      "default": false,
+      "description": "Include pricing info",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "domain"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "domains.ideas.generate MCP Tool"
+description: "Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains."
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - domains.ideas.generate
+slug: /tools/domains/ideas/generate
+---
+
+# `domains.ideas.generate`
+
+Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | Yes |
+| Destructive | No |
+| Idempotent | Yes |
+| Uses external systems | Yes |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `keywords` | array | Yes | Core keywords extracted from product/tool description (e.g., ["task", "flow", "automate"]) |
+| `tlds` | array | No | TLDs to check (default: com, io, co, app, dev, ai) |
+| `patterns` | array | No | Generation patterns: exact, hyphenated, prefix, suffix (default: all) |
+| `maxToCheck` | number | No | Maximum domains to check for availability (default: 100) |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "keywords": {
+      "minItems": 1,
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Core keywords extracted from product/tool description (e.g., [\"task\", \"flow\", \"automate\"])"
+    },
+    "tlds": {
+      "description": "TLDs to check (default: com, io, co, app, dev, ai)",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "patterns": {
+      "description": "Generation patterns: exact, hyphenated, prefix, suffix (default: all)",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "exact",
+          "hyphenated",
+          "prefix",
+          "suffix"
+        ]
+      }
+    },
+    "maxToCheck": {
+      "description": "Maximum domains to check for availability (default: 100)",
+      "type": "number",
+      "minimum": 10,
+      "maximum": 500
+    }
+  },
+  "required": [
+    "keywords"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+
+---
+title: "server.help MCP Tool"
+description: "Discover available tools and operations. Use query: \"tools\" to list all tools, \"actions\" with a tool name to list operations, \"examples\" for usage examples."
+keywords:
+  - MCP tool
+  - domain management
+  - Dynadot API
+  - server.help
+slug: /tools/server/help
+---
+
+# `server.help`
+
+Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.
+
+## Safety and behavior
+
+| Property | Value |
+| --- | --- |
+| Read-only | Yes |
+| Destructive | No |
+| Idempotent | Yes |
+| Uses external systems | No |
+
+## Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `query` | string | Yes | What to get help on |
+| `tool` | string | No | Specific tool name (for actions query) |
+
+## Input schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "enum": [
+        "tools",
+        "actions",
+        "examples"
+      ],
+      "description": "What to get help on"
+    },
+    "tool": {
+      "description": "Specific tool name (for actions query)",
+      "type": "string"
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+## Output schema
+
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Whether the requested operation completed successfully."
+    },
+    "data": {
+      "description": "Structured operation result when success is true.",
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "error": {
+      "description": "Structured failure details when success is false.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Stable error category for programmatic handling."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable explanation of the failure."
+        },
+        "suggestions": {
+          "description": "Suggested corrective actions, when available.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "validActions": {
+          "description": "Allowed operation names when an unknown operation was requested.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "docsUrl": {
+          "type": "string",
+          "description": "Documentation URL relevant to the failed tool."
+        }
+      },
+      "required": [
+        "type",
+        "message",
+        "docsUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "success"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false
+}
+```
+
+

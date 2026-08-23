@@ -28,7 +28,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -55,6 +55,25 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run wiki:check
       - run: pnpm --filter domain-mcp-wiki run build
+
+      - name: Generate native GitHub Wiki
+        if: github.event_name != 'pull_request'
+        run: node packages/domain-mcp/scripts/wiki.mjs --github-output=.github-wiki
+
+      - name: Publish native GitHub Wiki
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" .github-wiki-repository
+          find .github-wiki-repository -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -R .github-wiki/. .github-wiki-repository/
+          cd .github-wiki-repository
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add --all
+          git diff --cached --quiet || git commit -m "docs: sync MCP runtime surface"
+          git push
 
       - if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5

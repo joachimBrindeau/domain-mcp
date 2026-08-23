@@ -11,6 +11,7 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { ZipArchive } from 'archiver';
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const repositoryRoot = resolve(packageRoot, '..', '..');
 const outputPath = resolve(process.argv[2] ?? join(packageRoot, 'domain-mcp.mcpb'));
 const stage = await mkdtemp(join(tmpdir(), 'domain-mcp-mcpb-'));
 
@@ -30,7 +31,7 @@ try {
     cp(join(packageRoot, 'dist'), join(stage, 'dist'), { recursive: true }),
     cp(join(packageRoot, 'LICENSE'), join(stage, 'LICENSE')),
     cp(join(packageRoot, 'README.md'), join(stage, 'README.md')),
-    cp(join(packageRoot, 'mcpb', 'icon.png'), join(stage, 'icon.png')),
+    cp(join(repositoryRoot, 'icon.png'), join(stage, 'icon.png')),
     writeFile(join(stage, 'manifest.json'), `${JSON.stringify(strictManifest, null, 2)}\n`),
   ]);
 

@@ -1,29 +1,166 @@
-# domain-mcp
+<div align="center">
 
-A Claude / MCP toolkit for managing domains via Dynadot. This monorepo contains:
+# domain-mcp: Domain Management MCP Server
 
-| Package | Description | Distribution |
-|---|---|---|
-| [`domain-mcp`](packages/domain-mcp) | MCP server wrapping ~108 Dynadot API actions as 10 composite tools | [npm](https://www.npmjs.com/package/domain-mcp) |
-| [`domain-agent-kit`](packages/domain-agent-kit) | Claude Code plugin: agents, commands, skills for domain workflows | Claude Code marketplace |
+**Manage Dynadot domains, DNS, renewals, transfers, and WHOIS from Claude, Cursor, or any MCP client.**
+
+<br />
+
+[![Star this repo](https://img.shields.io/github/stars/joachimBrindeau/domain-mcp?style=for-the-badge&logo=github&label=%E2%AD%90%20Star%20this%20repo&color=yellow)](https://github.com/joachimBrindeau/domain-mcp/?tab=stars)
+
+<br />
+
+[![npm](https://img.shields.io/npm/v/domain-mcp?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/domain-mcp)
+&nbsp;
+[![CI](https://img.shields.io/github/actions/workflow/status/joachimBrindeau/domain-mcp/ci.yml?branch=main&style=for-the-badge&logo=githubactions&label=CI)](https://github.com/joachimBrindeau/domain-mcp/actions/workflows/ci.yml)
+&nbsp;
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+
+---
+
+Skip the registrar dashboard and brittle one-off scripts. `domain-mcp` turns 108 Dynadot API actions into 10 focused MCP tools that AI agents can discover, validate, and call through natural language.
+
+[Quick Start](#quick-start) · [How It Works](#how-domain-mcp-works) · [Features](#domain-management-features) · [Packages](#whats-inside) · [Contributing](#contributing)
+
+</div>
+
+## Why manage domains through MCP?
+
+Registrar APIs cover dozens of jobs, but each command has its own parameters, response shape, and edge cases. That makes direct API work slow to build and easy to get wrong.
+
+`domain-mcp` gives your AI client a smaller, typed toolset. Ask it to check availability, update DNS, review renewals, or manage a portfolio without memorizing Dynadot's API.
+
+| Without domain-mcp | With domain-mcp |
+|---|---|
+| Search API docs for every task | Describe the outcome in plain language |
+| Build and maintain registrar scripts | Use the same MCP tools from supported clients |
+| Handle inconsistent response envelopes | Receive normalized, agent-friendly results |
+| Expose every API command as a separate tool | Keep context small with 10 composite tools |
 
 ## Quick start
 
-**Use the MCP server in Claude / Cursor / any MCP client:** see [`packages/domain-mcp/README.md`](packages/domain-mcp/README.md).
+You need Node.js 18 or newer and a [Dynadot API key](https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v).
 
-**Use the Claude Code plugin:** see [`packages/domain-agent-kit/README.md`](packages/domain-agent-kit/README.md).
+Add the server to your MCP client:
+
+```json
+{
+  "mcpServers": {
+    "domain-mcp": {
+      "command": "npx",
+      "args": ["-y", "domain-mcp"],
+      "env": {
+        "DYNADOT_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+Restart the client, then try:
+
+> List my domains that expire in the next 60 days.
+
+For client-specific setup, shared HTTP transport, environment options, and troubleshooting, read the [domain-mcp package guide](packages/domain-mcp/README.md).
+
+## How domain-mcp works
+
+```text
+You describe a domain task
+          │
+          ▼
+Claude, Cursor, or another MCP client
+          │  selects a tool and operation
+          ▼
+domain-mcp validates and transforms the request
+          │  calls the Dynadot API
+          ▼
+Normalized result returns to the AI client
+```
+
+The server groups related operations into composite tools, so clients load a compact tool surface instead of more than 100 separate definitions.
+
+## Domain management features
+
+| Area | What you can do |
+|---|---|
+| Domains | Search, register, renew, delete, lock, push, and inspect domains |
+| DNS | Read and update DNS records, forwarding, parking, and email settings |
+| Nameservers | Create, edit, list, and assign nameservers |
+| Transfers | Start transfers, check status, and manage authorization steps |
+| Contacts | Create and maintain WHOIS contact records |
+| Portfolio | Work with folders, account data, bulk settings, and renewals |
+| Aftermarket | List domains, manage auctions, bids, and marketplace operations |
+| Agent workflows | Generate domain ideas, run portfolio audits, and diagnose DNS issues |
+
+The MCP server includes 10 composite tools plus focused helpers for domain checks, name generation, and tool discovery. Inputs use Zod validation, responses are normalized, and errors include actionable context.
+
+## What's inside
+
+This repository is a pnpm workspace with two related packages:
+
+| Package | Best for | Distribution |
+|---|---|---|
+| [`domain-mcp`](packages/domain-mcp) | Claude, Cursor, Claude Desktop, Zed, and other MCP clients | [npm](https://www.npmjs.com/package/domain-mcp) |
+| [`domain-agent-kit`](packages/domain-agent-kit) | Claude Code users who want agents, slash commands, DNS guidance, and destructive-operation checks | Claude Code plugin |
+
+```text
+packages/
+├── domain-mcp/        # TypeScript MCP server published to npm
+└── domain-agent-kit/  # Claude Code plugin built on domain-mcp
+```
+
+## Domain MCP examples
+
+Once connected, you can ask your client to:
+
+- “Check whether example.com is available and show similar names.”
+- “Add an A record for example.com and point it to 203.0.113.10.”
+- “Find domains expiring this quarter and group them by urgency.”
+- “Enable auto-renew for every unlocked .com domain.”
+- “Show the current nameservers and WHOIS contacts for example.com.”
+
+Your client should still ask before destructive or paid operations. The Claude Code plugin adds an extra confirmation hook for selected irreversible actions.
 
 ## Development
 
 ```bash
-pnpm install            # installs all workspace deps
-pnpm test               # runs domain-mcp tests
-pnpm build              # builds domain-mcp
-pnpm check              # biome across repo
+git clone https://github.com/joachimBrindeau/domain-mcp.git
+cd domain-mcp
+pnpm install
+pnpm test
+pnpm build
 ```
 
-See [`CLAUDE.md`](CLAUDE.md) for the monorepo layout and [`packages/domain-mcp/CLAUDE.md`](packages/domain-mcp/CLAUDE.md) for package-specific guidance.
+Useful workspace commands:
+
+| Command | Purpose |
+|---|---|
+| `pnpm test` | Run the domain-mcp test suite |
+| `pnpm typecheck` | Check TypeScript without emitting files |
+| `pnpm check` | Run Biome across the repository |
+| `pnpm build` | Build the npm package |
+
+See [`CLAUDE.md`](CLAUDE.md) for the workspace map and [`packages/domain-mcp/CLAUDE.md`](packages/domain-mcp/CLAUDE.md) for server architecture and conventions.
+
+## Contributing
+
+Bug reports, API findings, documentation fixes, and focused pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a change.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+
+Built by [Joachim Brindeau](https://github.com/joachimBrindeau)
+
+<br />
+
+**If domain-mcp saves you time:**
+
+[![Star this repo](https://img.shields.io/github/stars/joachimBrindeau/domain-mcp?style=for-the-badge&logo=github&label=%E2%AD%90%20Star%20this%20repo&color=yellow)](https://github.com/joachimBrindeau/domain-mcp/?tab=stars)
+
+</div>

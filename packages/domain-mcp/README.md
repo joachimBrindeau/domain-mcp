@@ -105,6 +105,23 @@ With this Domain MCP integration:
 
 ## Quick Installation
 
+### Shared Streamable HTTP server
+
+Run one authenticated server for every MCP client and agent session:
+
+```bash
+export DYNADOT_API_KEY="your-dynadot-api-key"
+export DOMAIN_MCP_AUTH_TOKEN="$(openssl rand -hex 32)"
+npx -y domain-mcp --http --host 127.0.0.1 --port 8102
+```
+
+The MCP endpoint is `http://127.0.0.1:8102/mcp`; health is available at
+`http://127.0.0.1:8102/health`. Clients must send
+`Authorization: Bearer $DOMAIN_MCP_AUTH_TOKEN`.
+
+For trusted loopback development only, `--allow-unauthenticated` explicitly
+disables bearer authentication. It cannot be used with a non-loopback host.
+
 ### Prerequisites
 
 You'll need a **Dynadot account** and an **API key** to use this MCP server.

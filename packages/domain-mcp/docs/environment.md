@@ -7,6 +7,46 @@ This document lists all environment variables used by the Domain MCP server and 
 ### DYNADOT_API_KEY
 
 **Required**: Yes
+
+### DOMAIN_MCP_AUTH_TOKEN
+
+Bearer token required by Streamable HTTP mode. Generate a high-entropy value
+and provide it to clients through their secret or environment configuration.
+It is not used by stdio mode.
+
+```bash
+export DOMAIN_MCP_AUTH_TOKEN="$(openssl rand -hex 32)"
+```
+
+### DOMAIN_MCP_ALLOWED_HOSTS
+
+Optional comma-separated host allowlist for HTTP Host-header validation.
+Defaults to the configured bind host plus `localhost`, `127.0.0.1`, and `::1`.
+Set this when deploying behind a reverse proxy or public hostname.
+
+```bash
+export DOMAIN_MCP_ALLOWED_HOSTS="domains.example.com,127.0.0.1"
+```
+
+### DOMAIN_MCP_ALLOWED_ORIGINS
+
+Optional comma-separated browser Origin allowlist. Requests without an Origin
+header, including normal MCP clients, remain supported. Set this for browser
+clients or reverse-proxy deployments.
+
+```bash
+export DOMAIN_MCP_ALLOWED_ORIGINS="https://domains.example.com"
+```
+
+### DOMAIN_MCP_SESSION_IDLE_TIMEOUT_MS
+
+Optional idle timeout for stateful HTTP sessions. Defaults to 30 minutes.
+Expired sessions are closed and removed, including clients that disconnect
+without sending an MCP `DELETE` request.
+
+```bash
+export DOMAIN_MCP_SESSION_IDLE_TIMEOUT_MS=1800000
+```
 **Purpose**: Authentication for Dynadot API
 **Format**: 40-character alphanumeric string
 **Example**: `your-40-character-api-key-here`

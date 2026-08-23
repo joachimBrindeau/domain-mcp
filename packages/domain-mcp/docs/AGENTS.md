@@ -14,9 +14,9 @@ Don't duplicate that here.
 
 ## What this repo is
 
-An MCP (Model Context Protocol) stdio server that wraps the Dynadot registrar
-API. It is **not** a REST service, web app, or library with a conventional
-public API. Two invariants fall out of that:
+An MCP (Model Context Protocol) server that wraps the Dynadot registrar API.
+It supports stdio and Streamable HTTP transports. It is **not** a REST service,
+web app, or library with a conventional public API. Two invariants follow:
 
 1. **The stdio transport owns `process.stdout`.** Any `console.log`,
    `process.stdout.write`, or other write to stdout from `src/` will corrupt
@@ -24,8 +24,8 @@ public API. Two invariants fall out of that:
    `process.stderr` directly. `biome`'s `noConsole` rule is set to `error`
    in `src/**` for exactly this reason. Tests and `scripts/**` are excepted.
 
-2. **`getClient()` is a deliberate singleton.** One stdio session, one API
-   client, one API key. There is no DI framework, no service/repository
+2. **`getClient()` is a deliberate singleton.** One process, one API client,
+   one API key. There is no DI framework, no service/repository
    pattern, and no interface-per-implementation. If you find yourself wanting
    one, the answer is almost always no — write the simpler thing.
 
@@ -35,7 +35,9 @@ public API. Two invariants fall out of that:
 
 ```
 src/
-├── index.ts          # stdio entry point; wires up server + transport
+├── index.ts          # CLI entry point; selects stdio or HTTP transport
+├── http-server.ts    # Streamable HTTP, auth, sessions, health, shutdown
+├── server.ts         # McpServer factory shared by both transports
 ├── client.ts         # DynadotClient + getClient() singleton (ky, retries)
 ├── register.ts       # Composite tool → MCP tool registration pipeline
 ├── normalize.ts      # Dynadot nested PascalCase response → flat camelCase

@@ -8,7 +8,7 @@ Deploy the Domain MCP server for AI-powered domain management across local, Dock
 |----------------|----------|------------|----------|
 | **Local (stdio)** | Personal use, single user | ⭐ Easy | 🔒 Local only |
 | **Docker Local** | Team development | ⭐⭐ Medium | 🔒 Local network |
-| **Remote Server** | Multi-user, production | ⭐⭐⭐ Advanced | 🔒🔒 OAuth required |
+| **Remote Server** | Shared clients, production | ⭐⭐ Medium | 🔒🔒 Bearer token + TLS |
 | **Serverless** | Scalable, managed | ⭐⭐⭐ Advanced | 🔒🔒 Platform managed |
 
 ## 1. Local Deployment (Current Setup)
@@ -138,43 +138,40 @@ docker run -it --rm \
 - Still local only
 - More complex setup
 
-## 3. Remote Server Deployment
+## 3. Streamable HTTP Deployment
 
-Deploy the MCP server to a cloud server for team access.
-
-### 3.1 Basic Remote Setup
-
-**Note:** MCP stdio-based servers (like ours) need adaptation for remote access. You have two options:
-
-#### Option A: Use mcp-remote Bridge
-
-The [mcp-remote](https://github.com/geelen/mcp-remote) bridge allows stdio servers to work remotely.
+Run one server shared by OpenCode, Codex, and other MCP clients:
 
 ```bash
-# On server
-npm install -g mcp-remote
-mcp-remote serve --command "node /path/to/dist/index.js"
+export DYNADOT_API_KEY="your-dynadot-api-key"
+export DOMAIN_MCP_AUTH_TOKEN="$(openssl rand -hex 32)"
+domain-mcp --http --host 127.0.0.1 --port 8102
 ```
 
+Endpoints:
+
+- `POST`, `GET`, `DELETE /mcp` — stateful Streamable HTTP transport
+- `GET /health` — process health and active-session count
+
+OpenCode configuration:
+
 ```json
-// On client
 {
   "mcpServers": {
-    "dynadot": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "connect",
-        "https://your-server.com/mcp"
-      ]
+    "domain": {
+      "type": "http",
+      "url": "http://127.0.0.1:8102/mcp",
+      "headers": {
+        "Authorization": "Bearer your-generated-token"
+      }
     }
   }
 }
 ```
 
-#### Option B: Convert to HTTP/SSE Server
-
-Modify `src/index.ts` to support HTTP/SSE protocol (advanced - requires code changes).
+Keep the service bound to loopback unless it is behind HTTPS. Public or
+reverse-proxy deployments must set `DOMAIN_MCP_ALLOWED_HOSTS` and, for browser
+clients, `DOMAIN_MCP_ALLOWED_ORIGINS`.
 
 ### 3.2 Cloud Platform Deployment
 

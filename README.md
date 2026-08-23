@@ -18,7 +18,7 @@
 
 ---
 
-Skip the registrar dashboard and brittle one-off scripts. `domain-mcp` turns 108 Dynadot API actions into 10 focused MCP tools that AI agents can discover, validate, and call through natural language.
+Skip the registrar dashboard and brittle one-off scripts. `domain-mcp` groups 108 Dynadot API actions into 10 MCP tools you can call from an AI client.
 
 [Quick Start](#quick-start) · [How It Works](#how-domain-mcp-works) · [Features](#domain-management-features) · [Packages](#whats-inside) · [Contributing](#contributing)
 
@@ -26,7 +26,7 @@ Skip the registrar dashboard and brittle one-off scripts. `domain-mcp` turns 108
 
 ## Why manage domains through MCP?
 
-Registrar APIs cover dozens of jobs, but each command has its own parameters, response shape, and edge cases. That makes direct API work slow to build and easy to get wrong.
+Registrar APIs cover dozens of jobs, but each command has its own parameters, response shape, and edge cases. Working with the API directly takes time and leaves plenty of room for mistakes.
 
 `domain-mcp` gives your AI client a smaller, typed toolset. Ask it to check availability, update DNS, review renewals, or manage a portfolio without memorizing Dynadot's API.
 
@@ -34,7 +34,7 @@ Registrar APIs cover dozens of jobs, but each command has its own parameters, re
 |---|---|
 | Search API docs for every task | Describe the outcome in plain language |
 | Build and maintain registrar scripts | Use the same MCP tools from supported clients |
-| Handle inconsistent response envelopes | Receive normalized, agent-friendly results |
+| Handle inconsistent response envelopes | Get results in a consistent format |
 | Expose every API command as a separate tool | Keep context small with 10 composite tools |
 
 ## Quick start
@@ -75,10 +75,10 @@ Claude, Cursor, or another MCP client
 domain-mcp validates and transforms the request
           │  calls the Dynadot API
           ▼
-Normalized result returns to the AI client
+The result returns to your AI client
 ```
 
-The server groups related operations into composite tools, so clients load a compact tool surface instead of more than 100 separate definitions.
+The server groups related operations into composite tools, so clients load a small set of tools instead of more than 100 separate definitions.
 
 ## Domain management features
 
@@ -93,7 +93,7 @@ The server groups related operations into composite tools, so clients load a com
 | Aftermarket | List domains, manage auctions, bids, and marketplace operations |
 | Agent workflows | Generate domain ideas, run portfolio audits, and diagnose DNS issues |
 
-The MCP server includes 10 composite tools plus focused helpers for domain checks, name generation, and tool discovery. Inputs use Zod validation, responses are normalized, and errors include actionable context.
+The server groups Dynadot operations into 10 composite tools, with additional tools for domain checks, name generation, and tool discovery. Zod validates inputs. Responses follow a consistent format, and errors explain what went wrong.
 
 ## What's inside
 

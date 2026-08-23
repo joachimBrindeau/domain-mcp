@@ -81,6 +81,10 @@ jobs:
 
       - name: Test
         run: pnpm --filter domain-mcp run test
+        env:
+          # Integration suites are skipped unless explicitly enabled, but their
+          # clients are constructed during test discovery.
+          DYNADOT_API_KEY: ci-placeholder
 
       - name: Build
         run: pnpm --filter domain-mcp run build

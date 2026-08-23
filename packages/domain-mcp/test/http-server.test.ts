@@ -63,7 +63,7 @@ describe('Streamable HTTP server', () => {
       port: 0,
       version: 'test',
       authToken: 'test-token',
-      sessionIdleTimeoutMs: 20,
+      sessionIdleTimeoutMs: 200,
     });
 
     const client = new Client({ name: 'domain-mcp-test', version: '1.0.0' });
@@ -80,7 +80,7 @@ describe('Streamable HTTP server', () => {
 
     await client.close();
 
-    await new Promise((resolve) => setTimeout(resolve, 30));
+    await new Promise((resolve) => setTimeout(resolve, 250));
 
     const closedHealth = await fetch(running.url.replace('/mcp', '/health'));
     expect(await closedHealth.json()).toEqual({ status: 'ok', sessions: 0 });

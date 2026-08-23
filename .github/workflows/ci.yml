@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main, develop]
+    tags: ['v*']
   pull_request:
     branches: [main, develop]
 
@@ -61,7 +62,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -80,15 +81,22 @@ jobs:
 
       - name: Test
         run: pnpm --filter domain-mcp run test
+        env:
+          # Integration suites are skipped unless explicitly enabled, but their
+          # clients are constructed during test discovery.
+          DYNADOT_API_KEY: ci-placeholder
 
       - name: Build
         run: pnpm --filter domain-mcp run build
 
   publish:
-    name: Publish to npm
+    name: Publish release
     runs-on: ubuntu-latest
     needs: [quality, test]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -110,6 +118,17 @@ jobs:
         run: pnpm --filter domain-mcp run build
 
       - name: Publish to npm
-        run: pnpm --filter domain-mcp publish --no-git-checks --access public
+        run: pnpm --filter domain-mcp publish --no-git-checks --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install MCP Registry publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        run: ../../mcp-publisher publish
+        working-directory: packages/domain-mcp

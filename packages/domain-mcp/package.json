@@ -1,6 +1,7 @@
 {
   "name": "domain-mcp",
-  "version": "2.0.0",
+  "version": "2.0.1",
+  "mcpName": "io.github.joachimBrindeau/domain-mcp",
   "description": "MCP server for domain management via Claude, Cursor, and any Model Context Protocol client. 108 Dynadot API actions across 10 generic tools: domain search, registration, renewal, DNS, WHOIS, nameservers, transfers, and aftermarket.",
   "type": "module",
   "main": "dist/index.js",
@@ -10,6 +11,7 @@
   },
   "files": [
     "dist/",
+    "server.json",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"

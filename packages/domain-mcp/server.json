@@ -22,8 +22,8 @@
       "environmentVariables": [
         {
           "name": "DYNADOT_API_KEY",
-          "description": "Dynadot API key used for domain-management operations.",
-          "isRequired": true,
+          "description": "Optional Dynadot API key. Tool discovery and local help work without it; registrar-backed operations require it.",
+          "isRequired": false,
           "isSecret": true,
           "format": "string"
         },

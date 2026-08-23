@@ -5,7 +5,10 @@ const TEST_DOMAIN = process.env.TEST_DOMAIN;
 const isIntegrationEnabled = process.env.RUN_INTEGRATION_TESTS === 'true';
 
 // Sandbox client for functional CRUD tests (safe to create/delete)
-const sandboxClient = new DomainClient({ sandbox: true });
+const sandboxClient = new DomainClient({
+  apiKey: isIntegrationEnabled ? undefined : 'integration-tests-disabled',
+  sandbox: true,
+});
 const describeIntegration = describe.runIf(isIntegrationEnabled);
 
 describeIntegration('Integration test prerequisites', () => {

@@ -27,7 +27,7 @@ export const EXAMPLE_CONFIG = {
  * @param path - The path to append to the domain (with or without leading slash)
  * @returns Full URL with referral parameter
  */
-function buildDynadotUrl(path: string = ''): string {
+export function buildDynadotUrl(path: string = ''): string {
   // Validate input
   if (path.startsWith('http://') || path.startsWith('https://')) {
     throw new Error('buildDynadotUrl expects a path, not an absolute URL');

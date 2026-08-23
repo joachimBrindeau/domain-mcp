@@ -51,7 +51,8 @@ function requestAuthorized(req: IncomingMessage, token: string | undefined): boo
 function normalizedHostname(value: string): string {
   const host = value.trim().toLowerCase();
   if (host.startsWith('[')) return host.slice(1, host.indexOf(']'));
-  return host.split(':', 1)[0] ?? '';
+  const portSeparator = host.indexOf(':');
+  return portSeparator === -1 ? host : host.slice(0, portSeparator);
 }
 
 function requestAllowed(

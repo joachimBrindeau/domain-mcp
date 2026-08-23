@@ -1,0 +1,65 @@
+{
+  "manifest_version": "0.3",
+  "name": "domain-mcp",
+  "display_name": "Domain MCP",
+  "version": "2.0.1",
+  "description": "Manage Dynadot domains, DNS, WHOIS, nameservers, transfers, and aftermarket through MCP.",
+  "long_description": "Domain MCP exposes Dynadot domain-management operations to Claude, Cursor, Claude Desktop, and other MCP-compatible clients. It supports domain registration and renewal, DNS and DNSSEC, WHOIS contacts, nameservers and glue records, transfers, account settings, folders, orders, and aftermarket operations.",
+  "author": {
+    "name": "Joachim Brindeau",
+    "url": "https://github.com/joachimBrindeau"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joachimBrindeau/domain-mcp"
+  },
+  "homepage": "https://github.com/joachimBrindeau/domain-mcp#readme",
+  "documentation": "https://github.com/joachimBrindeau/domain-mcp#readme",
+  "support": "https://github.com/joachimBrindeau/domain-mcp/issues",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "DYNADOT_API_KEY": "${user_config.dynadot_api_key}",
+        "DYNADOT_SANDBOX": "${user_config.dynadot_sandbox}",
+        "DYNADOT_SANDBOX_KEY": "${user_config.dynadot_sandbox_key}"
+      }
+    }
+  },
+  "tools_generated": true,
+  "keywords": ["mcp", "domain-management", "dns", "dynadot", "registrar", "whois"],
+  "license": "MIT",
+  "privacy_policies": ["https://www.dynadot.com/privacy-policy"],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "user_config": {
+    "dynadot_api_key": {
+      "type": "string",
+      "title": "Dynadot API Key",
+      "description": "Your Dynadot API key for domain-management operations.",
+      "sensitive": true,
+      "required": true
+    },
+    "dynadot_sandbox": {
+      "type": "boolean",
+      "title": "Use Dynadot Sandbox",
+      "description": "Route requests to Dynadot's sandbox API.",
+      "default": false,
+      "required": false
+    },
+    "dynadot_sandbox_key": {
+      "type": "string",
+      "title": "Dynadot Sandbox API Key",
+      "description": "Optional API key for Dynadot sandbox mode.",
+      "sensitive": true,
+      "required": false
+    }
+  }
+}

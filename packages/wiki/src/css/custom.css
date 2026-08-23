@@ -1,0 +1,26 @@
+:root {
+  --ifm-color-primary: #2563eb;
+  --ifm-color-primary-dark: #1d4ed8;
+  --ifm-color-primary-darker: #1e40af;
+  --ifm-color-primary-darkest: #1e3a8a;
+  --ifm-color-primary-light: #3b82f6;
+  --ifm-color-primary-lighter: #60a5fa;
+  --ifm-color-primary-lightest: #93c5fd;
+  --ifm-code-font-size: 95%;
+}
+
+html[data-theme="dark"] {
+  --ifm-background-color: #0b1120;
+  --ifm-background-surface-color: #111827;
+  --ifm-color-primary: #60a5fa;
+}
+
+.markdown h1:first-child {
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.markdown table {
+  display: table;
+  width: 100%;
+}

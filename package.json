@@ -28,6 +28,9 @@
     "publint": "pnpm --filter domain-mcp run publint",
     "attw": "pnpm --filter domain-mcp run attw",
     "size": "pnpm --filter domain-mcp run size",
+    "wiki:generate": "pnpm --filter domain-mcp run build && node packages/domain-mcp/scripts/wiki.mjs",
+    "wiki:check": "pnpm --filter domain-mcp run build && node packages/domain-mcp/scripts/wiki.mjs --check",
+    "wiki:build": "pnpm run wiki:generate && pnpm --filter domain-mcp-wiki run build",
     "prepare": "lefthook install"
   },
   "devDependencies": {

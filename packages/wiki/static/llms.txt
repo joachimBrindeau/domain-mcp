@@ -1,0 +1,30 @@
+# Domain MCP
+
+> AI-native domain management through the Model Context Protocol.
+
+## Tools
+- [domains.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/manage): Core domain operations: list, search, register, renew, delete, info, lock, pricing. Search domains: https://www.dynadot.com/domain/search.html?s9F6L9F7U8Q9U8Z8v
+- [domains.settings.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/settings/manage): Configure domain settings: nameservers, privacy, renewal, forwarding, parking, WHOIS
+- [dns.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/dns/manage): DNS management: get/set DNS records, DNSSEC configuration
+- [nameservers.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/nameservers/manage): Manage registered nameservers (glue records): register, update IP, delete, list
+- [transfers.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/transfers/manage): Domain transfers: initiate, check status, manage auth codes, push requests
+- [contacts.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/contacts/manage): WHOIS contact management: create, edit, delete, list, regional settings
+- [folders.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/folders/manage): Folder management: create, delete, list, configure folder-level settings
+- [account.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/account/manage): Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v
+- [aftermarket.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/aftermarket/manage): Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v
+- [orders.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/orders/manage): Orders, coupons, processing status, reseller operations
+- [domains.availability.check](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/availability/check): Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.
+- [domains.ideas.generate](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/ideas/generate): Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.
+- [server.help](https://joachimbrindeau.github.io/domain-mcp/docs/tools/server/help): Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.
+
+## Resources
+- [Account Information](https://joachimbrindeau.github.io/domain-mcp/docs/resources/account-information): Current Dynadot account info: balance, email, limits
+- [My Domains](https://joachimbrindeau.github.io/domain-mcp/docs/resources/my-domains): All domains in your Dynadot account with expiry dates
+- [My Contacts](https://joachimbrindeau.github.io/domain-mcp/docs/resources/my-contacts): All WHOIS contacts in your Dynadot account
+- [My Folders](https://joachimbrindeau.github.io/domain-mcp/docs/resources/my-folders): All folders in your Dynadot account
+
+## Prompts
+- [domain-audit](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/domain-audit): Audit all domains for expiration, DNS, and security settings
+- [dns-setup](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/dns-setup): Interactive DNS configuration for a domain
+- [domain-brainstorm](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/domain-brainstorm): Find available domains for a product or tool
+- [bulk-renewal](https://joachimbrindeau.github.io/domain-mcp/docs/prompts/bulk-renewal): Review and manage domain renewals

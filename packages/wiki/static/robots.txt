@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://joachimbrindeau.github.io/domain-mcp/sitemap.xml

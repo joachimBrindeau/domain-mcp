@@ -73,7 +73,7 @@ describe('Streamable HTTP server', () => {
 
     await client.connect(transport);
     const tools = await client.listTools();
-    expect(tools.tools.map((tool) => tool.name)).toContain('domain');
+    expect(tools.tools.map((tool) => tool.name)).toContain('domains.manage');
 
     const health = await fetch(running.url.replace('/mcp', '/health'));
     expect(await health.json()).toEqual({ status: 'ok', sessions: 1 });

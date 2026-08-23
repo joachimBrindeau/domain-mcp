@@ -23,12 +23,31 @@ function getRegisteredTools(server: McpServer): Record<string, RegisteredTool> {
 }
 
 describe('MCP tool quality metadata', () => {
+  const expectedToolNames = [
+    'domains.manage',
+    'domains.settings.manage',
+    'dns.manage',
+    'nameservers.manage',
+    'transfers.manage',
+    'contacts.manage',
+    'folders.manage',
+    'account.manage',
+    'aftermarket.manage',
+    'orders.manage',
+    'domains.availability.check',
+    'domains.ideas.generate',
+    'server.help',
+  ];
   let tools: Record<string, RegisteredTool>;
 
   beforeEach(() => {
     const server = new McpServer({ name: 'quality-test', version: '1.0.0' });
     registerAllTools(server);
     tools = getRegisteredTools(server);
+  });
+
+  it('uses category-oriented dot-notation names for every public tool', () => {
+    expect(Object.keys(tools)).toEqual(expectedToolNames);
   });
 
   it('declares specific output schemas and all annotation hints for every tool', () => {
@@ -63,7 +82,7 @@ describe('MCP tool quality metadata', () => {
   });
 
   it('returns structured content matching declared schemas for success and validation errors', async () => {
-    const domainTool = tools.domain;
+    const domainTool = tools['domains.manage'];
     const invalidResult = await domainTool.handler({ operation: 'register' });
 
     expect(invalidResult.isError).toBe(true);

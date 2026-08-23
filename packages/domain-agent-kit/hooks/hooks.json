@@ -3,7 +3,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__domain-mcp__domain|mcp__domain-mcp__transfer|mcp__domain-mcp__aftermarket|mcp__domain-mcp__contact|mcp__domain-mcp__folder",
+        "matcher": "mcp__domain-mcp__domains_manage|mcp__domain-mcp__transfers_manage|mcp__domain-mcp__aftermarket_manage|mcp__domain-mcp__contacts_manage|mcp__domain-mcp__folders_manage",
         "hooks": [
           {
             "type": "command",

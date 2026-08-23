@@ -3,7 +3,7 @@ import type { CompositeTool } from './common.js';
 import { p } from './common.js';
 
 export const nameserverTool: CompositeTool = {
-  name: 'nameserver',
+  name: 'nameservers.manage',
   description: 'Manage registered nameservers (glue records): register, update IP, delete, list',
   actions: {
     list: {

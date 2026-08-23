@@ -96,7 +96,7 @@ Get your API key from: https://www.dynadot.com/account/domain/setting/api.html?s
 **Example**: `TEST_CONTACT_ID=1067674`
 
 **How to get**:
-- **In Sandbox Mode**: Run `mcp__domain-mcp__contact({ action: "list" })` to see your existing production contact IDs (sandbox cannot create contacts)
+- **In Sandbox Mode**: Run `mcp__domain-mcp__contacts_manage({ action: "list" })` to see your existing production contact IDs (sandbox cannot create contacts)
 - **In Production Mode**: Create a test contact that you can safely modify during testing
 
 **⚠️ Important**: Due to sandbox limitations, you must use an existing contact ID from your production account when testing in sandbox mode. The `create_contact` command does not work in sandbox.
@@ -111,7 +111,7 @@ Get your API key from: https://www.dynadot.com/account/domain/setting/api.html?s
 
 **How to get**:
 - **Option 1 (Recommended)**: Run the setup batch in TEST_INSTRUCTIONS.md to create a test folder automatically
-- **Option 2**: Run `mcp__domain-mcp__folder({ action: "list" })` to see your existing folder IDs
+- **Option 2**: Run `mcp__domain-mcp__folders_manage({ action: "list" })` to see your existing folder IDs
 
 **💡 Tip**: The setup batch (Batch 0) creates both a test contact and folder, and the cleanup batch deletes them afterward. This keeps your account clean.
 
@@ -137,7 +137,7 @@ TEST_CONTACT_ID=1234567
 TEST_FOLDER_ID=-1
 ```
 
-**💡 Simplified Approach**: For most testing, you can use your existing contact IDs. Run `mcp__domain-mcp__contact({ action: "list" })` to find a contact ID from your account, then set it in your `.env` file. No need to create temporary test contacts unless you're testing contact management specifically.
+**💡 Simplified Approach**: For most testing, you can use your existing contact IDs. Run `mcp__domain-mcp__contacts_manage({ action: "list" })` to find a contact ID from your account, then set it in your `.env` file. No need to create temporary test contacts unless you're testing contact management specifically.
 
 ### MCP Server Configuration
 
@@ -222,10 +222,10 @@ TEST_DOMAIN=mydomain.com
 **Solution**: Get your actual IDs and update `.env`:
 ```bash
 # Get contact IDs
-mcp__domain-mcp__contact({ action: "list" })
+mcp__domain-mcp__contacts_manage({ action: "list" })
 
 # Get folder IDs
-mcp__domain-mcp__folder({ action: "list" })
+mcp__domain-mcp__folders_manage({ action: "list" })
 
 # Update .env
 TEST_CONTACT_ID=your-contact-id
@@ -235,23 +235,23 @@ TEST_FOLDER_ID=your-folder-id
 ## Environment Variable Reference by Action
 
 ### Actions that use TEST_DOMAIN
-- All `domain` actions
-- All `domain_settings` actions
-- All `dns` actions
-- `transfer` actions
-- `aftermarket` marketplace actions
+- All `domains.manage` actions
+- All `domains.settings.manage` actions
+- All `dns.manage` actions
+- `transfers.manage` actions
+- `aftermarket.manage` marketplace actions
 
 ### Actions that use DYNADOT_TARGET_USERNAME
 - `domain:push` - Push domain to another account
 
 ### Actions that use TEST_CONTACT_ID
-- All `contact` actions (except list)
+- All `contacts.manage` actions (except list)
 - `domain_settings:set_whois`
 - `folder:set_whois`
 - `account:set_default_whois`
 
 ### Actions that use TEST_FOLDER_ID
-- All `folder` actions (except list and create)
+- All `folders.manage` actions (except list and create)
 - `domain_settings:set_folder`
 
 ## See Also

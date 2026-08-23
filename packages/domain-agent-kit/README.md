@@ -180,7 +180,7 @@ have agents and rely on explicit invocation.
 
 ### Raw MCP tools
 
-All underlying MCP tools are available too. Use the `help` tool for
+All underlying MCP tools are available too. Use the `server.help` tool for
 discovery:
 
 ```
@@ -191,12 +191,12 @@ help query=actions tool=domain
 **Composite tools** (each takes an `operation` argument — use
 `help query=actions tool=<name>` to list operations):
 
-`domain`, `domain_settings`, `dns`, `nameserver`, `transfer`, `contact`,
-`folder`, `account`, `aftermarket`, `order`
+`domains.manage`, `domains.settings.manage`, `dns.manage`, `nameservers.manage`, `transfers.manage`, `contacts.manage`,
+`folders.manage`, `account.manage`, `aftermarket.manage`, `orders.manage`
 
 **Standalone tools**:
 
-`check_domain`, `generate_domain_ideas`, `help`
+`domains.availability.check`, `domains.ideas.generate`, `server.help`
 
 ### MCP resources
 
@@ -212,11 +212,11 @@ confirmation prompt before any of these operations (tools are routed
 through the plugin's `domain-mcp` MCP registration, so Claude Code resolves
 them as `mcp__domain-mcp__<tool>`):
 
-- `domain` with `operation: delete` or `operation: push`
-- `transfer` with `operation: initiate`
-- `aftermarket` with `operation: delist` or `cancel_bid`
-- `contact` with `operation: delete`
-- `folder` with `operation: delete`
+- `domains.manage` with `operation: delete` or `operation: push`
+- `transfers.manage` with `operation: initiate`
+- `aftermarket.manage` with `operation: delist` or `cancel_bid`
+- `contacts.manage` with `operation: delete`
+- `folders.manage` with `operation: delete`
 
 All other operations pass through unchanged. The hook is a safety net on
 top of Claude's own judgment, not a replacement for it.

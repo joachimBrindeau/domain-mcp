@@ -4,7 +4,7 @@ argument-hint: "<product or brand description>"
 allowed-tools: Task, AskUserQuestion
 ---
 
-Run a domain research session for the product or brand the user describes in `$ARGUMENTS`. The `domain-research` agent handles keyword extraction, candidate generation via `generate_domain_ideas`, availability checks, trademark scanning via WebSearch, and final ranking.
+Run a domain research session for the product or brand the user describes in `$ARGUMENTS`. The `domain-research` agent handles keyword extraction, candidate generation via `domains.ideas.generate`, availability checks, trademark scanning via WebSearch, and final ranking.
 
 # Process
 
@@ -20,10 +20,10 @@ Run a domain research session for the product or brand the user describes in `$A
 
 # Do not
 
-- Do not call `generate_domain_ideas` directly from this command. That is the agent's job. Direct calls duplicate work and flood the main context with hundreds of candidate names.
+- Do not call `domains.ideas.generate` directly from this command. That is the agent's job. Direct calls duplicate work and flood the main context with hundreds of candidate names.
 - Do not shortcut trademark screening. The agent owns that screening step; skipping it produces recommendations the user cannot actually ship.
 - Do not reorder or filter the agent's ranking. If the user disagrees with the ranking, re-run the agent with explicit constraints in the new brief.
-- Do not use this command to check availability of one already-known domain — call `check_domain` directly for that, or use `domain` with `operation: search`.
+- Do not use this command to check availability of one already-known domain — call `domains.availability.check` directly for that, or use `domains.manage` with `operation: search`.
 
 # Success criteria
 

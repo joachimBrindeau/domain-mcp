@@ -1,6 +1,6 @@
 ---
 description: Interactively manage Dynadot domain renewals — bucket by urgency, forecast cost, act per domain
-allowed-tools: mcp__domain-mcp__domain, mcp__domain-mcp__domain_settings, mcp__domain-mcp__account, ReadMcpResourceTool, AskUserQuestion
+allowed-tools: mcp__domain-mcp__domains_manage, mcp__domain-mcp__domains_settings_manage, mcp__domain-mcp__account_manage, ReadMcpResourceTool, AskUserQuestion
 ---
 
 Manage domain renewals interactively: review upcoming expirations, calculate costs, and take action (auto-renew, manual renew, let expire) per domain. This command runs inline (no agent dispatch) because each domain needs an explicit user decision.
@@ -15,17 +15,17 @@ Manage domain renewals interactively: review upcoming expirations, calculate cos
    - **Upcoming** — 91–365 days
    - **Stable** — more than 1 year (exclude from the interactive flow)
 
-3. **Forecast cost.** For each expiring domain, get the renewal price via `domain` with `operation: tld_price`. Batch by TLD — one call per unique TLD, not per domain. Sum cost per bucket.
+3. **Forecast cost.** For each expiring domain, get the renewal price via `domains.manage` with `operation: tld_price`. Batch by TLD — one call per unique TLD, not per domain. Sum cost per bucket.
 
-4. **Check balance and surface gaps.** Call `account` with `operation: info` for the current balance. Compare to the 30-day forecast.
+4. **Check balance and surface gaps.** Call `account.manage` with `operation: info` for the current balance. Compare to the 30-day forecast.
    - If balance covers the 30-day forecast → note "OK".
    - If balance is short → display the gap prominently in the overview AND in every per-domain action prompt that follows. Do not block the workflow — let the user decide — but make the gap impossible to miss. Suggest topping up at https://www.dynadot.com/account/credit.html?s9F6L9F7U8Q9U8Z8v before approving renewals.
 
 5. **Present the overview.** Show a grouped table: domain, days to expire, current renewOption setting, renewal cost, recommended action.
 
 6. **Act per domain — urgent bucket first.** For each urgent domain, use AskUserQuestion with four options:
-   - `auto-renew` — enable via `domain_settings` with `operation: set_renew_option` and `renewOption: auto`. Do not silently apply; require explicit confirmation per domain.
-   - `manual-renew-now` — run `domain` with `operation: renew` and ask for the duration (1–10 years).
+   - `auto-renew` — enable via `domains.settings.manage` with `operation: set_renew_option` and `renewOption: auto`. Do not silently apply; require explicit confirmation per domain.
+   - `manual-renew-now` — run `domains.manage` with `operation: renew` and ask for the duration (1–10 years).
    - `let-expire` — no action; confirm explicitly that this is intentional.
    - `skip` — leave as-is, will re-prompt at next run.
 

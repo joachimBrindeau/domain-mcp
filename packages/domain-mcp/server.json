@@ -9,13 +9,13 @@
     "id": "1110576079",
     "subfolder": "packages/domain-mcp"
   },
-  "version": "2.0.1",
+  "version": "3.0.0",
   "websiteUrl": "https://github.com/joachimBrindeau/domain-mcp#readme",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "domain-mcp",
-      "version": "2.0.1",
+      "version": "3.0.0",
       "transport": {
         "type": "stdio"
       },

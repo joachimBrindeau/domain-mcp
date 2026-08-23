@@ -27,7 +27,7 @@ When testing in sandbox mode, use **existing contact IDs** from your production 
 
 1. List your existing contacts in production:
    ```typescript
-   mcp__domain-mcp__contact({ action: "list" })
+   mcp__domain-mcp__contacts_manage({ action: "list" })
    ```
 
 2. Use an existing contact ID in your tests:

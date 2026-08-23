@@ -164,7 +164,7 @@ const inputSchema = {
 
 export function registerGenerateIdeasTool(server: McpServer): void {
   server.registerTool(
-    'generate_domain_ideas',
+    'domains.ideas.generate',
     {
       description:
         'Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.',

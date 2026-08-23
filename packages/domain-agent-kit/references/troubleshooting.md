@@ -111,8 +111,8 @@ added to the case statement without being tested.
 
 **Fix**: inspect `${CLAUDE_PLUGIN_ROOT}/scripts/confirm-destructive.sh`.
 The destructive operation set should be limited to: `delete`, `push`
-(for `domain`), `initiate` (for `transfer`), `delist`, `cancel_bid` (for
-`aftermarket`), and `delete` (for `contact`/`folder`). Any other
+(for `domains.manage`), `initiate` (for `transfers.manage`), `delist`, `cancel_bid` (for
+`aftermarket.manage`), and `delete` (for `contacts.manage`/`folders.manage`). Any other
 operation should exit 0 (allow).
 
 ### Hook script exits with error, blocking all tool calls
@@ -152,7 +152,7 @@ safety, but if it fires too often, file an issue at the plugin's repo.
 ### Plugin loaded but MCP server never starts
 
 **Symptom**: `/plugin` shows `domain-agent-kit` as enabled, but
-`domain`, `dns`, etc. tools are not available. Running the `help` tool
+`domains.manage`, `dns.manage`, etc. tools are not available. Running the `server.help` tool
 returns "no such tool".
 
 **Root causes and fixes**:

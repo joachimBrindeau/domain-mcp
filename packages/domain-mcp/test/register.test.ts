@@ -43,7 +43,7 @@ describe('Tool Registration with Normalizer', () => {
   it('should call normalizeResponse for tool results', async () => {
     registerAllTools(server);
     const tools = getRegisteredTools(server);
-    const domainTool = tools.domain;
+    const domainTool = tools['domains.manage'];
 
     await domainTool.handler({ operation: 'list' });
 
@@ -53,7 +53,7 @@ describe('Tool Registration with Normalizer', () => {
   it('should require operation-specific params before executing', async () => {
     registerAllTools(server);
     const tools = getRegisteredTools(server);
-    const domainTool = tools.domain;
+    const domainTool = tools['domains.manage'];
 
     const result = await domainTool.handler({ operation: 'register' });
 
@@ -64,7 +64,7 @@ describe('Tool Registration with Normalizer', () => {
   it('should preserve api action parameter for operations that need it', async () => {
     registerAllTools(server);
     const tools = getRegisteredTools(server);
-    const transferTool = tools.transfer;
+    const transferTool = tools['transfers.manage'];
 
     await transferTool.handler({
       operation: 'set_push_request',

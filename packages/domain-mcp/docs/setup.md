@@ -30,7 +30,7 @@ Complete guide to integrating the Domain MCP server with your AI assistant for n
 
 **The Flow:**
 1. You ask Claude/Cursor: "List my domains"
-2. AI uses the `domain` MCP tool
+2. AI uses the `domains.manage` MCP tool
 3. MCP server calls Dynadot API with your credentials
 4. Results return through the chain back to you
 
@@ -95,17 +95,17 @@ The MCP server will automatically connect when you restart Claude Code.
 
 Ask Claude: "List my Dynadot domains" or "Search for available domains: example.com"
 
-Claude will now have access to 10 MCP tools (namespaced by the server, e.g. `mcp__domain-mcp__domain`):
-- `domain` - Domain operations
-- `dns` - DNS management
-- `contact` - Contact management
-- `transfer` - Domain transfers
-- `nameserver` - Nameserver management
-- `folder` - Folder organization
-- `account` - Account settings
-- `aftermarket` - Auctions and marketplace
-- `order` - Order management
-- `domain_settings` - Domain configuration
+Claude will now have access to 13 MCP tools (clients may normalize dot notation in host aliases, e.g. `domains.manage` becomes `mcp__domain-mcp__domains_manage`):
+- `domains.manage` - Domain operations
+- `dns.manage` - DNS management
+- `contacts.manage` - Contact management
+- `transfers.manage` - Domain transfers
+- `nameservers.manage` - Nameserver management
+- `folders.manage` - Folder organization
+- `account.manage` - Account settings
+- `aftermarket.manage` - Auctions and marketplace
+- `orders.manage` - Order management
+- `domains.settings.manage` - Domain configuration
 
 ## Cursor Setup
 
@@ -226,42 +226,42 @@ This is useful for development but slower than using the built version.
 **You ask Claude:**
 > "Check if these domains are available: example.com, example.net, example.io"
 
-**Claude uses:** `domain` tool with `action: search`
+**Claude uses:** `domains.manage` tool with `action: search`
 
 ### 2. List Your Domains
 
 **You ask Claude:**
 > "Show me all my domains"
 
-**Claude uses:** `domain` tool with `action: list`
+**Claude uses:** `domains.manage` tool with `action: list`
 
 ### 3. Set DNS Records
 
 **You ask Claude:**
 > "Set up DNS for mydomain.com with an A record pointing to 192.0.2.1 and www as a CNAME to mydomain.com"
 
-**Claude uses:** `dns` tool with `action: set`
+**Claude uses:** `dns.manage` tool with `action: set`
 
 ### 4. Create a Contact
 
 **You ask Claude:**
 > "Create a WHOIS contact for John Doe at john@example.com with address 123 Main St, San Francisco, CA 94102"
 
-**Claude uses:** `contact` tool with `action: create`
+**Claude uses:** `contacts.manage` tool with `action: create`
 
 ### 5. Get Domain Information
 
 **You ask Claude:**
 > "What's the status of mydomain.com? When does it expire?"
 
-**Claude uses:** `domain` tool with `action: info`
+**Claude uses:** `domains.manage` tool with `action: info`
 
 ### 6. Register a Domain
 
 **You ask Claude:**
 > "Register example.com for 2 years"
 
-**Claude uses:** `domain` tool with `action: register`
+**Claude uses:** `domains.manage` tool with `action: register`
 
 **Note:** This only works in production mode (DYNADOT_SANDBOX=false) and will charge your account!
 

@@ -1,10 +1,10 @@
 ---
 description: Diagnose DNS problems or configure DNS records for a domain
 argument-hint: "[diagnose|setup] <domain>"
-allowed-tools: Task, AskUserQuestion, Read, mcp__domain-mcp__dns, mcp__domain-mcp__domain
+allowed-tools: Task, AskUserQuestion, Read, mcp__domain-mcp__dns_manage, mcp__domain-mcp__domains_manage
 ---
 
-Route the DNS request to the right backend: the `dns-diagnostic` agent for troubleshooting, or direct `dns` MCP tool calls for first-time setup.
+Route the DNS request to the right backend: the `dns-diagnostic` agent for troubleshooting, or direct `dns.manage` MCP tool calls for first-time setup.
 
 # Process
 
@@ -19,30 +19,30 @@ Route the DNS request to the right backend: the `dns-diagnostic` agent for troub
 
 1. Invoke the `dns-diagnostic` agent via the Task tool with: the domain, the exact symptom the user described, and any context from surrounding messages.
 
-2. Present the agent's report verbatim. The report includes a proposed fix as a concrete `dns` tool call.
+2. Present the agent's report verbatim. The report includes a proposed fix as a concrete `dns.manage` tool call.
 
 3. If the user approves the fix, execute the exact tool call the agent proposed — do not modify parameters. If the user wants changes, re-invoke the agent with the adjustments.
 
 # Setup mode
 
-1. Fetch current records via `dns` with `operation: get` for the domain. This is mandatory — never write without reading first.
+1. Fetch current records via `dns.manage` with `operation: get` for the domain. This is mandatory — never write without reading first.
 
 2. Present the current state, then ask via AskUserQuestion what the user wants to configure:
    - `website` — A / AAAA records pointing at a host
    - `email` — MX + SPF + DMARC (optionally DKIM)
    - `verification` — TXT records for domain ownership proof
    - `subdomain` — CNAME for a subdomain
-   - `redirect` — URL forwarding (handled via `domain_settings`, not `dns`)
+   - `redirect` — URL forwarding (handled via `domains.settings.manage`, not `dns.manage`)
 
 3. For each record type, collect specific values (IP address, mail server, TXT content, etc.) via AskUserQuestion with free-text entry.
 
 4. Compute the merged record set:
-   - **Merge rule**: new records of a given (type, host) tuple replace any existing records for that tuple. Records of other (type, host) tuples are preserved verbatim. The `dns` tool's `set` operation rewrites the entire record set for a domain in one call, so you must include both the new records AND the preserved existing ones in your call.
+   - **Merge rule**: new records of a given (type, host) tuple replace any existing records for that tuple. Records of other (type, host) tuples are preserved verbatim. The `dns.manage` tool's `set` operation rewrites the entire record set for a domain in one call, so you must include both the new records AND the preserved existing ones in your call.
    - Display the diff to the user before calling `set`: which records will be added, which replaced, which preserved unchanged.
 
-5. Apply via `dns` with `operation: set`, passing the full merged record set.
+5. Apply via `dns.manage` with `operation: set`, passing the full merged record set.
 
-6. Re-fetch records via `dns` with `operation: get` after applying and present the confirmed new state.
+6. Re-fetch records via `dns.manage` with `operation: get` after applying and present the confirmed new state.
 
 # Do not
 

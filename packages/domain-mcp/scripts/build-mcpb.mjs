@@ -30,6 +30,7 @@ try {
     cp(join(packageRoot, 'dist'), join(stage, 'dist'), { recursive: true }),
     cp(join(packageRoot, 'LICENSE'), join(stage, 'LICENSE')),
     cp(join(packageRoot, 'README.md'), join(stage, 'README.md')),
+    cp(join(packageRoot, 'mcpb', 'icon.png'), join(stage, 'icon.png')),
     writeFile(join(stage, 'manifest.json'), `${JSON.stringify(strictManifest, null, 2)}\n`),
   ]);
 

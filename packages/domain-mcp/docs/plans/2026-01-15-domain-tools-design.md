@@ -47,7 +47,7 @@ Checks availability of a single domain. Designed for parallel execution.
 2. Claude Code calls `generate_domains` with user prompt
 3. Claude Code writes results to CSV: `domain,available`
 4. Claude Code launches N haiku agents in parallel
-5. Each agent: reads one row, calls `check_domain`, updates CSV
+5. Each agent: reads one row, calls `domains.availability.check`, updates CSV
 6. Final CSV has availability status for all domains
 
 ## Design Principles

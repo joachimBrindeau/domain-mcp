@@ -11,7 +11,7 @@ const inputSchema = {
 
 export function registerCheckDomainTool(server: McpServer): void {
   server.registerTool(
-    'check_domain',
+    'domains.availability.check',
     {
       description:
         'Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.',

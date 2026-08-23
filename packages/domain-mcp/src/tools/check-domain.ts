@@ -2,6 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { getClient } from '../client.js';
 import { normalizeResponse } from '../normalize.js';
+import { createSuccessResult, READ_ONLY_EXTERNAL, toolOutputSchema } from '../tool-metadata.js';
 
 const inputSchema = {
   domain: z.string().describe('Domain to check (e.g., example.com)'),
@@ -15,6 +16,8 @@ export function registerCheckDomainTool(server: McpServer): void {
       description:
         'Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.',
       inputSchema,
+      outputSchema: toolOutputSchema,
+      annotations: READ_ONLY_EXTERNAL,
     },
     async (input) => {
       const domain = input.domain as string;
@@ -38,23 +41,15 @@ export function registerCheckDomainTool(server: McpServer): void {
 
       const result = normalized.results?.[0];
 
-      return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify(
-              {
-                success: normalized.success,
-                domain,
-                available: result?.available ?? false,
-                ...(showPrice && result?.price ? { price: result.price } : {}),
-              },
-              null,
-              2,
-            ),
-          },
-        ],
+      const data = {
+        domain,
+        available: result?.available ?? false,
+        ...(showPrice && result?.price ? { price: result.price } : {}),
       };
+      return createSuccessResult(
+        data,
+        JSON.stringify({ success: normalized.success, ...data }, null, 2),
+      );
     },
   );
 }

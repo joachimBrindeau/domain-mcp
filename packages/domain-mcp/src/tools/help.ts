@@ -2,6 +2,12 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { createToolError } from '../errors.js';
 import { compositeTools } from '../schemas/index.js';
+import {
+  createErrorResult,
+  createSuccessResult,
+  READ_ONLY_LOCAL,
+  toolOutputSchema,
+} from '../tool-metadata.js';
 
 const inputSchema = {
   query: z.enum(['tools', 'actions', 'examples']).describe('What to get help on'),
@@ -15,6 +21,8 @@ export function registerHelpTool(server: McpServer): void {
       description:
         'Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.',
       inputSchema,
+      outputSchema: toolOutputSchema,
+      annotations: READ_ONLY_LOCAL,
     },
     async (input) => {
       const query = input.query as string;
@@ -27,29 +35,18 @@ export function registerHelpTool(server: McpServer): void {
           actionCount: Object.keys(t.actions).length,
         }));
 
-        return {
-          content: [
+        const data = {
+          tools,
+          standalone: [
+            { name: 'check_domain', description: 'Check single domain availability' },
             {
-              type: 'text',
-              text: JSON.stringify(
-                {
-                  success: true,
-                  tools,
-                  standalone: [
-                    { name: 'check_domain', description: 'Check single domain availability' },
-                    {
-                      name: 'generate_domain_ideas',
-                      description: 'Generate available domain ideas from keywords',
-                    },
-                    { name: 'help', description: 'This help tool' },
-                  ],
-                },
-                null,
-                2,
-              ),
+              name: 'generate_domain_ideas',
+              description: 'Generate available domain ideas from keywords',
             },
+            { name: 'help', description: 'This help tool' },
           ],
         };
+        return createSuccessResult(data, JSON.stringify({ success: true, ...data }, null, 2));
       }
 
       if (query === 'actions') {
@@ -59,10 +56,7 @@ export function registerHelpTool(server: McpServer): void {
             param: 'tool',
             tool: 'help',
           });
-          return {
-            content: [{ type: 'text', text: error.toJSON() }],
-            isError: true,
-          };
+          return createErrorResult(error);
         }
 
         const tool = compositeTools.find((t) => t.name === toolName);
@@ -72,10 +66,7 @@ export function registerHelpTool(server: McpServer): void {
             tool: 'help',
           });
           error.suggestions = [`Available tools: ${compositeTools.map((t) => t.name).join(', ')}`];
-          return {
-            content: [{ type: 'text', text: error.toJSON() }],
-            isError: true,
-          };
+          return createErrorResult(error);
         }
 
         const actions = Object.entries(tool.actions).map(([name, def]) => ({
@@ -84,48 +75,31 @@ export function registerHelpTool(server: McpServer): void {
           command: def.command,
         }));
 
-        return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify({ success: true, tool: toolName, actions }, null, 2),
-            },
-          ],
-        };
+        const data = { tool: toolName, actions };
+        return createSuccessResult(data, JSON.stringify({ success: true, ...data }, null, 2));
       }
 
       if (query === 'examples') {
-        return {
-          content: [
+        const data = {
+          examples: [
             {
-              type: 'text',
-              text: JSON.stringify(
-                {
-                  success: true,
-                  examples: [
-                    {
-                      description: 'List all domains',
-                      tool: 'domain',
-                      input: { operation: 'list' },
-                    },
-                    {
-                      description: 'Check domain availability',
-                      tool: 'check_domain',
-                      input: { domain: 'example.com', showPrice: true },
-                    },
-                    {
-                      description: 'Get domain DNS records',
-                      tool: 'dns',
-                      input: { operation: 'get', domain: 'example.com' },
-                    },
-                  ],
-                },
-                null,
-                2,
-              ),
+              description: 'List all domains',
+              tool: 'domain',
+              input: { operation: 'list' },
+            },
+            {
+              description: 'Check domain availability',
+              tool: 'check_domain',
+              input: { domain: 'example.com', showPrice: true },
+            },
+            {
+              description: 'Get domain DNS records',
+              tool: 'dns',
+              input: { operation: 'get', domain: 'example.com' },
             },
           ],
         };
+        return createSuccessResult(data, JSON.stringify({ success: true, ...data }, null, 2));
       }
 
       const error = createToolError('Invalid query', {
@@ -133,10 +107,7 @@ export function registerHelpTool(server: McpServer): void {
         tool: 'help',
       });
       error.suggestions = ['Use query: "tools", "actions", or "examples"'];
-      return {
-        content: [{ type: 'text', text: error.toJSON() }],
-        isError: true,
-      };
+      return createErrorResult(error);
     },
   );
 }

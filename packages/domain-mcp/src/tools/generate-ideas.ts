@@ -2,6 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { getClient } from '../client.js';
 import { normalizeResponse } from '../normalize.js';
+import { createSuccessResult, READ_ONLY_EXTERNAL, toolOutputSchema } from '../tool-metadata.js';
 
 const PATTERNS = ['exact', 'hyphenated', 'prefix', 'suffix'] as const;
 const DEFAULT_TLDS = ['com', 'io', 'co', 'app', 'dev', 'ai'];
@@ -168,6 +169,8 @@ export function registerGenerateIdeasTool(server: McpServer): void {
       description:
         'Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.',
       inputSchema,
+      outputSchema: toolOutputSchema,
+      annotations: READ_ONLY_EXTERNAL,
     },
     async (input) => {
       const keywords = input.keywords as string[];
@@ -205,20 +208,18 @@ export function registerGenerateIdeasTool(server: McpServer): void {
         return priceA - priceB;
       });
 
-      // Format output
-      const lines = available.map((d) => `${d.domain} ${d.price ?? ''}`);
-
-      return {
-        content: [
-          {
-            type: 'text',
-            text:
-              available.length > 0
-                ? `Found ${available.length} available domains (checked ${toCheck.length}):\n\n${lines.join('\n')}`
-                : `No available domains found (checked ${toCheck.length} domains)`,
-          },
-        ],
-      };
+      const lines = available.map((domain) => `${domain.domain} ${domain.price ?? ''}`);
+      const text =
+        available.length > 0
+          ? `Found ${available.length} available domains (checked ${toCheck.length}):\n\n${lines.join('\n')}`
+          : `No available domains found (checked ${toCheck.length} domains)`;
+      return createSuccessResult(
+        {
+          checked: toCheck.length,
+          available,
+        },
+        text,
+      );
     },
   );
 }

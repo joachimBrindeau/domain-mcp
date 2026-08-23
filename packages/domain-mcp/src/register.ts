@@ -5,6 +5,12 @@ import { createToolError } from './errors.js';
 import { normalizeResponse } from './normalize.js';
 import { compositeTools } from './schemas/index.js';
 import {
+  createErrorResult,
+  createSuccessResult,
+  MIXED_EXTERNAL,
+  toolOutputSchema,
+} from './tool-metadata.js';
+import {
   registerCheckDomainTool,
   registerGenerateIdeasTool,
   registerHelpTool,
@@ -33,8 +39,10 @@ export function registerAllTools(server: McpServer): void {
         const shape = action.params.shape;
         for (const [key, schema] of Object.entries(shape)) {
           if (!inputSchema[key]) {
-            // Make optional since not all actions need all params
-            inputSchema[key] = (schema as z.ZodTypeAny).optional();
+            // Preserve parameter metadata after optionalizing the union schema.
+            inputSchema[key] = (schema as z.ZodTypeAny)
+              .optional()
+              .describe((schema as z.ZodTypeAny).description ?? `Optional ${key} parameter.`);
           }
         }
       }
@@ -45,6 +53,8 @@ export function registerAllTools(server: McpServer): void {
       {
         description: tool.description,
         inputSchema,
+        outputSchema: toolOutputSchema,
+        annotations: MIXED_EXTERNAL,
       },
       async (input) => {
         const operation = input.operation as string;
@@ -57,10 +67,7 @@ export function registerAllTools(server: McpServer): void {
             validActions: operationKeys,
             tool: tool.name,
           });
-          return {
-            content: [{ type: 'text', text: error.toJSON() }],
-            isError: true,
-          };
+          return createErrorResult(error);
         }
 
         const parsedInput = actionDef.params
@@ -77,10 +84,7 @@ export function registerAllTools(server: McpServer): void {
             tool: tool.name,
             message: details,
           });
-          return {
-            content: [{ type: 'text', text: error.toJSON() }],
-            isError: true,
-          };
+          return createErrorResult(error);
         }
 
         try {
@@ -91,19 +95,14 @@ export function registerAllTools(server: McpServer): void {
 
           const result = await client.execute(actionDef.command, params);
           const normalized = normalizeResponse(actionDef.command, result);
-          return {
-            content: [{ type: 'text', text: JSON.stringify(normalized, null, 2) }],
-          };
+          return createSuccessResult(normalized, JSON.stringify(normalized, null, 2));
         } catch (error) {
           const toolError = createToolError('Tool execution failed', {
             type: 'API_ERROR',
             tool: tool.name,
             message: error instanceof Error ? error.message : String(error),
           });
-          return {
-            content: [{ type: 'text', text: toolError.toJSON() }],
-            isError: true,
-          };
+          return createErrorResult(toolError);
         }
       },
     );

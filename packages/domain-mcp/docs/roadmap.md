@@ -106,10 +106,9 @@ These won't be implemented:
 
 | Version | Status | Notes |
 |---------|--------|-------|
-| 18.x | ✅ Supported | Minimum required version |
-| 20.x | ✅ Supported | Recommended |
-| 22.x | ✅ Supported | Latest LTS |
-| 16.x and below | ❌ Not supported | Too old |
+| 22.13+ | ✅ Supported | Minimum required version |
+| 24.x | ✅ Supported | Recommended LTS |
+| 20.x and below | ❌ Not supported | Dependency toolchain requires Node 22.13+ |
 
 ## Known Limitations
 

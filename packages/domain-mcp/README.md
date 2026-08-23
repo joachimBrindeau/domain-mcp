@@ -3,11 +3,11 @@
 [![npm version](https://img.shields.io/npm/v/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/domain-mcp.svg)](https://www.npmjs.com/package/domain-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D22.13-brightgreen)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0-blue)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-blue)](https://modelcontextprotocol.io/)
 [![CI](https://github.com/joachimBrindeau/domain-mcp/workflows/CI/badge.svg)](https://github.com/joachimBrindeau/domain-mcp/actions)
-[![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Code Style: Biome](https://img.shields.io/badge/code_style-Biome-60a5fa.svg)](https://biomejs.dev/)
 
 An MCP (Model Context Protocol) server for domain management. Register, renew, transfer, and configure domains — plus DNS, WHOIS, nameservers, folders, and aftermarket — through Claude, Cursor, Claude Desktop, and any MCP-compatible client. Wraps the Dynadot registrar API as 10 generic, AI-friendly tools.
 

@@ -119,22 +119,7 @@ Cursor's MCP configuration is typically at:
 
 ### 2. Add Domain MCP
 
-```json
-{
-  "mcpServers": {
-    "dynadot": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/domain-mcp/dist/index.js"
-      ],
-      "env": {
-        "DYNADOT_API_KEY": "your-api-key-here",
-        "DYNADOT_SANDBOX": "true"
-      }
-    }
-  }
-}
-```
+Use the same `mcpServers.dynadot` configuration shown in the Claude Code section above in Cursor's MCP config file.
 
 ### 3. Restart Cursor
 
@@ -160,22 +145,7 @@ Claude Desktop uses the same MCP configuration format.
 
 ### 2. Add Domain MCP
 
-```json
-{
-  "mcpServers": {
-    "dynadot": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/domain-mcp/dist/index.js"
-      ],
-      "env": {
-        "DYNADOT_API_KEY": "your-api-key-here",
-        "DYNADOT_SANDBOX": "true"
-      }
-    }
-  }
-}
-```
+Use the same `mcpServers.dynadot` configuration shown in the Claude Code section above in the Claude Desktop config file.
 
 ### 3. Restart Claude Desktop
 
@@ -283,7 +253,7 @@ This is useful for development but slower than using the built version.
 
 3. **Check Node.js version:**
    ```bash
-   node --version  # Should be 18.0.0 or higher
+   node --version  # Should be 22.13.0 or higher
    ```
 
 4. **Test the server manually:**

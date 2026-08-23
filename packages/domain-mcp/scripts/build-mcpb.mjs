@@ -85,10 +85,12 @@ async function listTools() {
   await client.connect(transport);
   try {
     const result = await client.listTools();
-    return result.tools.map(({ name, description, inputSchema }) => ({
+    return result.tools.map(({ name, description, inputSchema, outputSchema, annotations }) => ({
       name,
       description,
       inputSchema,
+      outputSchema,
+      annotations,
     }));
   } finally {
     await client.close();

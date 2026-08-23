@@ -242,17 +242,17 @@ TEST_FOLDER_ID=your-folder-id
 - `aftermarket.manage` marketplace actions
 
 ### Actions that use DYNADOT_TARGET_USERNAME
-- `domain:push` - Push domain to another account
+- `domains.manage` with `operation: "push"` — push a domain to another account
 
 ### Actions that use TEST_CONTACT_ID
-- All `contacts.manage` actions (except list)
-- `domain_settings:set_whois`
-- `folder:set_whois`
-- `account:set_default_whois`
+- All `contacts.manage` operations except `list`
+- `domains.settings.manage` with `operation: "set_whois"`
+- `folders.manage` with `operation: "set_whois"`
+- `account.manage` with `operation: "set_default_whois"`
 
 ### Actions that use TEST_FOLDER_ID
-- All `folders.manage` actions (except list and create)
-- `domain_settings:set_folder`
+- All `folders.manage` operations except `list` and `create`
+- `domains.settings.manage` with `operation: "set_folder"`
 
 ## See Also
 

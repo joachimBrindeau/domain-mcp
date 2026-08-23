@@ -1,0 +1,9 @@
+{
+  "schema": "clean/v1",
+  "keep": [".claude", ".cursorignore", ".env", ".rooignore"],
+  "exclude": [],
+  "extraArtifacts": [],
+  "vcsHygiene": true,
+  "staleBranchDays": 90,
+  "backupDir": null
+}

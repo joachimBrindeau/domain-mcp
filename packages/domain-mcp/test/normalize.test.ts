@@ -108,5 +108,76 @@ describe('Response Normalizer', () => {
         contactId: '98765',
       });
     });
+
+    it('handles arrays, primitive values, direct response content, and lowercase fallbacks', () => {
+      expect(
+        normalizeResponse('unknown_command', {
+          Status: 'success',
+          Items: [{ ItemName: 'one' }, 'two'],
+        }),
+      ).toEqual({ success: true, items: [{ itemName: 'one' }, 'two'] });
+
+      expect(
+        normalizeResponse('create_folder', {
+          Status: 'success',
+          FolderCreateResponse: { folderId: 42 },
+        }),
+      ).toEqual({ success: true, folderId: '42' });
+
+      expect(
+        normalizeResponse('domain_info', {
+          Status: 'success',
+          DomainInfoResponse: {
+            DomainInfo: {
+              name: 'example.com',
+              expiration: '2030-01-01',
+              locked: 'no',
+              renewOption: 'auto',
+              privacy: 'full',
+              nameservers: ['ns1.example.com'],
+              note: 'important',
+            },
+          },
+        }),
+      ).toEqual({
+        success: true,
+        domain: 'example.com',
+        expiration: '2030-01-01',
+        locked: false,
+        renewOption: 'auto',
+        privacy: 'full',
+        nameservers: ['ns1.example.com'],
+        note: 'important',
+      });
+
+      expect(
+        normalizeResponse('create_contact', {
+          Status: 'success',
+          CreateContactResponse: { contactId: 7 },
+        }),
+      ).toEqual({ success: true, contactId: '7' });
+
+      expect(
+        normalizeResponse('search', {
+          Status: 'success',
+          SearchResponse: {
+            searchResults: [{ domainName: 'example.dev', available: 'yes', price: '$5' }],
+          },
+        }),
+      ).toEqual({
+        success: true,
+        results: [{ domain: 'example.dev', available: true, price: '$5' }],
+      });
+    });
+
+    it('normalizes command-specific content without a response wrapper', () => {
+      expect(
+        normalizeResponse('create_folder', {
+          Status: 'success',
+          Error: 'ignored on success',
+          FolderId: 42,
+        }),
+      ).toEqual({ success: true, folderId: '42' });
+    });
   });
 });

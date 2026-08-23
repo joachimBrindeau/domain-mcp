@@ -12,6 +12,7 @@ describe('Structured Errors', () => {
 
     expect(error.suggestions).toContain("Did you mean 'lock'?");
     expect(error.validActions).toEqual(['lock', 'unlock', 'list']);
+    expect(JSON.parse(error.toJSON()).error.suggestions).toEqual(["Did you mean 'lock'?"]);
   });
 
   it('should create error with docs URL', () => {
@@ -34,5 +35,45 @@ describe('Structured Errors', () => {
     const json = JSON.parse(error.toJSON());
     expect(json.success).toBe(false);
     expect(json.error.message).toBe('Domain not found');
+  });
+
+  it('uses the reverse prefix match for short candidate names', () => {
+    const error = createToolError('unknown_action', {
+      type: 'UNKNOWN_ACTION',
+      action: 'abc',
+      validActions: ['ab'],
+      tool: 'domain',
+    });
+
+    expect(error.suggestions).toEqual(["Did you mean 'ab'?"]);
+  });
+
+  it('omits suggestions when no action is similar', () => {
+    const error = createToolError('unknown_action', {
+      type: 'UNKNOWN_ACTION',
+      action: 'delete',
+      validActions: ['lock', 'unlock'],
+      tool: 'domain',
+    });
+
+    expect(error.suggestions).toEqual([]);
+    expect(JSON.parse(error.toJSON()).error.suggestions).toBeUndefined();
+  });
+
+  it('does not search for suggestions without an action or valid actions', () => {
+    expect(
+      createToolError('unknown_action', {
+        type: 'UNKNOWN_ACTION',
+        validActions: ['lock'],
+        tool: 'domain',
+      }).suggestions,
+    ).toEqual([]);
+    expect(
+      createToolError('unknown_action', {
+        type: 'UNKNOWN_ACTION',
+        action: 'lock',
+        tool: 'domain',
+      }).suggestions,
+    ).toEqual([]);
   });
 });

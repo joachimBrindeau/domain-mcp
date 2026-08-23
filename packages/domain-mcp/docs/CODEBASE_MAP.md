@@ -27,7 +27,6 @@ Domain MCP Server - AI-powered domain management through Dynadot API
 - **Scripts**: `scripts/`
 - **Logs**: `logs/`
 - **Images**: `images/`
-- **Hidden directories**: .claude/, .cursor/, .github/, .roo/, .rulesync/, .specify/
 
 ## Directory Structure
 
@@ -68,7 +67,6 @@ Domain MCP Server - AI-powered domain management through Dynadot API
 - [x] **Too many root items (22 vs ≤15)** - 7 items over target
 - [x] **Giant test file** - e2e.test.ts at 891 lines (target: <500)
 - [x] **Large script files** - 2 scripts >400 lines
-- [x] **Hidden tooling sprawl** - 6 hidden directories (.claude, .cursor, .roo, .rulesync, .specify, .github)
 - [ ] Deep nesting (>5 levels) - Only 3 levels ✅
 - [ ] Duplicate directory names - None found ✅
 

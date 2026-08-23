@@ -37,7 +37,6 @@ coverage/
 .roo/
 .rooignore
 .claude/
-.rulesync/
 .specify/
 *.swp
 *.swo
@@ -66,5 +65,4 @@ Thumbs.db
 *.p12
 
 # Tool configs
-rulesync.jsonc
 tools.yaml

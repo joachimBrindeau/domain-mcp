@@ -29,12 +29,6 @@ pnpm check         # biome across repo
 pnpm check:fix     # biome --write across repo
 ```
 
-## Local MCP development
-
-The root `.mcp.json` launches `domain-mcp` from source via `tsx`, so Claude Code
-at the workspace root connects directly to the working tree. The plugin's own
-`.mcp.json` launches the **published** `domain-mcp` via npx.
-
 ## Publishing
 
 Only `packages/domain-mcp/` publishes to npm. Tag pushes on `main` trigger the

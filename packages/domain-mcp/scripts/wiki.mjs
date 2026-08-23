@@ -80,6 +80,26 @@ function primitiveSlug(value) {
     .replace(/^-|-$/g, '');
 }
 
+function githubToolSlug(name) {
+  return `Tool-${primitiveSlug(name)}`;
+}
+
+function githubResourceSlug(name) {
+  return `Resource-${primitiveSlug(name)}`;
+}
+
+function githubPromptSlug(name) {
+  return `Prompt-${primitiveSlug(name)}`;
+}
+
+function stripFrontMatter(markdown) {
+  return markdown.replace(/^---\n[\s\S]*?\n---\n\n/, '');
+}
+
+export function renderGitHubToolPage(tool) {
+  return `${stripFrontMatter(renderToolPage(tool))}\n[Back to the tool index](MCP-Tools)\n`;
+}
+
 function renderResourcePage(resource) {
   const description =
     resource.description?.trim() || `Reference for the ${resource.name} resource.`;
@@ -205,6 +225,86 @@ function renderLlmsTxt(surface) {
   return `${links.join('\n')}\n`;
 }
 
+export async function generateGitHubWiki({ outputDirectory, surface }) {
+  await rm(outputDirectory, { recursive: true, force: true });
+  await mkdir(outputDirectory, { recursive: true });
+
+  const toolEntries = surface.tools.map((tool) => ({
+    label: tool.name,
+    href: githubToolSlug(tool.name),
+    description: tool.description,
+  }));
+  const resourceEntries = surface.resources.map((resource) => ({
+    label: resource.name,
+    href: githubResourceSlug(resource.name),
+    description: resource.description,
+  }));
+  const promptEntries = surface.prompts.map((prompt) => ({
+    label: prompt.name,
+    href: githubPromptSlug(prompt.name),
+    description: prompt.description,
+  }));
+
+  await write(
+    join(outputDirectory, 'Home.md'),
+    `# Domain MCP Wiki\n\nThis wiki is generated from the public MCP runtime surface. It documents ${surface.tools.length} tools, ${surface.resources.length} resources, and ${surface.prompts.length} prompts for \`domain-mcp\` ${surface.server.version}.\n\n- [MCP tools](MCP-Tools)\n- [MCP resources](MCP-Resources)\n- [MCP prompts](MCP-Prompts)\n- [Full SEO documentation site](${SITE_URL}/)\n`,
+  );
+  await write(
+    join(outputDirectory, 'MCP-Tools.md'),
+    stripFrontMatter(
+      renderCollectionIndex(
+        'MCP tools',
+        'The complete credential-free tool catalog exposed by Domain MCP.',
+        toolEntries,
+      ),
+    ),
+  );
+  await write(
+    join(outputDirectory, 'MCP-Resources.md'),
+    stripFrontMatter(
+      renderCollectionIndex(
+        'MCP resources',
+        'Read-only context resources available to connected MCP clients.',
+        resourceEntries,
+      ),
+    ),
+  );
+  await write(
+    join(outputDirectory, 'MCP-Prompts.md'),
+    stripFrontMatter(
+      renderCollectionIndex(
+        'MCP prompts',
+        'Reusable workflows exposed through the Model Context Protocol.',
+        promptEntries,
+      ),
+    ),
+  );
+
+  for (const tool of surface.tools) {
+    await write(
+      join(outputDirectory, `${githubToolSlug(tool.name)}.md`),
+      renderGitHubToolPage(tool),
+    );
+  }
+  for (const resource of surface.resources) {
+    await write(
+      join(outputDirectory, `${githubResourceSlug(resource.name)}.md`),
+      `${stripFrontMatter(renderResourcePage(resource))}\n[Back to the resource index](MCP-Resources)\n`,
+    );
+  }
+  for (const prompt of surface.prompts) {
+    await write(
+      join(outputDirectory, `${githubPromptSlug(prompt.name)}.md`),
+      `${stripFrontMatter(renderPromptPage(prompt))}\n[Back to the prompt index](MCP-Prompts)\n`,
+    );
+  }
+
+  await write(
+    join(outputDirectory, '_Sidebar.md'),
+    `**Domain MCP**\n\n- [Home](Home)\n- [Tools](MCP-Tools)\n${toolEntries.map(({ label, href }) => `  - [\`${label}\`](${href})`).join('\n')}\n- [Resources](MCP-Resources)\n- [Prompts](MCP-Prompts)\n- [SEO documentation site](${SITE_URL}/)\n`,
+  );
+}
+
 export async function generateWiki({
   outputDirectory,
   staticDirectory = outputDirectory,
@@ -288,12 +388,22 @@ export async function generateWiki({
 
 async function main() {
   const check = process.argv.includes('--check');
+  const githubOutputArgument = process.argv.find((argument) =>
+    argument.startsWith('--github-output='),
+  );
   const docsDirectory = resolve(REPOSITORY_ROOT, 'packages', 'wiki', 'docs');
   const staticDirectory = resolve(REPOSITORY_ROOT, 'packages', 'wiki', 'static');
   const temporaryRoot = resolve(REPOSITORY_ROOT, '.wiki-generated');
   const targetDocs = check ? join(temporaryRoot, 'docs') : docsDirectory;
   const targetStatic = check ? join(temporaryRoot, 'static') : staticDirectory;
   const surface = await loadMcpSurface();
+  if (githubOutputArgument) {
+    await generateGitHubWiki({
+      outputDirectory: resolve(githubOutputArgument.slice('--github-output='.length)),
+      surface,
+    });
+    return;
+  }
   await generateWiki({ outputDirectory: targetDocs, staticDirectory: targetStatic, surface });
 
   if (check) {

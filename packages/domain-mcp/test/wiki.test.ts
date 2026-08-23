@@ -3,9 +3,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  generateGitHubWiki,
   generateWiki,
   loadMcpSurface,
   type McpTool,
+  renderGitHubToolPage,
   renderToolPage,
   toolSlug,
 } from '../scripts/wiki.mjs';
@@ -52,6 +54,29 @@ describe('generated MCP wiki', () => {
     expect(renderToolPage(tool)).toContain('## Parameters');
     expect(renderToolPage(tool)).toContain('| `domain` | string | Yes | Domain name to check. |');
     expect(renderToolPage(tool)).toContain('## Output schema');
+    expect(renderGitHubToolPage(tool)).not.toContain('---\n');
+    expect(renderGitHubToolPage(tool)).toContain('[Back to the tool index](MCP-Tools)');
+  });
+
+  it('generates a native GitHub Wiki with a home page, sidebar, and flat tool pages', async () => {
+    const outputDirectory = await mkdtemp(join(tmpdir(), 'domain-mcp-github-wiki-'));
+    temporaryDirectories.push(outputDirectory);
+
+    const surface = await loadMcpSurface();
+    await generateGitHubWiki({ outputDirectory, surface });
+
+    const files = await readdir(outputDirectory);
+    expect(files).toContain('Home.md');
+    expect(files).toContain('_Sidebar.md');
+    expect(files).toContain('MCP-Tools.md');
+    expect(files).toContain('Tool-domains-manage.md');
+    expect(files.filter((file) => file.startsWith('Tool-'))).toHaveLength(13);
+    expect(await readFile(join(outputDirectory, 'Home.md'), 'utf8')).toContain(
+      'This wiki is generated from the public MCP runtime surface.',
+    );
+    expect(await readFile(join(outputDirectory, '_Sidebar.md'), 'utf8')).toContain(
+      '[`domains.manage`](Tool-domains-manage)',
+    );
   });
 
   it('generates one indexable page per MCP primitive plus discovery artifacts', async () => {

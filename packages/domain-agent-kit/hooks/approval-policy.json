@@ -1,0 +1,199 @@
+{
+  "mcp__domain-mcp__account_manage": {
+    "all": [
+      "info",
+      "balance",
+      "set_default_whois",
+      "set_default_ns",
+      "set_default_parking",
+      "set_default_forwarding",
+      "set_default_stealth",
+      "set_default_hosting",
+      "set_default_dns",
+      "set_default_dns2",
+      "set_default_email_forward",
+      "set_default_renew_option",
+      "clear_defaults"
+    ],
+    "mutating": [
+      "set_default_whois",
+      "set_default_ns",
+      "set_default_parking",
+      "set_default_forwarding",
+      "set_default_stealth",
+      "set_default_hosting",
+      "set_default_dns",
+      "set_default_dns2",
+      "set_default_email_forward",
+      "set_default_renew_option",
+      "clear_defaults"
+    ]
+  },
+  "mcp__domain-mcp__aftermarket_manage": {
+    "all": [
+      "backorder_add",
+      "backorder_delete",
+      "backorder_list",
+      "auction_list_open",
+      "auction_details",
+      "auction_bids",
+      "auction_bid",
+      "auction_list_closed",
+      "backorder_auction_list_open",
+      "backorder_auction_details",
+      "backorder_auction_bid",
+      "backorder_auction_list_closed",
+      "expired_list",
+      "expired_buy",
+      "listings",
+      "listing_details",
+      "buy_now",
+      "set_for_sale",
+      "remove_from_sale",
+      "afternic_confirm",
+      "sedo_confirm"
+    ],
+    "mutating": [
+      "backorder_add",
+      "backorder_delete",
+      "auction_bid",
+      "backorder_auction_bid",
+      "expired_buy",
+      "buy_now",
+      "set_for_sale",
+      "remove_from_sale",
+      "afternic_confirm",
+      "sedo_confirm"
+    ]
+  },
+  "mcp__domain-mcp__contacts_manage": {
+    "all": [
+      "list",
+      "get",
+      "create",
+      "edit",
+      "delete",
+      "create_cn_audit",
+      "get_cn_audit_status",
+      "set_eu_setting",
+      "set_lv_setting",
+      "set_lt_setting"
+    ],
+    "mutating": [
+      "create",
+      "edit",
+      "delete",
+      "create_cn_audit",
+      "set_eu_setting",
+      "set_lv_setting",
+      "set_lt_setting"
+    ]
+  },
+  "mcp__domain-mcp__dns_manage": {
+    "all": ["get", "set", "set_dnssec", "get_dnssec", "clear_dnssec", "clear_dns"],
+    "mutating": ["set", "set_dnssec", "clear_dnssec", "clear_dns"]
+  },
+  "mcp__domain-mcp__domains_settings_manage": {
+    "all": [
+      "set_ns",
+      "get_ns",
+      "set_renew_option",
+      "set_privacy",
+      "set_whois",
+      "set_forwarding",
+      "set_stealth",
+      "set_parking",
+      "set_hosting",
+      "set_email_forward",
+      "set_folder",
+      "set_note",
+      "clear_settings"
+    ],
+    "mutating": [
+      "set_ns",
+      "set_renew_option",
+      "set_privacy",
+      "set_whois",
+      "set_forwarding",
+      "set_stealth",
+      "set_parking",
+      "set_hosting",
+      "set_email_forward",
+      "set_folder",
+      "set_note",
+      "clear_settings"
+    ]
+  },
+  "mcp__domain-mcp__domains_manage": {
+    "all": [
+      "list",
+      "info",
+      "search",
+      "register",
+      "bulk_register",
+      "renew",
+      "delete",
+      "restore",
+      "lock",
+      "tld_price",
+      "push"
+    ],
+    "mutating": ["register", "bulk_register", "renew", "delete", "restore", "lock", "push"]
+  },
+  "mcp__domain-mcp__folders_manage": {
+    "all": [
+      "list",
+      "create",
+      "delete",
+      "rename",
+      "set_whois",
+      "set_ns",
+      "set_parking",
+      "set_forwarding",
+      "set_stealth",
+      "set_hosting",
+      "set_dns",
+      "set_dns2",
+      "set_email_forward",
+      "set_renew_option",
+      "clear_settings"
+    ],
+    "mutating": [
+      "create",
+      "delete",
+      "rename",
+      "set_whois",
+      "set_ns",
+      "set_parking",
+      "set_forwarding",
+      "set_stealth",
+      "set_hosting",
+      "set_dns",
+      "set_dns2",
+      "set_email_forward",
+      "set_renew_option",
+      "clear_settings"
+    ]
+  },
+  "mcp__domain-mcp__nameservers_manage": {
+    "all": ["list", "register", "add", "set_ip", "delete", "delete_by_domain"],
+    "mutating": ["register", "add", "set_ip", "delete", "delete_by_domain"]
+  },
+  "mcp__domain-mcp__orders_manage": {
+    "all": ["list", "status", "is_processing", "coupons", "reseller_verification"],
+    "mutating": []
+  },
+  "mcp__domain-mcp__transfers_manage": {
+    "all": [
+      "initiate",
+      "status",
+      "cancel",
+      "get_auth_code",
+      "set_auth_code",
+      "authorize_away",
+      "get_push_request",
+      "set_push_request"
+    ],
+    "mutating": ["initiate", "cancel", "set_auth_code", "authorize_away", "set_push_request"]
+  }
+}

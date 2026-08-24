@@ -2,7 +2,7 @@
   "name": "domain-mcp-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "Monorepo for domain-mcp (MCP server) and domain-agent-kit (Claude Code plugin).",
+  "description": "Monorepo for domain-mcp and its portable domain-management Agent Plugin.",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"

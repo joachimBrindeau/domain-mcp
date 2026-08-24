@@ -102,12 +102,12 @@ This repository is a pnpm workspace with two related packages:
 | Package | Best for | Distribution |
 |---|---|---|
 | [`domain-mcp`](packages/domain-mcp) | Claude, Cursor, Claude Desktop, Zed, and other MCP clients | [npm](https://www.npmjs.com/package/domain-mcp) |
-| [`domain-agent-kit`](packages/domain-agent-kit) | Claude Code users who want agents, slash commands, DNS guidance, and destructive-operation checks | Claude Code plugin |
+| [`domain-agent-kit`](packages/domain-agent-kit) | Agent Plugins v1 hosts, including Hermes and Claude Code | Portable plugin with optional Claude safety adapter |
 
 ```text
 packages/
 ├── domain-mcp/        # TypeScript MCP server published to npm
-└── domain-agent-kit/  # Claude Code plugin built on domain-mcp
+└── domain-agent-kit/  # Portable Agent Plugin built on domain-mcp
 ```
 
 ## Domain MCP examples
@@ -120,7 +120,7 @@ Once connected, you can ask your client to:
 - “Enable auto-renew for every unlocked .com domain.”
 - “Show the current nameservers and WHOIS contacts for example.com.”
 
-Your client should still ask before destructive or paid operations. The Claude Code plugin adds an extra confirmation hook for selected irreversible actions.
+Your client should still ask before destructive or paid operations. The portable plugin defines that approval and read-back contract, and its optional Claude Code adapter adds a native confirmation hook for selected irreversible actions.
 
 ## Development
 

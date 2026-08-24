@@ -3,9 +3,7 @@
     "domain-mcp": {
       "command": "bash",
       "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/launch-domain-mcp.sh"],
-      "env": {
-        "DOMAIN_MCP_VERSION": "^3.0.0"
-      }
+      "env": { "DOMAIN_MCP_VERSION": "3.0.0" }
     }
   }
 }

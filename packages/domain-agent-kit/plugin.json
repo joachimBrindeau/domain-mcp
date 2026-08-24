@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "domain-agent-kit",
+  "version": "1.0.0",
+  "description": "Portable domain research, portfolio audit, DNS, renewal, setup, and health workflows backed by domain-mcp.",
+  "author": { "name": "Joachim Brindeau" },
+  "homepage": "https://github.com/joachimBrindeau/domain-mcp",
+  "repository": "https://github.com/joachimBrindeau/domain-mcp",
+  "license": "MIT",
+  "keywords": ["domain", "dns", "dynadot", "registrar", "mcp", "portfolio"]
+}

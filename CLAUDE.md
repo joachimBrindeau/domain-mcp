@@ -5,18 +5,18 @@ This is a pnpm workspace monorepo. Two packages live under `packages/`:
 - **`packages/domain-mcp/`** — the `domain-mcp` npm package: a stdio MCP server
   wrapping the Dynadot registrar API. See `packages/domain-mcp/CLAUDE.md` for
   architecture, commands, and conventions.
-- **`packages/domain-agent-kit/`** — the `domain-agent-kit` Claude Code plugin
-  (agents, slash commands, skills, hooks). It launches the `domain-mcp` server
-  via `npx -y domain-mcp@<version>` from the published package, so it has no
-  source-level dependency on the `domain-mcp` package in this repo.
+- **`packages/domain-agent-kit/`** — the portable Agent Plugins v1 workflow package
+  built on `domain-mcp`. Canonical behavior lives in `skills/domain-management/`;
+  the Claude manifest, MCP declaration, and destructive-operation hook are thin
+  compatibility adapters.
 
 ## When editing code
 
 - Changes to the MCP server: work inside `packages/domain-mcp/`. Use
   `pnpm --filter domain-mcp run <script>` or `cd packages/domain-mcp && pnpm <script>`.
-- Changes to the plugin: work inside `packages/domain-agent-kit/`. There are no
-  build or test scripts — the plugin is a set of markdown/JSON/shell files that
-  Claude Code loads directly.
+- Changes to the plugin: work inside `packages/domain-agent-kit/`. Run
+  `pnpm --filter domain-agent-kit test` and
+  `hermes plugins doctor packages/domain-agent-kit --ci` after changes.
 
 ## Root commands
 

@@ -1,12 +1,6 @@
----
-name: DNS Best Practices for Domains
-description: This skill should be used when the user asks about configuring DNS records for common services — email ("set up email for my domain", "Google Workspace MX records", "Fastmail setup", "ProtonMail DNS", "SPF", "DKIM", "DMARC"), web hosting ("A records for my website", "apex vs subdomain"), domain verification ("TXT record for verification"), HTTPS certificate issuance ("CAA records", "LetsEncrypt"), or URL redirects ("forward www to apex"). Provides concrete copy-pasteable record templates for the most common configurations so Claude doesn't have to reason about them from scratch.
-version: 0.1.0
----
+# DNS record patterns
 
-# DNS Best Practices for Domains
-
-Copy-pasteable templates for the DNS configurations users ask about most. Use these as the source of truth rather than reasoning about record formats from memory. When applying via the plugin's `dns.manage` command, translate the templates into the `dns.manage` MCP tool's `operation: set` parameters and preserve any existing records the user isn't replacing.
+Copy-pasteable templates for the DNS configurations users ask about most. Use these as the source of truth rather than reasoning about record formats from memory. When applying through the server's DNS management operation, translate the templates into the `dns.manage` MCP tool's `operation: set` parameters and preserve any existing records the user isn't replacing.
 
 # Email
 
@@ -227,4 +221,9 @@ Now `sub.example.com` and everything under it is resolved by the delegated names
 
 When the user describes a DNS setup task, do NOT try to recall record formats from memory. Pattern-match the task to one of the sections above and use the template verbatim. If the user's situation isn't covered, say so and ask for the provider's published DNS setup docs — do not guess.
 
-When applying records via the plugin's `dns.manage` command, preserve any existing records for tuples the new template doesn't touch. The `dns.manage` MCP tool's `operation: set` rewrites the whole record set, so the user's existing A records, verification TXTs, etc. must be included in the call alongside the new records from the template.
+When applying records through the server's DNS management operation, preserve any existing records for tuples the new template doesn't touch. The `dns.manage` MCP tool's `operation: set` rewrites the whole record set, so the user's existing A records, verification TXTs, etc. must be included in the call alongside the new records from the template.
+
+
+## Checks
+
+Provider values are current or supplied by the provider, unrelated records are preserved, and no verification or DKIM token is invented.

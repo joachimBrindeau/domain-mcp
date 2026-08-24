@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "domain-agent-kit",
-      "description": "Autonomous agents and slash commands for Dynadot domain management — portfolio audits, name brainstorming with trademark checks, DNS diagnostics, and renewal management. Wraps the domain-mcp MCP server.",
+      "description": "Portable domain-management workflows for research, portfolio audits, DNS, renewals, and safe Dynadot operations through domain-mcp.",
       "author": {
         "name": "Joachim Brindeau"
       },

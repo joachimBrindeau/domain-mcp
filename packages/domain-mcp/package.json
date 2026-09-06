@@ -97,6 +97,8 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
+    "bottleneck": "2.19.5",
+    "fast-cartesian": "9.0.1",
     "ky": "^2.0.2",
     "zod": "^4.4.3"
   },

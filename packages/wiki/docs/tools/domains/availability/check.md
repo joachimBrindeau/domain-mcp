@@ -1,6 +1,6 @@
 ---
 title: "domains.availability.check MCP Tool"
-description: "Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once."
+description: "Check if a single domain is available for registration. Fails closed when Dynadot returns an API error or no conclusive availability result. The shared client serializes registrar requests."
 keywords:
   - MCP tool
   - domain management
@@ -11,7 +11,7 @@ slug: /tools/domains/availability/check
 
 # `domains.availability.check`
 
-Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.
+Check if a single domain is available for registration. Fails closed when Dynadot returns an API error or no conclusive availability result. The shared client serializes registrar requests.
 
 ## Safety and behavior
 

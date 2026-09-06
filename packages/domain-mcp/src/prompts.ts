@@ -69,10 +69,12 @@ export function registerAllPrompts(server: McpServer): void {
             type: 'text',
             text: `Find available domains for: ${args.description}
 
-1. Extract 5-8 keywords from the description (core words, action verbs, abbreviations)
-2. Call \`domains.ideas.generate\` with those keywords
-3. The tool automatically checks availability and returns only available domains with prices
-4. Present the best options grouped by brandability`,
+1. Extract 5-8 high-signal keyword phrases from the description.
+2. If the request is for brandable names, define ordered phoneme or morpheme dimensions and pass them once as \`brandMultiplex\`; the server owns the Cartesian product, normalization, length filtering, deduplication, TLD expansion, and deterministic cap. Do not hand-author full-name batches.
+3. For descriptive domains, use DataForSEO variations and search volumes when available; otherwise pass one deterministic ordered fallback list as \`llmVariations\`.
+4. Call \`domains.ideas.generate\` once with the selected source and TLDs. Use \`exact\` for brand multiplexes; use both \`exact\` and \`hyphenated\` for descriptive phrases.
+5. The tool's shared registrar client serializes and paces all Dynadot requests and fails closed on any error or inconclusive result; do not retry or recheck candidates in parallel.
+6. Present the best options grouped by keyword value and brandability.`,
           },
         },
       ],

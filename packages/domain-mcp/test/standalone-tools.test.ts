@@ -35,8 +35,18 @@ function generateIdeasHandler() {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.spyOn(Math, 'random').mockReturnValue(0.5);
-  execute.mockResolvedValue({ Status: 'success' });
+  execute.mockImplementation(async (_command: string, params: { domain0: string }) => ({
+    Status: 'success',
+    requestedDomain: params.domain0,
+  }));
+  mocks.normalizeResponse.mockImplementation(
+    (_command: string, raw: { requestedDomain?: string }) => ({
+      success: true,
+      results: raw.requestedDomain
+        ? [{ domain: raw.requestedDomain, available: false }]
+        : undefined,
+    }),
+  );
   mocks.getClient.mockReturnValue({ execute } as unknown as ReturnType<typeof getClient>);
 });
 
@@ -70,15 +80,23 @@ describe('check_domain tool', () => {
     });
   });
 
-  it('reports unavailable when the normalized response has no result', async () => {
+  it('fails closed when the normalized response has no availability result', async () => {
     mocks.normalizeResponse.mockReturnValue({ success: true });
 
-    const result = await checkDomainHandler()({ domain: 'missing.example', showPrice: true });
-    expect(JSON.parse(result.content[0]?.text ?? '{}')).toEqual({
+    await expect(
+      checkDomainHandler()({ domain: 'missing.example', showPrice: true }),
+    ).rejects.toThrow('Dynadot search returned no availability result for missing.example');
+  });
+
+  it('fails closed when Dynadot returns a result for a different domain', async () => {
+    mocks.normalizeResponse.mockReturnValue({
       success: true,
-      domain: 'missing.example',
-      available: false,
+      results: [{ domain: 'stale.example', available: true }],
     });
+
+    await expect(checkDomainHandler()({ domain: 'expected.example' })).rejects.toThrow(
+      'Dynadot returned stale.example instead of expected.example',
+    );
   });
 });
 
@@ -111,43 +129,67 @@ describe('generate_domain_ideas tool', () => {
     );
   });
 
-  it('retries an empty response once and omits unavailable candidates', async () => {
-    mocks.normalizeResponse.mockReturnValueOnce({ success: true }).mockReturnValueOnce({
-      success: true,
-      results: [{ domain: 'retry.com', available: false }],
-    });
+  it('fails closed on the first empty response without inventing retry semantics', async () => {
+    mocks.normalizeResponse.mockReturnValue({ success: true });
 
-    const result = await generateIdeasHandler()({
-      keywords: ['retry'],
-      tlds: ['com'],
-      patterns: ['exact'],
-      maxToCheck: 10,
-    });
+    await expect(
+      generateIdeasHandler()({
+        keywords: ['retry'],
+        tlds: ['com'],
+        patterns: ['exact'],
+        maxToCheck: 10,
+      }),
+    ).rejects.toThrow('Domain availability check failed for retry.com: empty Dynadot response');
 
-    expect(execute).toHaveBeenCalledTimes(2);
-    expect(result.content[0]?.text).toBe('No available domains found (checked 1 domains)');
+    expect(execute).toHaveBeenCalledTimes(1);
   });
 
-  it('handles failed searches and non-exact generation patterns', async () => {
-    execute.mockRejectedValueOnce(new Error('network')).mockResolvedValue({ Status: 'success' });
-    mocks.normalizeResponse.mockReturnValue({ success: false });
-
-    const result = await generateIdeasHandler()({
-      keywords: ['A!', 'Task', 'Flow'],
-      tlds: ['dev'],
-      patterns: ['hyphenated', 'prefix', 'suffix'],
-      maxToCheck: 10,
+  it('fails closed when Dynadot returns a result for a different domain', async () => {
+    mocks.normalizeResponse.mockReturnValue({
+      success: true,
+      results: [{ domain: 'stale.example', available: true }],
     });
 
-    expect(execute.mock.calls.length).toBe(10);
-    expect(result.content[0]?.text).toContain('No available domains found');
+    await expect(
+      generateIdeasHandler()({
+        keywords: ['hourzen'],
+        tlds: ['io'],
+        patterns: ['exact'],
+        maxToCheck: 10,
+      }),
+    ).rejects.toThrow(
+      'Domain availability check failed for hourzen.io: Dynadot returned stale.example',
+    );
+
+    expect(execute).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails closed when any generated-domain search fails', async () => {
+    execute.mockRejectedValueOnce(new Error('network')).mockResolvedValue({ Status: 'success' });
+    mocks.normalizeResponse.mockReturnValue({
+      success: true,
+      results: [{ domain: 'unavailable.test', available: false }],
+    });
+
+    await expect(
+      generateIdeasHandler()({
+        keywords: ['A!', 'Task', 'Flow'],
+        tlds: ['dev'],
+        patterns: ['hyphenated', 'prefix', 'suffix'],
+        maxToCheck: 10,
+      }),
+    ).rejects.toThrow('Domain availability check failed for get-task.dev: network');
+
+    expect(execute).toHaveBeenCalledTimes(1);
   });
 
   it('keeps exact candidates ahead of shuffled alternatives when capped', async () => {
-    mocks.normalizeResponse.mockReturnValue({
-      success: true,
-      results: [{ domain: 'task.com', available: true }],
-    });
+    mocks.normalizeResponse.mockImplementation(
+      (_command: string, raw: { requestedDomain: string }) => ({
+        success: true,
+        results: [{ domain: raw.requestedDomain, available: true }],
+      }),
+    );
 
     await generateIdeasHandler()({
       keywords: ['task'],
@@ -194,8 +236,6 @@ describe('generate_domain_ideas tool', () => {
   });
 
   it('uses the default TLDs, patterns, and check limit when omitted', async () => {
-    mocks.normalizeResponse.mockReturnValue({ success: false });
-
     const result = await generateIdeasHandler()({ keywords: ['Task'] });
 
     expect(execute).toHaveBeenCalledTimes(100);
@@ -206,6 +246,117 @@ describe('generate_domain_ideas tool', () => {
       })),
     );
     expect(result.content[0]?.text).toBe('No available domains found (checked 100 domains)');
+  });
+
+  it('generates phrase labels with and without hyphens in deterministic TLD order', async () => {
+    await generateIdeasHandler()({
+      keywords: ['Time Tracking'],
+      tlds: ['com', 'app'],
+      patterns: ['exact', 'hyphenated'],
+      maxToCheck: 10,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'timetracking.com', show_price: 1 },
+      { domain0: 'time-tracking.com', show_price: 1 },
+      { domain0: 'timetracking.app', show_price: 1 },
+      { domain0: 'time-tracking.app', show_price: 1 },
+    ]);
+  });
+
+  it('multiplexes ordered brand dimensions before TLD expansion', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking'],
+      brandMultiplex: {
+        dimensions: [
+          ['hor', 'tem'],
+          ['v', 'l'],
+          ['o', 'a'],
+        ],
+        minLength: 5,
+        maxLength: 6,
+      },
+      tlds: ['com', 'app'],
+      patterns: ['exact'],
+      maxToCheck: 20,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'horvo.com', show_price: 1 },
+      { domain0: 'horvo.app', show_price: 1 },
+      { domain0: 'horva.com', show_price: 1 },
+      { domain0: 'horva.app', show_price: 1 },
+      { domain0: 'horlo.com', show_price: 1 },
+      { domain0: 'horlo.app', show_price: 1 },
+      { domain0: 'horla.com', show_price: 1 },
+      { domain0: 'horla.app', show_price: 1 },
+      { domain0: 'temvo.com', show_price: 1 },
+      { domain0: 'temvo.app', show_price: 1 },
+      { domain0: 'temva.com', show_price: 1 },
+      { domain0: 'temva.app', show_price: 1 },
+      { domain0: 'temlo.com', show_price: 1 },
+      { domain0: 'temlo.app', show_price: 1 },
+      { domain0: 'temla.com', show_price: 1 },
+      { domain0: 'temla.app', show_price: 1 },
+    ]);
+  });
+
+  it('preserves an explicit multiplex separator', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking'],
+      brandMultiplex: {
+        dimensions: [['my'], ['time', 'hours']],
+        separator: '-',
+        minLength: 6,
+        maxLength: 8,
+      },
+      tlds: ['com'],
+      patterns: ['exact'],
+      maxToCheck: 10,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'my-time.com', show_price: 1 },
+      { domain0: 'my-hours.com', show_price: 1 },
+    ]);
+  });
+
+  it('uses supplied ranked keyword variations before deterministic LLM variations', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking software'],
+      keywordVariations: [
+        { keyword: 'time tracker software', searchVolume: 14800 },
+        { keyword: 'time tracking software', searchVolume: 12100 },
+      ],
+      llmVariations: ['work time tracker'],
+      tlds: ['com'],
+      patterns: ['exact', 'hyphenated'],
+      maxToCheck: 20,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'timetrackersoftware.com', show_price: 1 },
+      { domain0: 'time-tracker-software.com', show_price: 1 },
+      { domain0: 'timetrackingsoftware.com', show_price: 1 },
+      { domain0: 'time-tracking-software.com', show_price: 1 },
+    ]);
+  });
+
+  it('uses deterministic LLM variations only when ranked keyword data is absent', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking software'],
+      llmVariations: ['time tracker', 'time tracking'],
+      tlds: ['com'],
+      patterns: ['exact', 'hyphenated'],
+      maxToCheck: 20,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'timetracker.com', show_price: 1 },
+      { domain0: 'time-tracker.com', show_price: 1 },
+      { domain0: 'timetracking.com', show_price: 1 },
+      { domain0: 'time-tracking.com', show_price: 1 },
+    ]);
   });
 
   it('skips an unknown runtime pattern when the callback is invoked defensively', async () => {

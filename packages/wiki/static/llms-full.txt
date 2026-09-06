@@ -13,8 +13,8 @@
 - [account.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/account/manage): Account info, balance, and default settings for new domains. Manage API keys: https://www.dynadot.com/account/domain/setting/api.html?s9F6L9F7U8Q9U8Z8v
 - [aftermarket.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/aftermarket/manage): Aftermarket: auctions, backorders, expired domains, marketplace listings. Browse domains: https://www.dynadot.com/?s9F6L9F7U8Q9U8Z8v
 - [orders.manage](https://joachimbrindeau.github.io/domain-mcp/docs/tools/orders/manage): Orders, coupons, processing status, reseller operations
-- [domains.availability.check](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/availability/check): Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.
-- [domains.ideas.generate](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/ideas/generate): Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.
+- [domains.availability.check](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/availability/check): Check if a single domain is available for registration. Fails closed when Dynadot returns an API error or no conclusive availability result. The shared client serializes registrar requests.
+- [domains.ideas.generate](https://joachimbrindeau.github.io/domain-mcp/docs/tools/domains/ideas/generate): Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to create a library-backed Cartesian product of ordered phoneme or morpheme dimensions. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative.
 - [server.help](https://joachimbrindeau.github.io/domain-mcp/docs/tools/server/help): Discover available tools and operations. Use query: "tools" to list all tools, "actions" with a tool name to list operations, "examples" for usage examples.
 
 ## Resources
@@ -1993,7 +1993,7 @@ Orders, coupons, processing status, reseller operations
 
 ---
 title: "domains.availability.check MCP Tool"
-description: "Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once."
+description: "Check if a single domain is available for registration. Fails closed when Dynadot returns an API error or no conclusive availability result. The shared client serializes registrar requests."
 keywords:
   - MCP tool
   - domain management
@@ -2004,7 +2004,7 @@ slug: /tools/domains/availability/check
 
 # `domains.availability.check`
 
-Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.
+Check if a single domain is available for registration. Fails closed when Dynadot returns an API error or no conclusive availability result. The shared client serializes registrar requests.
 
 ## Safety and behavior
 
@@ -2115,7 +2115,7 @@ Check if a single domain is available for registration. Designed for parallel ex
 
 ---
 title: "domains.ideas.generate MCP Tool"
-description: "Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains."
+description: "Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to create a library-backed Cartesian product of ordered phoneme or morpheme dimensions. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative."
 keywords:
   - MCP tool
   - domain management
@@ -2126,7 +2126,7 @@ slug: /tools/domains/ideas/generate
 
 # `domains.ideas.generate`
 
-Generate domain name ideas from keywords and automatically check availability. Returns ONLY available domains with prices. Dynadot`s search command is single-domain and effectively serial, so each candidate takes one round-trip; plan on roughly one second per 3 domains.
+Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to create a library-backed Cartesian product of ordered phoneme or morpheme dimensions. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative.
 
 ## Safety and behavior
 
@@ -2142,8 +2142,11 @@ Generate domain name ideas from keywords and automatically check availability. R
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `keywords` | array | Yes | Core keywords extracted from product/tool description (e.g., ["task", "flow", "automate"]) |
+| `keywordVariations` | array | No | Current keyword variations from DataForSEO. When non-empty, these are ranked deterministically by search volume and used instead of LLM variations. |
+| `llmVariations` | array | No | Fallback complete-name variations generated by the host LLM. Used only when keywordVariations and brandMultiplex are absent. |
+| `brandMultiplex` | object | No | Deterministic brand generator. Multiplexes ordered dimensions, normalizes labels, filters by length, and deduplicates before TLD expansion. |
 | `tlds` | array | No | TLDs to check (default: com, io, co, app, dev, ai) |
-| `patterns` | array | No | Generation patterns: exact, hyphenated, prefix, suffix (default: all) |
+| `patterns` | array | No | Generation patterns: exact removes spaces, hyphenated preserves word boundaries, prefix and suffix add deterministic modifiers (default: all) |
 | `maxToCheck` | number | No | Maximum domains to check for availability (default: 100) |
 
 ## Input schema
@@ -2162,6 +2165,74 @@ Generate domain name ideas from keywords and automatically check availability. R
       },
       "description": "Core keywords extracted from product/tool description (e.g., [\"task\", \"flow\", \"automate\"])"
     },
+    "keywordVariations": {
+      "description": "Current keyword variations from DataForSEO. When non-empty, these are ranked deterministically by search volume and used instead of LLM variations.",
+      "maxItems": 50,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string"
+          },
+          "searchVolume": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "keyword"
+        ]
+      }
+    },
+    "llmVariations": {
+      "description": "Fallback complete-name variations generated by the host LLM. Used only when keywordVariations and brandMultiplex are absent.",
+      "maxItems": 50,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "brandMultiplex": {
+      "description": "Deterministic brand generator. Multiplexes ordered dimensions, normalizes labels, filters by length, and deduplicates before TLD expansion.",
+      "type": "object",
+      "properties": {
+        "dimensions": {
+          "minItems": 2,
+          "maxItems": 6,
+          "type": "array",
+          "items": {
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "Ordered phoneme or morpheme dimensions combined by Cartesian product."
+        },
+        "separator": {
+          "type": "string",
+          "enum": [
+            "",
+            "-"
+          ]
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 63
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 63
+        }
+      },
+      "required": [
+        "dimensions"
+      ]
+    },
     "tlds": {
       "description": "TLDs to check (default: com, io, co, app, dev, ai)",
       "type": "array",
@@ -2170,7 +2241,7 @@ Generate domain name ideas from keywords and automatically check availability. R
       }
     },
     "patterns": {
-      "description": "Generation patterns: exact, hyphenated, prefix, suffix (default: all)",
+      "description": "Generation patterns: exact removes spaces, hyphenated preserves word boundaries, prefix and suffix add deterministic modifiers (default: all)",
       "type": "array",
       "items": {
         "type": "string",

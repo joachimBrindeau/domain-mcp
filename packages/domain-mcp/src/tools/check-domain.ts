@@ -14,7 +14,7 @@ export function registerCheckDomainTool(server: McpServer): void {
     'domains.availability.check',
     {
       description:
-        'Check if a single domain is available for registration. Designed for parallel execution - launch multiple haiku agents to check many domains at once.',
+        'Check if a single domain is available for registration. Fails closed when Dynadot returns an API error or no conclusive availability result. The shared client serializes registrar requests.',
       inputSchema,
       outputSchema: toolOutputSchema,
       annotations: READ_ONLY_EXTERNAL,
@@ -36,15 +36,25 @@ export function registerCheckDomainTool(server: McpServer): void {
       const response = await client.execute('search', params);
       const normalized = normalizeResponse('search', response) as {
         success: boolean;
+        error?: string;
         results?: Array<{ domain: string; available: boolean; price?: string }>;
       };
 
+      if (!normalized.success) {
+        throw new Error(normalized.error ?? `Dynadot search failed for ${domain}`);
+      }
       const result = normalized.results?.[0];
+      if (!result) {
+        throw new Error(`Dynadot search returned no availability result for ${domain}`);
+      }
+      if (result.domain.toLowerCase() !== domain.toLowerCase()) {
+        throw new Error(`Dynadot returned ${result.domain} instead of ${domain}`);
+      }
 
       const data = {
         domain,
-        available: result?.available ?? false,
-        ...(showPrice && result?.price ? { price: result.price } : {}),
+        available: result.available,
+        ...(showPrice && result.price ? { price: result.price } : {}),
       };
       return createSuccessResult(
         data,

@@ -47,6 +47,10 @@ describe('MCP Prompts', () => {
       description: 'an automated task manager',
     });
     expect(result.messages[0]?.content.text).toContain('an automated task manager');
+    expect(result.messages[0]?.content.text).toContain('DataForSEO');
+    expect(result.messages[0]?.content.text).toContain('llmVariations');
+    expect(result.messages[0]?.content.text).toContain('exact');
+    expect(result.messages[0]?.content.text).toContain('hyphenated');
     expect(result.messages[0]?.content.text).toContain('domains.ideas.generate');
   });
 

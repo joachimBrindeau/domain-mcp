@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { ApiParams } from '../client.js';
 import { DYNADOT_URLS } from '../constants.js';
 import type { CompositeTool } from './common.js';
-import { dnsRecord, p, subdomainRecord, tx } from './common.js';
+import { dnsReplacementSchema, p, tx } from './common.js';
 
 export const accountTool: CompositeTool = {
   name: 'account.manage',
@@ -60,19 +60,13 @@ export const accountTool: CompositeTool = {
     set_default_dns: {
       command: 'set_default_dns',
       description: 'Set default DNS',
-      params: z.object({
-        mainRecords: z.array(dnsRecord).optional(),
-        subdomainRecords: z.array(subdomainRecord).optional(),
-      }),
+      params: dnsReplacementSchema({}),
       transform: (_, input) => tx.defaultDns(input),
     },
     set_default_dns2: {
       command: 'set_default_dns2',
       description: 'Set default DNS2',
-      params: z.object({
-        mainRecords: z.array(dnsRecord).optional(),
-        subdomainRecords: z.array(subdomainRecord).optional(),
-      }),
+      params: dnsReplacementSchema({}),
       transform: (_, input) => tx.defaultDns(input),
     },
     set_default_email_forward: {

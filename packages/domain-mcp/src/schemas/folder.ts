@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CompositeTool } from './common.js';
-import { dnsRecord, mergeDynamicParams, p, subdomainRecord, tx } from './common.js';
+import { dnsReplacementSchema, mergeDynamicParams, p, tx } from './common.js';
 
 export const folderTool: CompositeTool = {
   name: 'folders.manage',
@@ -84,21 +84,13 @@ export const folderTool: CompositeTool = {
     set_dns: {
       command: 'set_folder_dns',
       description: 'Set DNS for folder',
-      params: z.object({
-        folderId: p.folderId,
-        mainRecords: z.array(dnsRecord).optional(),
-        subdomainRecords: z.array(subdomainRecord).optional(),
-      }),
+      params: dnsReplacementSchema({ folderId: p.folderId }),
       transform: (_, input) => tx.folderDns(input),
     },
     set_dns2: {
       command: 'set_folder_dns2',
       description: 'Set DNS2 for folder',
-      params: z.object({
-        folderId: p.folderId,
-        mainRecords: z.array(dnsRecord).optional(),
-        subdomainRecords: z.array(subdomainRecord).optional(),
-      }),
+      params: dnsReplacementSchema({ folderId: p.folderId }),
       transform: (_, input) => tx.folderDns(input),
     },
     set_email_forward: {

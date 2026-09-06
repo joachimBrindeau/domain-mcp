@@ -33,8 +33,8 @@ Account info, balance, and default settings for new domains. Manage API keys: [G
 | `forwardUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
 | `stealthUrl` | string | No | URL for forwarding (e.g., https://example.com/page) |
 | `options` | object | No | Optional options parameter. |
-| `mainRecords` | array | No | Optional mainRecords parameter. |
-| `subdomainRecords` | array | No | Optional subdomainRecords parameter. |
+| `mainRecords` | array | No | Main domain records |
+| `subdomainRecords` | array | No | Subdomain records |
 | `email` | string | No | Email address (e.g., admin@example.com) |
 | `renewOption` | string | No | Optional renewOption parameter. |
 
@@ -99,7 +99,7 @@ Account info, balance, and default settings for new domains. Manage API keys: [G
       }
     },
     "mainRecords": {
-      "description": "Optional mainRecords parameter.",
+      "description": "Main domain records",
       "type": "array",
       "items": {
         "type": "object",
@@ -128,7 +128,7 @@ Account info, balance, and default settings for new domains. Manage API keys: [G
       }
     },
     "subdomainRecords": {
-      "description": "Optional subdomainRecords parameter.",
+      "description": "Subdomain records",
       "type": "array",
       "items": {
         "type": "object",

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CompositeTool } from './common.js';
-import { dnsRecord, p, subdomainRecord, tx } from './common.js';
+import { dnsReplacementSchema, p, tx } from './common.js';
 
 export const dnsTool: CompositeTool = {
   name: 'dns.manage',
@@ -14,11 +14,7 @@ export const dnsTool: CompositeTool = {
     set: {
       command: 'set_dns2',
       description: 'Set DNS records',
-      params: z.object({
-        domain: p.domain,
-        mainRecords: z.array(dnsRecord).optional().describe('Main domain records'),
-        subdomainRecords: z.array(subdomainRecord).optional().describe('Subdomain records'),
-      }),
+      params: dnsReplacementSchema({ domain: p.domain }),
       transform: (_, input) => tx.dnsRecords(input),
     },
     set_dnssec: {

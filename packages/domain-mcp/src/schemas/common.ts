@@ -89,6 +89,26 @@ export const subdomainRecord = z.object({
   priority: z.number().optional().describe('Priority (for MX)'),
 });
 
+const dnsReplacementFields = {
+  mainRecords: z.array(dnsRecord).optional().describe('Main domain records'),
+  subdomainRecords: z.array(subdomainRecord).optional().describe('Subdomain records'),
+};
+
+export function dnsReplacementSchema<T extends z.ZodRawShape>(requiredFields: T) {
+  return z.object({ ...requiredFields, ...dnsReplacementFields }).refine(
+    (input) => {
+      const records = input as {
+        mainRecords?: DnsRecordInput[];
+        subdomainRecords?: SubdomainRecordInput[];
+      };
+      return (records.mainRecords?.length ?? 0) > 0 || (records.subdomainRecords?.length ?? 0) > 0;
+    },
+    {
+      message: 'At least one main or subdomain DNS record is required',
+    },
+  );
+}
+
 type DnsRecordInput = z.infer<typeof dnsRecord>;
 type SubdomainRecordInput = z.infer<typeof subdomainRecord>;
 

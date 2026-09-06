@@ -1,4 +1,6 @@
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { describe, expect, it } from 'vitest';
+import { registerAllTools } from '../src/register.js';
 import { accountTool } from '../src/schemas/account.js';
 import { aftermarketTool } from '../src/schemas/aftermarket.js';
 import type { ActionDefinition, CompositeTool } from '../src/schemas/common.js';
@@ -21,6 +23,20 @@ function transform(tool: CompositeTool, name: string, input: Record<string, unkn
   const definition = action(tool, name);
   if (!definition.transform) throw new Error(`Missing transform for ${tool.name}.${name}`);
   return definition.transform(name, input);
+}
+
+type RegisteredTool = {
+  handler: (input: Record<string, unknown>) => Promise<{
+    isError?: boolean;
+    structuredContent?: Record<string, unknown>;
+  }>;
+};
+
+function registeredTools(): Record<string, RegisteredTool> {
+  const server = new McpServer({ name: 'schema-test', version: '1.0.0' });
+  registerAllTools(server);
+  return (server as unknown as { _registeredTools: Record<string, RegisteredTool> })
+    ._registeredTools;
 }
 
 describe('schema action transforms', () => {
@@ -193,6 +209,44 @@ describe('schema action transforms', () => {
         options: { plan: 'business' },
       }),
     ).toEqual({ folder_id: 'folder-1', plan: 'business' });
+  });
+
+  it('rejects incomplete DNS replacement calls through public tool registration', async () => {
+    const tools = registeredTools();
+    const incompleteCalls = [
+      ['dns.manage', { operation: 'set', domain: 'example.com' }],
+      [
+        'dns.manage',
+        { operation: 'set', domain: 'example.com', mainRecords: [], subdomainRecords: [] },
+      ],
+      ['folders.manage', { operation: 'set_dns', folderId: 'folder-1' }],
+      [
+        'folders.manage',
+        { operation: 'set_dns', folderId: 'folder-1', mainRecords: [], subdomainRecords: [] },
+      ],
+      ['folders.manage', { operation: 'set_dns2', folderId: 'folder-1' }],
+      [
+        'folders.manage',
+        { operation: 'set_dns2', folderId: 'folder-1', mainRecords: [], subdomainRecords: [] },
+      ],
+      ['account.manage', { operation: 'set_default_dns' }],
+      ['account.manage', { operation: 'set_default_dns', mainRecords: [], subdomainRecords: [] }],
+      ['account.manage', { operation: 'set_default_dns2' }],
+      ['account.manage', { operation: 'set_default_dns2', mainRecords: [], subdomainRecords: [] }],
+    ] as const;
+
+    for (const [toolName, input] of incompleteCalls) {
+      const result = await tools[toolName].handler(input);
+      expect(result.isError, `${toolName}.${input.operation}`).toBe(true);
+      expect(result.structuredContent, `${toolName}.${input.operation}`).toMatchObject({
+        success: false,
+        error: { type: 'VALIDATION_ERROR' },
+      });
+    }
+
+    expect(action(dnsTool, 'clear_dns').params?.safeParse({ domain: 'example.com' }).success).toBe(
+      true,
+    );
   });
 
   it('transforms contact and account defaults', () => {

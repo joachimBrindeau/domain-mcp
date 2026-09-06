@@ -287,8 +287,10 @@ const inputSchema = {
     ),
   tlds: z
     .array(z.string())
+    .min(1)
+    .max(50)
     .optional()
-    .describe('TLDs to check (default: com, io, co, app, dev, ai)'),
+    .describe('TLDs to check (1-50; default: com, io, co, app, dev, ai)'),
   patterns: z
     .array(z.enum(PATTERNS))
     .optional()

@@ -27,10 +27,26 @@ function checkDomainHandler() {
   return getRegisteredToolHandler(server, 'domains.availability.check');
 }
 
-function generateIdeasHandler() {
+function generateIdeasRegistration() {
   const server = new McpServer({ name: 'test', version: '1.0.0' });
   registerGenerateIdeasTool(server);
-  return getRegisteredToolHandler(server, 'domains.ideas.generate');
+  return (
+    server as unknown as {
+      _registeredTools: Record<
+        string,
+        {
+          handler: ReturnType<typeof getRegisteredToolHandler>;
+          inputSchema: { safeParse: (input: unknown) => { success: boolean } };
+        }
+      >;
+    }
+  )._registeredTools['domains.ideas.generate'];
+}
+
+function generateIdeasHandler() {
+  const registration = generateIdeasRegistration();
+  if (!registration) throw new Error('domains.ideas.generate not registered');
+  return registration.handler;
 }
 
 beforeEach(() => {
@@ -380,6 +396,20 @@ describe('generate_domain_ideas tool', () => {
         keywords: ['a0b0c0d0e0f0', 'a0b0c0d0e0f1', 'a0b0c0d0e0f2', 'a0b0c0d0e0f3', 'a0b0c0d0e0f4'],
       },
     });
+  });
+
+  it('rejects unbounded TLD collections before multiplex generation', () => {
+    const registration = generateIdeasRegistration();
+    if (!registration) throw new Error('domains.ideas.generate not registered');
+
+    expect(
+      registration.inputSchema.safeParse({
+        keywords: ['time tracking'],
+        brandMultiplex: { dimensions: [['my'], ['time']] },
+        tlds: Array.from({ length: 51 }, (_, index) => `tld${index}`),
+        maxToCheck: 10,
+      }).success,
+    ).toBe(false);
   });
 
   it('prunes impossible schema-max multiplex branches without visiting their products', async () => {

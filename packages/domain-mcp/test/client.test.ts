@@ -128,6 +128,33 @@ describe('DomainClient', () => {
     expect(maxActive).toBe(1);
   });
 
+  it('rejects conflicting pacing for the same credential and endpoint', () => {
+    new DomainClient({ apiKey: 'conflicting-interval-key', requestIntervalMs: 0 });
+
+    expect(
+      () => new DomainClient({ apiKey: 'conflicting-interval-key', requestIntervalMs: 50 }),
+    ).toThrow('Conflicting request intervals for the same Dynadot credential and endpoint');
+  });
+
+  it('keeps production and sandbox pacing independent', () => {
+    expect(
+      () =>
+        new DomainClient({
+          apiKey: 'shared-environment-key',
+          sandbox: false,
+          requestIntervalMs: 0,
+        }),
+    ).not.toThrow();
+    expect(
+      () =>
+        new DomainClient({
+          apiKey: 'shared-environment-key',
+          sandbox: true,
+          requestIntervalMs: 50,
+        }),
+    ).not.toThrow();
+  });
+
   it('paces requests at the configured interval', async () => {
     vi.useFakeTimers();
     try {
@@ -162,6 +189,26 @@ describe('DomainClient', () => {
 
     getSpy.mockReturnValueOnce({ json: vi.fn().mockResolvedValue({ Status: 'error' }) });
     await expect(client.execute('domain_info')).rejects.toThrow('Dynadot API error: Unknown error');
+  });
+
+  it('rejects malformed top-level response statuses', async () => {
+    const client = new DomainClient({ apiKey: 'malformed-status-key' });
+    getSpy.mockReturnValueOnce({ json: vi.fn().mockResolvedValue({ Result: 'ok' }) });
+    await expect(client.execute('domain_info')).rejects.toThrow(
+      'Dynadot API error: missing top-level Status',
+    );
+
+    getSpy.mockReturnValueOnce({
+      json: vi.fn().mockResolvedValue({ Status: 'pending' }),
+    });
+    await expect(client.execute('domain_info')).rejects.toThrow(
+      'Dynadot API error: unknown top-level Status "pending"',
+    );
+
+    getSpy.mockReturnValueOnce({ json: vi.fn().mockResolvedValue({ Status: 1 }) });
+    await expect(client.execute('domain_info')).rejects.toThrow(
+      'Dynadot API error: malformed top-level Status',
+    );
   });
 
   it('rejects nested nonzero response codes even when the outer status says success', async () => {

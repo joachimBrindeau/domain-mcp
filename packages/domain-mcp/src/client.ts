@@ -3,18 +3,27 @@ import ky, { type KyInstance } from 'ky';
 
 const RESERVED_PARAM_KEYS = new Set(['key', 'command']);
 const DEFAULT_REQUEST_INTERVAL_MS = 1000;
-const REQUEST_LIMITERS = new Map<string, Bottleneck>();
+const REQUEST_LIMITERS = new Map<
+  string,
+  { limiter: Bottleneck; intervalMs: number }
+>();
 
-function getRequestLimiter(apiKey: string, intervalMs: number): Bottleneck {
-  const limiterKey = `${apiKey}:${intervalMs}`;
-  let limiter = REQUEST_LIMITERS.get(limiterKey);
-  if (!limiter) {
-    limiter = new Bottleneck({
-      maxConcurrent: 1,
-      minTime: intervalMs,
-    });
-    REQUEST_LIMITERS.set(limiterKey, limiter);
+function getRequestLimiter(endpoint: string, apiKey: string, intervalMs: number): Bottleneck {
+  const limiterKey = `${endpoint}:${apiKey}`;
+  const existing = REQUEST_LIMITERS.get(limiterKey);
+  if (existing) {
+    if (existing.intervalMs !== intervalMs) {
+      throw new Error(
+        'Conflicting request intervals for the same Dynadot credential and endpoint',
+      );
+    }
+    return existing.limiter;
   }
+  const limiter = new Bottleneck({
+    maxConcurrent: 1,
+    minTime: intervalMs,
+  });
+  REQUEST_LIMITERS.set(limiterKey, { limiter, intervalMs });
   return limiter;
 }
 
@@ -37,6 +46,20 @@ interface ApiResponse {
   Error?: string;
   /** Additional response fields specific to each command */
   [key: string]: unknown;
+}
+
+function assertSuccessfulTopLevelStatus(response: ApiResponse): void {
+  const status = response.Status;
+  if (status === undefined) {
+    throw new Error('Dynadot API error: missing top-level Status');
+  }
+  if (typeof status !== 'string') {
+    throw new Error('Dynadot API error: malformed top-level Status');
+  }
+  if (status.toLowerCase() !== 'success') {
+    if (status.toLowerCase() === 'error') return;
+    throw new Error(`Dynadot API error: unknown top-level Status "${status}"`);
+  }
 }
 
 function findApiError(value: unknown): string | null {
@@ -118,12 +141,13 @@ export class DomainClient {
     this.apiKey = apiKey;
     this.maxRetries = config.maxRetries ?? 3;
     this.retryDelay = config.retryDelay ?? 1000;
+
+    const baseUrl = sandbox ? 'https://api-sandbox.dynadot.com' : 'https://api.dynadot.com';
     this.requestLimiter = getRequestLimiter(
+      baseUrl,
       apiKey,
       config.requestIntervalMs ?? DEFAULT_REQUEST_INTERVAL_MS,
     );
-
-    const baseUrl = sandbox ? 'https://api-sandbox.dynadot.com' : 'https://api.dynadot.com';
 
     const timeout = config.timeout ?? 30000;
 
@@ -180,6 +204,7 @@ export class DomainClient {
       }
 
       const response = await this.client.get('api3.json', { searchParams }).json<ApiResponse>();
+      assertSuccessfulTopLevelStatus(response);
       const apiError = findApiError(response);
       if (apiError) throw new Error(`Dynadot API error: ${apiError}`);
       return response;

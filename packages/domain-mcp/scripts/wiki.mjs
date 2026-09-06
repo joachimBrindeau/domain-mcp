@@ -166,11 +166,8 @@ async function write(path, content) {
   await writeFile(path, content);
 }
 
-export async function loadMcpSurface() {
+export async function loadMcpSurface(createDomainMcpServer) {
   const packageJson = JSON.parse(await readFile(join(PACKAGE_ROOT, 'package.json'), 'utf8'));
-  const { createDomainMcpServer } = await import(
-    pathToFileURL(join(PACKAGE_ROOT, 'dist', 'server.js')).href
-  );
   const server = createDomainMcpServer(packageJson.version);
   const client = new Client({ name: 'domain-mcp-wiki', version: packageJson.version });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
@@ -420,7 +417,10 @@ async function main() {
   const temporaryRoot = resolve(REPOSITORY_ROOT, '.wiki-generated');
   const targetDocs = check ? join(temporaryRoot, 'docs') : docsDirectory;
   const targetStatic = check ? join(temporaryRoot, 'static') : staticDirectory;
-  const surface = await loadMcpSurface();
+  const { createDomainMcpServer } = await import(
+    pathToFileURL(join(PACKAGE_ROOT, 'dist', 'server.js')).href
+  );
+  const surface = await loadMcpSurface(createDomainMcpServer);
   if (githubOutputArgument) {
     await generateGitHubWiki({
       outputDirectory: resolve(githubOutputArgument.slice('--github-output='.length)),

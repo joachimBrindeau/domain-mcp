@@ -80,6 +80,20 @@ describe('check_domain tool', () => {
     });
   });
 
+  it('rejects unsuccessful normalized searches with their reported error', async () => {
+    mocks.normalizeResponse.mockReturnValue({ success: false, error: 'Search denied' });
+
+    await expect(checkDomainHandler()({ domain: 'example.com' })).rejects.toThrow('Search denied');
+  });
+
+  it('rejects unsuccessful normalized searches without an error message', async () => {
+    mocks.normalizeResponse.mockReturnValue({ success: false });
+
+    await expect(checkDomainHandler()({ domain: 'example.com' })).rejects.toThrow(
+      'Dynadot search failed for example.com',
+    );
+  });
+
   it('fails closed when the normalized response has no availability result', async () => {
     mocks.normalizeResponse.mockReturnValue({ success: true });
 
@@ -162,6 +176,34 @@ describe('generate_domain_ideas tool', () => {
     );
 
     expect(execute).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails closed when normalization reports an unsuccessful search', async () => {
+    mocks.normalizeResponse.mockReturnValue({ success: false });
+
+    await expect(
+      generateIdeasHandler()({
+        keywords: ['denied'],
+        tlds: ['com'],
+        patterns: ['exact'],
+        maxToCheck: 10,
+      }),
+    ).rejects.toThrow(
+      'Domain availability check failed for denied.com: Dynadot search returned an unsuccessful response',
+    );
+  });
+
+  it('wraps non-Error search failures with candidate context', async () => {
+    execute.mockRejectedValueOnce('network');
+
+    await expect(
+      generateIdeasHandler()({
+        keywords: ['denied'],
+        tlds: ['com'],
+        patterns: ['exact'],
+        maxToCheck: 10,
+      }),
+    ).rejects.toThrow('Domain availability check failed for denied.com: network');
   });
 
   it('fails closed when any generated-domain search fails', async () => {
@@ -342,6 +384,55 @@ describe('generate_domain_ideas tool', () => {
     ]);
   });
 
+  it('uses default brand multiplex bounds when none are supplied', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking'],
+      brandMultiplex: {
+        dimensions: [['hor'], ['v'], ['o']],
+      },
+      tlds: ['com'],
+      patterns: ['exact'],
+      maxToCheck: 10,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'horvo.com', show_price: 1 },
+    ]);
+  });
+
+  it('normalizes empty and explicit brand multiplex bounds', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking'],
+      brandMultiplex: {
+        dimensions: [['!!!', 'hor'], ['v'], ['o']],
+        minLength: 4,
+        maxLength: 5,
+      },
+      tlds: ['com'],
+      patterns: ['exact'],
+      maxToCheck: 10,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'horvo.com', show_price: 1 },
+    ]);
+  });
+
+  it('ranks missing keyword volumes deterministically', async () => {
+    await generateIdeasHandler()({
+      keywords: ['time tracking software'],
+      keywordVariations: [{ keyword: 'Zulu' }, { keyword: 'Alpha' }],
+      tlds: ['com'],
+      patterns: ['exact'],
+      maxToCheck: 10,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'alpha.com', show_price: 1 },
+      { domain0: 'zulu.com', show_price: 1 },
+    ]);
+  });
+
   it('uses deterministic LLM variations only when ranked keyword data is absent', async () => {
     await generateIdeasHandler()({
       keywords: ['time tracking software'],
@@ -357,17 +448,5 @@ describe('generate_domain_ideas tool', () => {
       { domain0: 'timetracking.com', show_price: 1 },
       { domain0: 'time-tracking.com', show_price: 1 },
     ]);
-  });
-
-  it('skips an unknown runtime pattern when the callback is invoked defensively', async () => {
-    const result = await generateIdeasHandler()({
-      keywords: ['task'],
-      tlds: ['com'],
-      patterns: ['unknown'] as never,
-      maxToCheck: 10,
-    });
-
-    expect(execute).not.toHaveBeenCalled();
-    expect(result.content[0]?.text).toBe('No available domains found (checked 0 domains)');
   });
 });

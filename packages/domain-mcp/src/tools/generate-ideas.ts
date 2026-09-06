@@ -65,14 +65,6 @@ function generatePhraseDomains(
   return results;
 }
 
-function generateExact(keywords: string[], tlds: string[]): string[] {
-  return generatePhraseDomains(keywords, tlds, true, false);
-}
-
-function generateHyphenated(keywords: string[], tlds: string[]): string[] {
-  return generatePhraseDomains(keywords, tlds, false, true);
-}
-
 function generatePrefix(keywords: string[], tlds: string[]): string[] {
   const results: string[] = [];
   for (const keyword of keywords) {
@@ -109,9 +101,10 @@ function generateSuffix(keywords: string[], tlds: string[]): string[] {
   return results;
 }
 
-const generators: Record<Pattern, (keywords: string[], tlds: string[]) => string[]> = {
-  exact: generateExact,
-  hyphenated: generateHyphenated,
+const generators: Record<
+  Exclude<Pattern, 'exact' | 'hyphenated'>,
+  (keywords: string[], tlds: string[]) => string[]
+> = {
   prefix: generatePrefix,
   suffix: generateSuffix,
 };
@@ -159,7 +152,7 @@ function generateCandidates(keywords: string[], tlds: string[], patterns: Patter
   for (const pattern of patterns) {
     if (pattern === 'exact' || pattern === 'hyphenated') continue;
     const generator = generators[pattern];
-    if (generator) candidates.push(...generator(keywords, tlds));
+    candidates.push(...generator(keywords, tlds));
   }
   return [...new Set(candidates)];
 }

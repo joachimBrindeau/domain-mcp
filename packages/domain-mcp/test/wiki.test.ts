@@ -12,6 +12,7 @@ import {
   renderToolPage,
   toolSlug,
 } from '../scripts/wiki.mjs';
+import { createDomainMcpServer } from '../src/server.js';
 
 const temporaryDirectories: string[] = [];
 
@@ -23,7 +24,7 @@ afterEach(async () => {
 
 describe('generated MCP wiki', () => {
   it('loads the complete credential-free runtime surface', async () => {
-    const surface = await loadMcpSurface();
+    const surface = await loadMcpSurface(createDomainMcpServer);
 
     expect(surface.tools).toHaveLength(13);
     expect(surface.resources).toHaveLength(4);
@@ -75,7 +76,7 @@ describe('generated MCP wiki', () => {
     const outputDirectory = await mkdtemp(join(tmpdir(), 'domain-mcp-affiliate-docs-'));
     temporaryDirectories.push(outputDirectory);
 
-    const surface = await loadMcpSurface();
+    const surface = await loadMcpSurface(createDomainMcpServer);
     await generateWiki({ outputDirectory, surface });
 
     const domainTool = await readFile(join(outputDirectory, 'tools/domains/manage.md'), 'utf8');
@@ -89,7 +90,7 @@ describe('generated MCP wiki', () => {
     const outputDirectory = await mkdtemp(join(tmpdir(), 'domain-mcp-github-wiki-'));
     temporaryDirectories.push(outputDirectory);
 
-    const surface = await loadMcpSurface();
+    const surface = await loadMcpSurface(createDomainMcpServer);
     await generateGitHubWiki({ outputDirectory, surface });
 
     const files = await readdir(outputDirectory);
@@ -110,7 +111,7 @@ describe('generated MCP wiki', () => {
     const outputDirectory = await mkdtemp(join(tmpdir(), 'domain-mcp-wiki-'));
     temporaryDirectories.push(outputDirectory);
 
-    const surface = await loadMcpSurface();
+    const surface = await loadMcpSurface(createDomainMcpServer);
     await generateWiki({ outputDirectory, surface });
 
     const toolFiles = await readdir(join(outputDirectory, 'tools'), { recursive: true });

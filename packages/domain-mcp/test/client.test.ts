@@ -181,6 +181,34 @@ describe('DomainClient', () => {
     );
   });
 
+  it('rejects nested error statuses inside array response envelopes', async () => {
+    const client = new DomainClient({ apiKey: 'fixture-key' });
+    getSpy.mockReturnValueOnce({
+      json: vi.fn().mockResolvedValue({
+        Status: 'success',
+        Results: [{ Status: 'error', Error: 'Candidate rejected' }],
+      }),
+    });
+
+    await expect(client.execute('search', { domain0: 'example.com' })).rejects.toThrow(
+      'Dynadot API error: Candidate rejected',
+    );
+  });
+
+  it('uses an unknown-error message for nonzero response codes without details', async () => {
+    const client = new DomainClient({ apiKey: 'fixture-key' });
+    getSpy.mockReturnValueOnce({
+      json: vi.fn().mockResolvedValue({
+        Status: 'success',
+        SearchResponse: { ResponseCode: '-1' },
+      }),
+    });
+
+    await expect(client.execute('search', { domain0: 'example.com' })).rejects.toThrow(
+      'Dynadot API error: Unknown error',
+    );
+  });
+
   it('reuses the singleton client instance', () => {
     vi.stubEnv('DYNADOT_API_KEY', 'singleton-key');
     const first = getClient();

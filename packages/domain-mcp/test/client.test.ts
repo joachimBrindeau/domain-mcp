@@ -97,6 +97,62 @@ describe('DomainClient', () => {
     expect(options.searchParams.has('omitted')).toBe(false);
   });
 
+  it('serializes every API request through the shared client boundary', async () => {
+    const firstClient = new DomainClient({ apiKey: 'fixture-key', requestIntervalMs: 0 });
+    const secondClient = new DomainClient({ apiKey: 'fixture-key', requestIntervalMs: 0 });
+    let active = 0;
+    let maxActive = 0;
+    const releases: Array<() => void> = [];
+    getSpy.mockImplementation(() => ({
+      json: vi.fn().mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            active += 1;
+            maxActive = Math.max(maxActive, active);
+            releases.push(() => {
+              active -= 1;
+              resolve({ Status: 'success' });
+            });
+          }),
+      ),
+    }));
+
+    const first = firstClient.execute('search', { domain0: 'first.example' });
+    const second = secondClient.execute('search', { domain0: 'second.example' });
+    await vi.waitFor(() => expect(releases).toHaveLength(1));
+    releases.shift()?.();
+    await vi.waitFor(() => expect(releases).toHaveLength(1));
+    releases.shift()?.();
+    await Promise.all([first, second]);
+
+    expect(maxActive).toBe(1);
+  });
+
+  it('paces requests at the configured interval', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(0);
+      const client = new DomainClient({ apiKey: 'paced-key', requestIntervalMs: 100 });
+      const startedAt: number[] = [];
+      getSpy.mockImplementation(() => {
+        startedAt.push(Date.now());
+        return { json: vi.fn().mockResolvedValue({ Status: 'success' }) };
+      });
+
+      const first = client.execute('search', { domain0: 'first.example' });
+      const second = client.execute('search', { domain0: 'second.example' });
+      await vi.advanceTimersByTimeAsync(99);
+      expect(startedAt).toHaveLength(1);
+      await vi.advanceTimersByTimeAsync(10);
+      await Promise.all([first, second]);
+
+      expect(startedAt).toHaveLength(2);
+      expect((startedAt[1] ?? 0) - (startedAt[0] ?? 0)).toBeGreaterThanOrEqual(99);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('throws Dynadot errors with explicit and fallback messages', async () => {
     const client = new DomainClient({ apiKey: 'fixture-key' });
     getSpy.mockReturnValueOnce({
@@ -106,6 +162,23 @@ describe('DomainClient', () => {
 
     getSpy.mockReturnValueOnce({ json: vi.fn().mockResolvedValue({ Status: 'error' }) });
     await expect(client.execute('domain_info')).rejects.toThrow('Dynadot API error: Unknown error');
+  });
+
+  it('rejects nested nonzero response codes even when the outer status says success', async () => {
+    const client = new DomainClient({ apiKey: 'fixture-key' });
+    getSpy.mockReturnValueOnce({
+      json: vi.fn().mockResolvedValue({
+        Status: 'success',
+        SearchResponse: {
+          ResponseCode: '-1',
+          Error: 'unauthorized ip address: 81.53.251.68',
+        },
+      }),
+    });
+
+    await expect(client.execute('search', { domain0: 'example.com' })).rejects.toThrow(
+      'Dynadot API error: unauthorized ip address: 81.53.251.68',
+    );
   });
 
   it('reuses the singleton client instance', () => {

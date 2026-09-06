@@ -1,6 +1,22 @@
+import Bottleneck from 'bottleneck';
 import ky, { type KyInstance } from 'ky';
 
 const RESERVED_PARAM_KEYS = new Set(['key', 'command']);
+const DEFAULT_REQUEST_INTERVAL_MS = 1000;
+const REQUEST_LIMITERS = new Map<string, Bottleneck>();
+
+function getRequestLimiter(apiKey: string, intervalMs: number): Bottleneck {
+  const limiterKey = `${apiKey}:${intervalMs}`;
+  let limiter = REQUEST_LIMITERS.get(limiterKey);
+  if (!limiter) {
+    limiter = new Bottleneck({
+      maxConcurrent: 1,
+      minTime: intervalMs,
+    });
+    REQUEST_LIMITERS.set(limiterKey, limiter);
+  }
+  return limiter;
+}
 
 /**
  * Parameters passed to Dynadot API commands.
@@ -23,6 +39,28 @@ interface ApiResponse {
   [key: string]: unknown;
 }
 
+function findApiError(value: unknown): string | null {
+  if (value === null || typeof value !== 'object') return null;
+
+  if (!Array.isArray(value)) {
+    const record = value as Record<string, unknown>;
+    const status = record.Status ?? record.status;
+    const responseCode = record.ResponseCode ?? record.responseCode;
+    const isErrorStatus = typeof status === 'string' && status.toLowerCase() === 'error';
+    const isErrorCode = responseCode !== undefined && String(responseCode) !== '0';
+    if (isErrorStatus || isErrorCode) {
+      const message = record.Error ?? record.error ?? record.ErrorMessage ?? record.errorMessage;
+      return typeof message === 'string' && message.length > 0 ? message : 'Unknown error';
+    }
+  }
+
+  for (const item of Array.isArray(value) ? value : Object.values(value)) {
+    const nestedError = findApiError(item);
+    if (nestedError) return nestedError;
+  }
+  return null;
+}
+
 /**
  * Configuration options for the Dynadot client.
  */
@@ -37,6 +75,8 @@ export interface ClientConfig {
   maxRetries?: number;
   /** Base delay for exponential backoff in ms (default: 1000) */
   retryDelay?: number;
+  /** Minimum interval between Dynadot API requests (default: 1000) */
+  requestIntervalMs?: number;
 }
 
 /**
@@ -54,6 +94,7 @@ export class DomainClient {
   private apiKey: string;
   private maxRetries: number;
   private retryDelay: number;
+  private requestLimiter: Bottleneck;
 
   /**
    * Creates a new Dynadot API client.
@@ -77,6 +118,10 @@ export class DomainClient {
     this.apiKey = apiKey;
     this.maxRetries = config.maxRetries ?? 3;
     this.retryDelay = config.retryDelay ?? 1000;
+    this.requestLimiter = getRequestLimiter(
+      apiKey,
+      config.requestIntervalMs ?? DEFAULT_REQUEST_INTERVAL_MS,
+    );
 
     const baseUrl = sandbox ? 'https://api-sandbox.dynadot.com' : 'https://api.dynadot.com';
 
@@ -120,26 +165,25 @@ export class DomainClient {
    * ```
    */
   async execute(command: string, params: ApiParams = {}): Promise<ApiResponse> {
-    const searchParams = new URLSearchParams();
-    searchParams.set('key', this.apiKey);
-    searchParams.set('command', command);
+    return this.requestLimiter.schedule(async () => {
+      const searchParams = new URLSearchParams();
+      searchParams.set('key', this.apiKey);
+      searchParams.set('command', command);
 
-    for (const [key, value] of Object.entries(params)) {
-      if (RESERVED_PARAM_KEYS.has(key)) {
-        throw new Error(`Reserved parameter "${key}" cannot be set by tool input`);
+      for (const [key, value] of Object.entries(params)) {
+        if (RESERVED_PARAM_KEYS.has(key)) {
+          throw new Error(`Reserved parameter "${key}" cannot be set by tool input`);
+        }
+        if (value !== undefined) {
+          searchParams.set(key, String(value));
+        }
       }
-      if (value !== undefined) {
-        searchParams.set(key, String(value));
-      }
-    }
 
-    const response = await this.client.get('api3.json', { searchParams }).json<ApiResponse>();
-
-    if (response.Status === 'error') {
-      throw new Error(`Dynadot API error: ${response.Error || 'Unknown error'}`);
-    }
-
-    return response;
+      const response = await this.client.get('api3.json', { searchParams }).json<ApiResponse>();
+      const apiError = findApiError(response);
+      if (apiError) throw new Error(`Dynadot API error: ${apiError}`);
+      return response;
+    });
   }
 }
 

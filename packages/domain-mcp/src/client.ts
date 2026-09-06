@@ -3,19 +3,14 @@ import ky, { type KyInstance } from 'ky';
 
 const RESERVED_PARAM_KEYS = new Set(['key', 'command']);
 const DEFAULT_REQUEST_INTERVAL_MS = 1000;
-const REQUEST_LIMITERS = new Map<
-  string,
-  { limiter: Bottleneck; intervalMs: number }
->();
+const REQUEST_LIMITERS = new Map<string, { limiter: Bottleneck; intervalMs: number }>();
 
 function getRequestLimiter(endpoint: string, apiKey: string, intervalMs: number): Bottleneck {
   const limiterKey = `${endpoint}:${apiKey}`;
   const existing = REQUEST_LIMITERS.get(limiterKey);
   if (existing) {
     if (existing.intervalMs !== intervalMs) {
-      throw new Error(
-        'Conflicting request intervals for the same Dynadot credential and endpoint',
-      );
+      throw new Error('Conflicting request intervals for the same Dynadot credential and endpoint');
     }
     return existing.limiter;
   }

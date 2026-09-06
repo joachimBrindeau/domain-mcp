@@ -1,8 +1,7 @@
 import { z } from 'zod';
-import type { ApiParams } from '../client.js';
 import { DYNADOT_URLS } from '../constants.js';
 import type { CompositeTool } from './common.js';
-import { dnsReplacementSchema, p, tx } from './common.js';
+import { dnsReplacementSchema, mergeDynamicParams, p, tx } from './common.js';
 
 export const accountTool: CompositeTool = {
   name: 'account.manage',
@@ -49,13 +48,8 @@ export const accountTool: CompositeTool = {
       command: 'set_default_hosting',
       description: 'Set default hosting',
       params: z.object({ options: z.record(z.string(), z.string()) }),
-      transform: (_, input) => {
-        const params: ApiParams = {};
-        for (const [k, v] of Object.entries(input.options as Record<string, string>)) {
-          params[k] = v;
-        }
-        return params;
-      },
+      transform: (_, input) =>
+        mergeDynamicParams({}, 'options', input.options as Record<string, string>),
     },
     set_default_dns: {
       command: 'set_default_dns',

@@ -209,6 +209,11 @@ describe('schema action transforms', () => {
         options: { plan: 'business' },
       }),
     ).toEqual({ folder_id: 'folder-1', plan: 'business' });
+    expect(() =>
+      transform(accountTool, 'set_default_hosting', {
+        options: { key: 'replacement-key' },
+      }),
+    ).toThrow('Protected Dynadot parameter "key" cannot be set through options');
   });
 
   it('rejects incomplete DNS replacement calls through public tool registration', async () => {

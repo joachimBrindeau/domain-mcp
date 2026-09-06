@@ -43,8 +43,11 @@ interface ApiResponse {
   [key: string]: unknown;
 }
 
-function assertSuccessfulTopLevelStatus(response: ApiResponse): void {
-  const status = response.Status;
+function assertSuccessfulTopLevelStatus(response: unknown): asserts response is ApiResponse {
+  if (response === null || typeof response !== 'object' || Array.isArray(response)) {
+    throw new Error('Dynadot API error: malformed response envelope');
+  }
+  const status = (response as Record<string, unknown>).Status;
   if (status === undefined) {
     throw new Error('Dynadot API error: missing top-level Status');
   }
@@ -177,7 +180,7 @@ export class DomainClient {
         }
       }
 
-      const response = await this.client.get('api3.json', { searchParams }).json<ApiResponse>();
+      const response = await this.client.get('api3.json', { searchParams }).json<unknown>();
       assertSuccessfulTopLevelStatus(response);
       const apiError = findApiError(response);
       if (apiError) throw new Error(`Dynadot API error: ${apiError}`);

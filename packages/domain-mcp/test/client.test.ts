@@ -44,16 +44,21 @@ describe('DomainClient', () => {
     );
   });
 
-  it('disables transport retries for registrar mutations', async () => {
+  it('disables transport retries for registrar mutations on retryable HTTP failures', async () => {
     const client = new DomainClient({ apiKey: 'single-submit-key' });
     expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({ retry: 0 }));
 
     getSpy.mockReturnValueOnce({
-      json: vi.fn().mockRejectedValue(new Error('ambiguous transport failure')),
+      json: vi.fn().mockRejectedValue(
+        Object.assign(new Error('Service Unavailable'), {
+          response: new Response(null, { status: 503 }),
+        }),
+      ),
     });
-    await expect(client.execute('register', { domain: 'example.com' })).rejects.toThrow(
-      'ambiguous transport failure',
-    );
+    await expect(client.execute('register', { domain: 'example.com' })).rejects.toMatchObject({
+      message: 'Service Unavailable',
+      response: expect.objectContaining({ status: 503 }),
+    });
     expect(getSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -187,6 +192,11 @@ describe('DomainClient', () => {
 
   it('rejects malformed top-level response statuses', async () => {
     const client = new DomainClient({ apiKey: 'malformed-status-key' });
+    getSpy.mockReturnValueOnce({ json: vi.fn().mockResolvedValue(null) });
+    await expect(client.execute('domain_info')).rejects.toThrow(
+      'Dynadot API error: malformed response envelope',
+    );
+
     getSpy.mockReturnValueOnce({ json: vi.fn().mockResolvedValue({ Result: 'ok' }) });
     await expect(client.execute('domain_info')).rejects.toThrow(
       'Dynadot API error: missing top-level Status',

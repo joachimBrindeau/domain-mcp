@@ -1,16 +1,14 @@
 import { z } from 'zod';
-import type { ApiParams } from '../client.js';
 import type { CompositeTool } from './common.js';
-import { contactFields, p, tx } from './common.js';
+import { contactFields, mergeDynamicParams, p, tx } from './common.js';
 
 // Helper for contact settings transforms (EU/LV/LT)
-const settingsTransform = (_: string, input: Record<string, unknown>): ApiParams => {
-  const params: ApiParams = { contact_id: input.contactId as string };
-  for (const [k, v] of Object.entries(input.settings as Record<string, string>)) {
-    params[k] = v;
-  }
-  return params;
-};
+const settingsTransform = (_: string, input: Record<string, unknown>) =>
+  mergeDynamicParams(
+    { contact_id: input.contactId as string },
+    'settings',
+    input.settings as Record<string, string>,
+  );
 
 export const contactTool: CompositeTool = {
   name: 'contacts.manage',
@@ -73,13 +71,12 @@ export const contactTool: CompositeTool = {
         contactId: p.contactId,
         auditDetails: z.record(z.string(), z.string()).describe('Audit details'),
       }),
-      transform: (_, input) => {
-        const params: ApiParams = { contact_id: input.contactId as string };
-        for (const [k, v] of Object.entries(input.auditDetails as Record<string, string>)) {
-          params[k] = v;
-        }
-        return params;
-      },
+      transform: (_, input) =>
+        mergeDynamicParams(
+          { contact_id: input.contactId as string },
+          'auditDetails',
+          input.auditDetails as Record<string, string>,
+        ),
     },
     get_cn_audit_status: {
       command: 'get_cn_audit_status',

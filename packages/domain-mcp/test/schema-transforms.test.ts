@@ -109,6 +109,30 @@ describe('schema action transforms', () => {
         forwardTo: 'owner@example.com',
       }),
     ).toEqual({ domain: 'example.com', forward_to: 'owner@example.com', username: '*' });
+    expect(() =>
+      transform(domainSettingsTool, 'set_hosting', {
+        domain: 'victim.example',
+        options: { domain: 'attacker.example' },
+      }),
+    ).toThrow('Protected Dynadot parameter "domain" cannot be set through options');
+    expect(() =>
+      transform(folderTool, 'set_hosting', {
+        folderId: 'folder-1',
+        options: { folder_id: 'folder-2' },
+      }),
+    ).toThrow('Protected Dynadot parameter "folder_id" cannot be set through options');
+    expect(() =>
+      transform(contactTool, 'create_cn_audit', {
+        contactId: 'contact-1',
+        auditDetails: { contact_id: 'contact-2' },
+      }),
+    ).toThrow('Protected Dynadot parameter "contact_id" cannot be set through auditDetails');
+    expect(() =>
+      transform(contactTool, 'set_eu_setting', {
+        contactId: 'contact-1',
+        settings: { command: 'delete_contact' },
+      }),
+    ).toThrow('Protected Dynadot parameter "command" cannot be set through settings');
   });
 
   it('transforms DNS and folder record inputs', () => {

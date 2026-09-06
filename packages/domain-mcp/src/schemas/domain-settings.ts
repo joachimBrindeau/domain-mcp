@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { ApiParams } from '../client.js';
 import type { CompositeTool } from './common.js';
-import { p, tx } from './common.js';
+import { mergeDynamicParams, p, tx } from './common.js';
 
 export const domainSettingsTool: CompositeTool = {
   name: 'domains.settings.manage',
@@ -100,13 +100,12 @@ export const domainSettingsTool: CompositeTool = {
         domain: p.domain,
         options: z.record(z.string(), z.string()).describe('Hosting options'),
       }),
-      transform: (_, input) => {
-        const params: ApiParams = { domain: input.domain as string };
-        for (const [k, v] of Object.entries(input.options as Record<string, string>)) {
-          params[k] = v;
-        }
-        return params;
-      },
+      transform: (_, input) =>
+        mergeDynamicParams(
+          { domain: input.domain as string },
+          'options',
+          input.options as Record<string, string>,
+        ),
     },
     set_email_forward: {
       command: 'set_email_forward',

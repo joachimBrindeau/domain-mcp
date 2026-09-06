@@ -15,6 +15,28 @@ export interface ActionDefinition {
   transform?: (action: string, input: Record<string, unknown>) => ApiParams;
 }
 
+const PROTECTED_DYNAMIC_PARAM_KEYS = new Set([
+  'key',
+  'command',
+  'domain',
+  'folder_id',
+  'contact_id',
+]);
+
+export function mergeDynamicParams(
+  params: ApiParams,
+  sourceName: string,
+  values: Record<string, string>,
+): ApiParams {
+  for (const [key, value] of Object.entries(values)) {
+    if (PROTECTED_DYNAMIC_PARAM_KEYS.has(key)) {
+      throw new Error(`Protected Dynadot parameter "${key}" cannot be set through ${sourceName}`);
+    }
+    params[key] = value;
+  }
+  return params;
+}
+
 // Reusable param schemas
 export const p = {
   domain: z.string().describe('Domain name (e.g., example.com, mysite.net)'),

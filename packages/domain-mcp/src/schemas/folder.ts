@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import type { ApiParams } from '../client.js';
 import type { CompositeTool } from './common.js';
-import { dnsRecord, p, subdomainRecord, tx } from './common.js';
+import { dnsRecord, mergeDynamicParams, p, subdomainRecord, tx } from './common.js';
 
 export const folderTool: CompositeTool = {
   name: 'folders.manage',
@@ -75,13 +74,12 @@ export const folderTool: CompositeTool = {
       command: 'set_folder_hosting',
       description: 'Set hosting for folder',
       params: z.object({ folderId: p.folderId, options: z.record(z.string(), z.string()) }),
-      transform: (_, input) => {
-        const params: ApiParams = { folder_id: input.folderId as string };
-        for (const [k, v] of Object.entries(input.options as Record<string, string>)) {
-          params[k] = v;
-        }
-        return params;
-      },
+      transform: (_, input) =>
+        mergeDynamicParams(
+          { folder_id: input.folderId as string },
+          'options',
+          input.options as Record<string, string>,
+        ),
     },
     set_dns: {
       command: 'set_folder_dns',

@@ -94,10 +94,6 @@ export interface ClientConfig {
   sandbox?: boolean;
   /** Request timeout in milliseconds (default: 30000) */
   timeout?: number;
-  /** Maximum number of retries for failed requests (default: 3) */
-  maxRetries?: number;
-  /** Base delay for exponential backoff in ms (default: 1000) */
-  retryDelay?: number;
   /** Minimum interval between Dynadot API requests (default: 1000) */
   requestIntervalMs?: number;
 }
@@ -115,8 +111,6 @@ export interface ClientConfig {
 export class DomainClient {
   private client: KyInstance;
   private apiKey: string;
-  private maxRetries: number;
-  private retryDelay: number;
   private requestLimiter: Bottleneck;
 
   /**
@@ -139,8 +133,6 @@ export class DomainClient {
     }
 
     this.apiKey = apiKey;
-    this.maxRetries = config.maxRetries ?? 3;
-    this.retryDelay = config.retryDelay ?? 1000;
 
     const baseUrl = sandbox ? 'https://api-sandbox.dynadot.com' : 'https://api.dynadot.com';
     this.requestLimiter = getRequestLimiter(
@@ -154,20 +146,7 @@ export class DomainClient {
     this.client = ky.create({
       prefix: baseUrl,
       timeout,
-      retry: {
-        limit: this.maxRetries,
-        methods: ['get', 'post'],
-        statusCodes: [408, 429, 500, 502, 503, 504],
-        backoffLimit: this.retryDelay * 2 ** this.maxRetries,
-      },
-      hooks: {
-        beforeRetry: [
-          async ({ retryCount }) => {
-            const delay = this.retryDelay * 2 ** retryCount;
-            await new Promise((resolve) => setTimeout(resolve, delay));
-          },
-        ],
-      },
+      retry: 0,
     });
   }
 
@@ -231,7 +210,7 @@ let instance: DomainClient | null = null;
  * const domains = await client.execute('list_domain');
  *
  * // With custom configuration
- * const client = getClient({ maxRetries: 5, retryDelay: 2000 });
+ * const client = getClient({ requestIntervalMs: 2000 });
  * ```
  */
 export function getClient(config?: ClientConfig): DomainClient {

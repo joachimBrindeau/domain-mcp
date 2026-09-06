@@ -50,8 +50,8 @@ Everything funnels through one registration pipeline and one API client. Underst
 2. **`src/client.ts`** — `DomainClient` singleton (via `getClient()`) wrapping `ky`. Every API call goes through `client.execute(command, params)`:
    - `key` and `command` are reserved and injected — tool input cannot set them (throws).
    - Undefined params are stripped.
-   - `ky` retries on 408/429/5xx with exponential backoff (`retryDelay * 2^retryCount`, default 3 retries).
-   - A response with `Status === 'error'` is thrown as `Dynadot API error: <msg>`.
+   - Transport retries are disabled so registrar mutations are submitted at most once.
+   - A response without an explicit top-level `Status: 'success'` fails closed.
 
 3. **`src/schemas/*.ts`** — each file exports one `CompositeTool` (`common.ts` defines the type). A composite tool is `{ name, description, actions: Record<string, ActionDefinition> }`. Each action has:
    - `command` — the underlying Dynadot API command string

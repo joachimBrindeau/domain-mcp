@@ -30,43 +30,31 @@ describe('DomainClient', () => {
     expect(() => new DomainClient()).toThrow('API key required');
   });
 
-  it('uses sandbox environment defaults and configures ky retries', () => {
+  it('uses sandbox environment defaults and disables transport retries', () => {
     vi.stubEnv('DYNADOT_SANDBOX', 'true');
     vi.stubEnv('DYNADOT_SANDBOX_KEY', 'sandbox-key');
-    new DomainClient({ timeout: 1234, maxRetries: 2, retryDelay: 10 });
+    new DomainClient({ timeout: 1234 });
 
     expect(createSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         prefix: 'https://api-sandbox.dynadot.com',
         timeout: 1234,
-        retry: expect.objectContaining({ limit: 2, backoffLimit: 40 }),
+        retry: 0,
       }),
     );
   });
 
-  it('waits with exponential backoff before a retry', async () => {
-    vi.useFakeTimers();
-    try {
-      new DomainClient({ apiKey: 'fixture-key', maxRetries: 2, retryDelay: 10 });
-      const options = createSpy.mock.calls[0]?.[0] as {
-        hooks: { beforeRetry: Array<(context: { retryCount: number }) => Promise<void>> };
-      };
-      const beforeRetry = options.hooks.beforeRetry[0];
+  it('disables transport retries for registrar mutations', async () => {
+    const client = new DomainClient({ apiKey: 'single-submit-key' });
+    expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({ retry: 0 }));
 
-      const retry = beforeRetry?.({ retryCount: 2 });
-      let completed = false;
-      retry?.then(() => {
-        completed = true;
-      });
-
-      await vi.advanceTimersByTimeAsync(39);
-      expect(completed).toBe(false);
-      await vi.advanceTimersByTimeAsync(1);
-      await expect(retry).resolves.toBeUndefined();
-      expect(completed).toBe(true);
-    } finally {
-      vi.useRealTimers();
-    }
+    getSpy.mockReturnValueOnce({
+      json: vi.fn().mockRejectedValue(new Error('ambiguous transport failure')),
+    });
+    await expect(client.execute('register', { domain: 'example.com' })).rejects.toThrow(
+      'ambiguous transport failure',
+    );
+    expect(getSpy).toHaveBeenCalledTimes(1);
   });
 
   it('rejects reserved command parameter override', async () => {
@@ -98,8 +86,14 @@ describe('DomainClient', () => {
   });
 
   it('serializes every API request through the shared client boundary', async () => {
-    const firstClient = new DomainClient({ apiKey: 'fixture-key', requestIntervalMs: 0 });
-    const secondClient = new DomainClient({ apiKey: 'fixture-key', requestIntervalMs: 0 });
+    const firstClient = new DomainClient({
+      apiKey: 'shared-boundary-key',
+      requestIntervalMs: 0,
+    });
+    const secondClient = new DomainClient({
+      apiKey: 'shared-boundary-key',
+      requestIntervalMs: 0,
+    });
     let active = 0;
     let maxActive = 0;
     const releases: Array<() => void> = [];

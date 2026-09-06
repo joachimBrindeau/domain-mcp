@@ -13,7 +13,7 @@ pnpm build             # tsc → dist/
 pnpm dev               # tsx watch src/index.ts
 pnpm test              # vitest run (integration tests skipped by default)
 pnpm test:watch
-pnpm test:coverage     # thresholds: 80% lines/functions/branches/statements
+pnpm test:coverage     # thresholds: 100% lines/functions/branches/statements
 pnpm typecheck         # tsc --noEmit
 pnpm check             # biome check src/ test/
 pnpm check:fix         # biome check --write

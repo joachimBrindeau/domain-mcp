@@ -1,6 +1,6 @@
 ---
 title: "domains.ideas.generate MCP Tool"
-description: "Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to create a library-backed Cartesian product of ordered phoneme or morpheme dimensions. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative."
+description: "Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to combine ordered phoneme or morpheme dimensions without materializing the full Cartesian product. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative."
 keywords:
   - MCP tool
   - domain management
@@ -11,7 +11,7 @@ slug: /tools/domains/ideas/generate
 
 # `domains.ideas.generate`
 
-Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to create a library-backed Cartesian product of ordered phoneme or morpheme dimensions. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative.
+Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to combine ordered phoneme or morpheme dimensions without materializing the full Cartesian product. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative.
 
 ## Safety and behavior
 

@@ -1,5 +1,4 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import fastCartesian from 'fast-cartesian';
 import { z } from 'zod';
 import { getClient } from '../client.js';
 import { normalizeResponse } from '../normalize.js';
@@ -109,20 +108,64 @@ const generators: Record<
   suffix: generateSuffix,
 };
 
+function selectMultiplexKeywords(brandMultiplex: BrandMultiplex, limit: number): string[] {
+  const minLength = brandMultiplex.minLength ?? 4;
+  const maxLength = brandMultiplex.maxLength ?? 12;
+  const separator = brandMultiplex.separator ?? '';
+  const normalizedDimensions = brandMultiplex.dimensions.map((dimension) => [
+    ...new Set(dimension.map((value) => words(value).join(''))),
+  ]);
+
+  const remainingMinLengths = new Array<number>(normalizedDimensions.length + 1).fill(0);
+  const remainingMaxLengths = new Array<number>(normalizedDimensions.length + 1).fill(0);
+  for (let index = normalizedDimensions.length - 1; index >= 0; index -= 1) {
+    const dimension = normalizedDimensions[index] as string[];
+    const nextMinLength = remainingMinLengths[index + 1] as number;
+    const nextMaxLength = remainingMaxLengths[index + 1] as number;
+    const separatorLength = index < normalizedDimensions.length - 1 ? separator.length : 0;
+    remainingMinLengths[index] =
+      nextMinLength + Math.min(...dimension.map((value) => value.length)) + separatorLength;
+    remainingMaxLengths[index] =
+      nextMaxLength + Math.max(...dimension.map((value) => value.length)) + separatorLength;
+  }
+
+  const keywords: string[] = [];
+
+  function visit(dimensionIndex: number, name: string): boolean {
+    if (dimensionIndex === normalizedDimensions.length) {
+      keywords.push(name);
+      return keywords.length >= limit;
+    }
+
+    const dimension = normalizedDimensions[dimensionIndex] as string[];
+    const remainingMinLength = remainingMinLengths[dimensionIndex + 1] as number;
+    const remainingMaxLength = remainingMaxLengths[dimensionIndex + 1] as number;
+    for (const value of dimension) {
+      const candidate = name ? `${name}${separator}${value}` : value;
+      const minimumLength = candidate.length + remainingMinLength;
+      const maximumLength = candidate.length + remainingMaxLength;
+      if (minimumLength > maxLength || maximumLength < minLength) continue;
+      if (visit(dimensionIndex + 1, candidate)) return true;
+    }
+    return false;
+  }
+
+  if (limit > 0) visit(0, '');
+  return keywords;
+}
+
 function selectKeywords(
   keywords: string[],
   keywordVariations: KeywordVariation[],
   llmVariations: string[],
-  brandMultiplex?: BrandMultiplex,
+  brandMultiplex: BrandMultiplex | undefined,
+  multiplexLimit: number,
 ): { source: 'multiplex' | 'dataforseo' | 'llm' | 'keywords'; keywords: string[] } {
   if (brandMultiplex) {
-    const minLength = brandMultiplex.minLength ?? 4;
-    const maxLength = brandMultiplex.maxLength ?? 12;
-    const separator = brandMultiplex.separator ?? '';
-    const multiplexed = fastCartesian(brandMultiplex.dimensions)
-      .map((parts) => parts.flatMap(words).join(separator))
-      .filter((name) => name.length >= minLength && name.length <= maxLength);
-    return { source: 'multiplex', keywords: [...new Set(multiplexed)] };
+    return {
+      source: 'multiplex',
+      keywords: selectMultiplexKeywords(brandMultiplex, multiplexLimit),
+    };
   }
   if (keywordVariations.length > 0) {
     const ranked = [...keywordVariations].sort(
@@ -265,21 +308,23 @@ export function registerGenerateIdeasTool(server: McpServer): void {
     'domains.ideas.generate',
     {
       description:
-        'Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to create a library-backed Cartesian product of ordered phoneme or morpheme dimensions. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative.',
+        'Deterministically generate domain candidates and check availability. For brandable searches, use brandMultiplex to combine ordered phoneme or morpheme dimensions without materializing the full Cartesian product. For descriptive searches, prefer ranked DataForSEO keywordVariations; use llmVariations only when keyword data is unavailable. Exact and hyphenated patterns test each phrase both without and with hyphens across TLDs. Fails the whole request on any inconclusive or failed Dynadot check rather than reporting a false negative.',
       inputSchema,
       outputSchema: toolOutputSchema,
       annotations: READ_ONLY_EXTERNAL,
     },
     async (input) => {
+      const tlds = (input.tlds as string[]) ?? DEFAULT_TLDS;
+      const patterns = (input.patterns as Pattern[]) ?? [...PATTERNS];
+      const maxToCheck = (input.maxToCheck as number) ?? 100;
+      const multiplexKeywordLimit = Math.ceil(maxToCheck / Math.max(tlds.length, 1));
       const selection = selectKeywords(
         input.keywords as string[],
         (input.keywordVariations as KeywordVariation[] | undefined) ?? [],
         (input.llmVariations as string[] | undefined) ?? [],
         input.brandMultiplex as BrandMultiplex | undefined,
+        multiplexKeywordLimit,
       );
-      const tlds = (input.tlds as string[]) ?? DEFAULT_TLDS;
-      const patterns = (input.patterns as Pattern[]) ?? [...PATTERNS];
-      const maxToCheck = (input.maxToCheck as number) ?? 100;
       const candidates =
         selection.source === 'multiplex'
           ? selection.keywords.flatMap((keyword) => tlds.map((tld) => `${keyword}.${tld}`))

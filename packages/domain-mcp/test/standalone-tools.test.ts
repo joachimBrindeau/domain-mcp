@@ -343,6 +343,69 @@ describe('generate_domain_ideas tool', () => {
     ]);
   });
 
+  it('bounds schema-max brand multiplex generation before TLD expansion', async () => {
+    const dimensions = ['a', 'b', 'c', 'd', 'e', 'f'].map((prefix) =>
+      Array.from({ length: 50 }, (_, index) => `${prefix}${index}`),
+    );
+
+    const result = await generateIdeasHandler()({
+      keywords: ['time tracking'],
+      brandMultiplex: {
+        dimensions,
+        minLength: 2,
+        maxLength: 63,
+      },
+      tlds: ['com', 'io'],
+      patterns: ['exact'],
+      maxToCheck: 10,
+    });
+
+    expect(execute.mock.calls.map((call) => call[1])).toEqual([
+      { domain0: 'a0b0c0d0e0f0.com', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f0.io', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f1.com', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f1.io', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f2.com', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f2.io', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f3.com', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f3.io', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f4.com', show_price: 1 },
+      { domain0: 'a0b0c0d0e0f4.io', show_price: 1 },
+    ]);
+    expect(result.structuredContent).toMatchObject({
+      success: true,
+      data: {
+        checked: 10,
+        keywordSource: 'multiplex',
+        keywords: ['a0b0c0d0e0f0', 'a0b0c0d0e0f1', 'a0b0c0d0e0f2', 'a0b0c0d0e0f3', 'a0b0c0d0e0f4'],
+      },
+    });
+  });
+
+  it('prunes impossible schema-max multiplex branches without visiting their products', async () => {
+    const dimensions = Array.from({ length: 6 }, () =>
+      Array.from({ length: 50 }, (_, index) => `toolong${index}`),
+    );
+
+    const result = await generateIdeasHandler()({
+      keywords: ['time tracking'],
+      brandMultiplex: {
+        dimensions,
+        minLength: 2,
+        maxLength: 5,
+      },
+      tlds: ['com'],
+      patterns: ['exact'],
+      maxToCheck: 10,
+    });
+
+    expect(execute).not.toHaveBeenCalled();
+    expect(result.structuredContent).toMatchObject({
+      success: true,
+      data: { checked: 0, keywordSource: 'multiplex', keywords: [] },
+    });
+  });
+
   it('preserves an explicit multiplex separator', async () => {
     await generateIdeasHandler()({
       keywords: ['time tracking'],
